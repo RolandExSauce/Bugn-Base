@@ -8,7 +8,6 @@ import com.bugnbass.backend.model.Image;
 import com.bugnbass.backend.model.Product;
 import com.bugnbass.backend.repository.ImageRepository;
 import com.bugnbass.backend.repository.ProductRepository;
-import com.bugnbass.backend.util.DevDebugLogger;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;

@@ -27,7 +27,7 @@ public class ImageController {
         return imageService.getImage(imageId);
     }
 
-    @GetMapping("/{productId}")
+    @GetMapping("pr/{productId}")
     public List<Image> getProductImages(@RequestParam String productId) {
         return imageService.getProductImages(productId);
     }
