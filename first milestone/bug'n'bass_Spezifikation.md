@@ -1,0 +1,135 @@
+﻿**bug’n’bass - Online-Shop für Musikinstrumente…** -Aufbau
+
+- **Homepage** 
+- Zeigt Best-Seller-Produkte an
+- Menubar
+- Links
+- Profil: Login/Signup/Logout
+- Warenkorb
+- Produkte
+- Kontaktliste  
+- Über uns
+  - Search bar
+- **Footer** 
+- Kontaktdetails
+- Rechtliches
+- Öffnungszeiten
+- Social Media Links — nicht funktionell —
+- **Produkte Page** 
+- Zeigt Instrumente
+- Filteroptionen -> Kategorie, Marke, Bewertung, Preis
+- Sortieroptionen -> Preis aufsteigend/absteigend
+- **Produktdetail Page** 
+- Zeigt Details des Produkts an
+- In-den-Warenkorb-Button
+- Kundenrezensionen ansehen
+- **Warenkorb** 
+- Zeigt Produkte im Warenkorb an
+- Möglichkeit Produkt zu entfernen oder die Menge zu ändern
+- Zur-Kasse-Button
+- **Checkout Page** 
+- Lieferadresse
+- Zahlungsart
+- Bestellübersicht
+- Jetzt-Kaufen-Button
+- **Login Page** 
+- Login über Email und Password
+- Noch kein Konto? -> Link zur Registrierung 
+- **Register Page** 
+- Email, Name, Password
+- Bereits ein Konto? -> Link zum Login
+- **Profil Page** 
+- Zeigt editierbare Profildaten an
+- Button zum Löschen vom eigenen Konto
+- Falls Admin -> Link zum Admin Page
+- Bestellübersicht mit Button zur Detailansicht
+- **Bestellung Page** 
+- Detailansicht
+- Bei noch nicht zugestellten Waren Button zum Stornieren
+- Bei bereits zugestellter Ware Button für Rezension / Retournieren
+- **Admin’s Page** 
+- Protected Route (Nur für Admins)
+- Bestellungen stornieren / Versandstatus ändern
+- Benutzer löschen / Genehmigung erteilen
+- Produkte bearbeiten / löschen
+- Neues Produkt hinzufügen
+- Rezensionen ansehen / löschen
+- Kontaktiere-uns-Nachrichten ansehen ?
+- **Kontakt Page** 
+- Kontaktformular und Kontaktinformation 
+- **Über uns / AGB / Datenschutz / Impressum**  
+- Statische Info-Seiten
+- Technische Spezifikationen
+- **Frontend** 
+- HTML, JS, jQuery, CSS, SASS, BootStrap
+- **Backend** 
+- SpringBoot, JWT, MariaDB oder Postgres
+- **Sonstige Tools** 
+- npm, GitHub, ChatGPT, Color-Scheme Tools, Google Icons/ Fonts, Docker etc.
+- Datenstruktur
+
+5
+
+- **Artikel** 
+- Product ID
+- Name
+- Category
+- Description
+- Price
+- Shipping cost
+- Brand
+- Stock status
+- Shipping Time 
+- **Benutzer**  
+- User ID
+- Username
+- Password
+- Name
+- Nachname
+- Role (admin/registered user)
+- **Images** 
+- Fk -> Product ID
+- Image
+- **Bestellungen** 
+- Fk -> Product ID
+- Fk -> User ID
+- Order ID (composite)
+- Amount
+- Date of order
+- Adresse
+- Zahlungsart
+- Status
+- **Bewertungen** 
+- Review ID
+- Fk -> product ID
+- Fk -> user ID
+- Fk -> order ID
+- Stars (1-5)
+- Comment
+- Date
+- **Nachrichten (Contact)** 
+- Message ID
+- Sender Name
+- Sender Email
+- Message
+
+
+
+- Authorization 
+- **Unregistered users** 
+- Homepage/Produkte und deren Bewertungen ansehen
+- **Registrierte Benutzer** 
+- Profil bearbeiten
+- Konto löschen
+- Bestellen
+- Vorige Bestellungen ansehen / stornieren
+- Kommentar/Bewertung abgeben
+- **Admin** 
+- Alles was registrierter Benutzer kann
+- Produkte bearbeiten / löschen
+- Versandstatus bearbeiten
+- Neues Produkt hinzufügen
+- Benutzer bearbeiten / genehmigen / löschen
+- Bewertungen löschen
+- Bestellungsstatus ändern / Bestellung löschen
+6
