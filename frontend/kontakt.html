@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Kontakt – bug'n'bass</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+</head>
+<body class="d-flex flex-column min-vh-100">
+
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+        <a class="navbar-brand d-flex align-items-center" href="index.html">
+            <img src="images/logo.png" alt="bug'n'bass Logo" width="40" height="40" class="me-2" />
+            <span>bug'n'bass</span>
+        </a>
+    </div>
+</nav>
+
+<main class="container my-5">
+    <h1 class="mb-4">Kontaktiere uns</h1>
+
+    <div class="row g-5">
+        <!-- Formular -->
+        <div class="col-md-6">
+            <form>
+                <div class="mb-3">
+                    <label for="name" class="form-label">Dein Name</label>
+                    <input type="text" class="form-control" id="name" placeholder="Max Mustermann" required>
+                </div>
+                <div class="mb-3">
+                    <label for="email" class="form-label">E-Mail-Adresse</label>
+                    <input type="email" class="form-control" id="email" placeholder="max@example.com" required>
+                </div>
+                <div class="mb-3">
+                    <label for="message" class="form-label">Nachricht</label>
+                    <textarea class="form-control" id="message" rows="5" placeholder="Wie können wir helfen?" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Absenden</button>
+            </form>
+        </div>
+
+        <!-- Kontaktinfo -->
+        <div class="col-md-6">
+            <h2 class="h5">Unsere Kontaktdaten</h2>
+            <p><strong>bug'n'bass GmbH</strong><br>
+                Klangstraße 12<br>
+                12345 Musikstadt<br>
+                Deutschland</p>
+            <p><strong>Telefon:</strong> 0123 4567890<br>
+                <strong>E-Mail:</strong> support@bugnbass.de</p>
+            <p><strong>Öffnungszeiten:</strong><br>
+                Mo–Fr: 9–17 Uhr<br>
+                Sa: 10–14 Uhr</p>
+        </div>
+    </div>
+</main>
+
+<!-- Footer -->
+<footer class="bg-dark text-white text-center py-3 mt-auto">
+    <p class="mb-0">&copy; 2025 bug'n'bass. Alle Rechte vorbehalten.</p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

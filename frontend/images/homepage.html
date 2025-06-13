@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bug n Bass - Musikinstrumente</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f4f0ea;
+            font-family: Arial, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .navbar-brand {
+            font-weight: bold;
+            color: #E86A33;
+        }
+        .navbar-nav .nav-link {
+            color: #333;
+            font-weight: 500;
+            margin-left: 20px;
+        }
+        .search-box {
+            border-radius: 50px;
+            padding: 0.5rem 1.5rem;
+            border: 1px solid #333;
+        }
+        .featured-section {
+            text-align: left;
+            margin: 50px 0;
+            padding-left: 5%;
+            flex-grow: 1;
+        }
+        .product-card {
+            border-radius: 15px;
+            background-color: #f8f5f1;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            min-height: 300px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .product-card img {
+            max-width: 80%;
+            max-height: 150px;
+            object-fit: contain;
+            margin-bottom: 15px;
+        }
+        .footer {
+            background-color: #333;
+            color: #fff;
+            padding: 20px 0;
+            text-align: center;
+            margin-top: 30px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">bug <span style="color: #E86A33;">n</span> BASS</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <form class="d-flex ms-3">
+                <input class="search-box" type="search" placeholder="Search" aria-label="Search">
+            </form>
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item"><a class="nav-link" href="#">Service</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">Kontakt</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">Über uns</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">Login</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">Warenkorb</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<section class="featured-section">
+    <h1>Featured Products</h1>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="product-card">
+                    <img src="gitarre.webp" alt="Acoustic Guitar" class="img-fluid">
+                    <p>Acoustic Guitar</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="product-card">
+                    <img src="epiano.png" alt="Digital Piano" class="img-fluid">
+                    <p>Digital Piano</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="product-card">
+                    <img src="synth.png" alt="Synthesizer" class="img-fluid">
+                    <p>Synthesizer</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="product-card">
+                    <img src="violin.webp" alt="Violin" class="img-fluid">
+                    <p>Violin</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<footer class="footer">
+    <div>Terms & Conditions | Privacy Policy | Lorem ipsum | Consectetur</div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.7/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+</body>
+</html>

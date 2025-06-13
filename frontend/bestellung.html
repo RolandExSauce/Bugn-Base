@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Bestellung – bug'n'bass</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+</head>
+<body class="d-flex flex-column min-vh-100">
+
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container">
+    <a class="navbar-brand" href="index.html">bug'n'bass</a>
+  </div>
+</nav>
+
+<main class="container my-5" id="mainContent">
+  <h1 class="mb-4">Bestellung <span id="bestellnummer">#–</span></h1>
+
+  <div class="mb-3">
+    <p><strong>Bestelldatum:</strong> <span id="datum">–</span></p>
+    <p><strong>Status:</strong> <span id="statusBadge" class="badge">–</span></p>
+  </div>
+
+  <div id="aktionsbereich" class="mb-4"></div>
+
+  <div class="mb-4">
+    <h2 class="h6">Lieferadresse</h2>
+    <p id="adresse">–</p>
+  </div>
+
+  <div class="mb-4">
+    <h2 class="h6">Bestellte Artikel</h2>
+    <ul class="list-group" id="artikelListe"></ul>
+  </div>
+
+  <div class="text-end">
+    <p class="fs-5">Gesamtsumme: <strong id="gesamt">–</strong></p>
+  </div>
+</main>
+
+<!-- Footer -->
+<footer class="bg-dark text-white text-center py-3 mt-auto">
+  <p class="mb-0">&copy; 2025 bug'n'bass. Alle Rechte vorbehalten.</p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+  // Simulierte Datenbank
+  const bestellungen = [
+    {
+      id: "100045",
+      datum: "18.05.2025",
+      status: "zugestellt",
+      adresse: "Max Mustermann<br>Musterstraße 1<br>12345 Musikstadt<br>Deutschland",
+      artikel: [
+        { name: "Violine Meisterklasse", menge: 1, preis: 589.00 },
+        { name: "Akustikgitarre", menge: 2, preis: 249.00 }
+      ]
+    },
+    {
+      id: "100046",
+      datum: "19.05.2025",
+      status: "in_bearbeitung",
+      adresse: "Max Mustermann<br>Musterstraße 1<br>12345 Musikstadt<br>Deutschland",
+      artikel: [
+        { name: "Digitalpiano", menge: 1, preis: 589.00 }
+      ]
+    }
+  ];
+
+  // URL-Parameter lesen
+  const params = new URLSearchParams(window.location.search);
+  const bestellId = params.get("id");
+  const bestellung = bestellungen.find(b => b.id === bestellId);
+
+  if (!bestellung) {
+    document.getElementById("mainContent").innerHTML = `
+      <div class="alert alert-danger">
+        Bestellung mit der ID "${bestellId}" wurde nicht gefunden.
+      </div>
+    `;
+  } else {
+    // DOM aktualisieren
+    document.getElementById("bestellnummer").textContent = `#${bestellung.id}`;
+    document.getElementById("datum").textContent = bestellung.datum;
+    document.getElementById("adresse").innerHTML = bestellung.adresse;
+
+    // Status
+    const statusBadge = document.getElementById("statusBadge");
+    const aktionsbereich = document.getElementById("aktionsbereich");
+    const status = bestellung.status;
+
+    if (status === "in_bearbeitung") {
+      statusBadge.className = "badge bg-warning text-dark";
+      statusBadge.textContent = "In Bearbeitung";
+      aktionsbereich.innerHTML = `<a href="#" class="btn btn-danger">Bestellung stornieren</a>`;
+    } else if (status === "zugestellt") {
+      statusBadge.className = "badge bg-success";
+      statusBadge.textContent = "Zugestellt";
+      aktionsbereich.innerHTML = `<a href="#" class="btn btn-outline-secondary">Retournieren</a>`;
+    } else {
+      statusBadge.className = "badge bg-secondary";
+      statusBadge.textContent = "Abgeschlossen";
+      aktionsbereich.innerHTML = `<span class="text-muted">Keine Aktion verfügbar</span>`;
+    }
+
+    // Artikel anzeigen
+    const artikelListe = document.getElementById("artikelListe");
+    let gesamtpreis = 0;
+
+    bestellung.artikel.forEach((artikel, index) => {
+      const gesamt = artikel.preis * artikel.menge;
+      gesamtpreis += gesamt;
+
+      const li = document.createElement("li");
+      li.className = "list-group-item";
+
+      li.innerHTML = `
+        <div class="d-flex justify-content-between align-items-start">
+          <div>
+            <strong>${artikel.name}</strong><br>
+            Menge: ${artikel.menge}<br>
+            Einzelpreis: € ${artikel.preis.toFixed(2)}
+          </div>
+          <div class="text-end">
+            <p class="mb-1"><strong>€ ${gesamt.toFixed(2)}</strong></p>
+            ${status === "zugestellt" ? `
+              <button class="btn btn-sm btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#review${index}">
+                Rezension schreiben
+              </button>` : ""}
+          </div>
+        </div>
+        ${status === "zugestellt" ? `
+          <div class="collapse mt-3" id="review${index}">
+            <form>
+              <div class="mb-2">
+                <label class="form-label">Bewertung</label>
+                <select class="form-select form-select-sm w-auto" required>
+                  <option value="">Sterne auswählen</option>
+                  <option value="5">★★★★★ – Sehr gut</option>
+                  <option value="4">★★★★ – Gut</option>
+                  <option value="3">★★★ – Okay</option>
+                  <option value="2">★★ – Schwach</option>
+                  <option value="1">★ – Schlecht</option>
+                </select>
+              </div>
+              <div class="mb-2">
+                <label class="form-label">Deine Meinung</label>
+                <textarea class="form-control" rows="3" required></textarea>
+              </div>
+              <button type="submit" class="btn btn-sm btn-success">Absenden</button>
+            </form>
+          </div>` : ""}
+      `;
+
+      artikelListe.appendChild(li);
+    });
+
+    document.getElementById("gesamt").textContent = `€ ${gesamtpreis.toFixed(2)}`;
+  }
+</script>
+
+</body>
+</html>
