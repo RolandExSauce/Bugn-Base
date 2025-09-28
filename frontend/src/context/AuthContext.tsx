@@ -1,7 +1,7 @@
 import axios, { type AxiosResponse } from "axios";
 import { createContext, useState, useContext } from "react";
-import type UserDto from "../dto/UserDto";
-import type LoginDto from "../dto/LoginDto";
+import type UserDto from "../types/temp/UserDto";
+import type LoginDto from "../types/temp/LoginDto";
 
 const LOGIN_URL = "/url";
 const SIGNUP_URL = "/url";

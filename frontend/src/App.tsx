@@ -1,16 +1,16 @@
 import { Route, Routes } from "react-router-dom";
 import Layout from "./Layout";
-import Homepage from "./pages/Homepage";
-import Profile from "./pages/Profile";
-import AboutUs from "./pages/AboutUs";
-import Admin from "./pages/Admin";
-import Auth from "./pages/Auth";
-import Cart from "./pages/Cart";
-import Checkout from "./pages/Checkout";
+import Homepage from "./pages/Home";
+import Profile from "./pages/user/UserProfil";
+import AboutUs from "./pages/About";
+import Admin from "./pages/admin/AdminPanel";
+import Auth from "./auth/Auth";
+import Cart from "./components/cart/Cart";
+import Checkout from "./components/cart/CheckOut";
 import Contact from "./pages/Contact";
-import Listing from "./pages/Listing";
-import Orders from "./pages/Orders";
-import Product from "./pages/Product";
+import Listing from "./components/Listing";
+import Orders from "./components/Orders";
+import Product from "./components/Product";
 
 export default function App() {
   return (

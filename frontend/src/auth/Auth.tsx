@@ -1,6 +1,6 @@
 import { useLocation } from "react-router-dom";
-import Login from "../components/auth/Login";
-import Signup from "../components/auth/Signup";
+import Login from "../pages/Login";
+import Signup from "../pages/Register";
 
 export default function Auth() {
   const location = useLocation();

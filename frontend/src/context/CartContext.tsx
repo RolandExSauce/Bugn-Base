@@ -1,5 +1,5 @@
 import { createContext, useContext, useState } from "react";
-import type CartItemDto from "../dto/CartItemDto";
+import type CartItemDto from "../types/temp/CartItemDto";
 
 interface CartContextType {
   cart: CartItemDto[] | undefined;

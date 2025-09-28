@@ -1,3 +1,6 @@
-export default function CartItem() {
-  return <div></div>;
+const CartItem = () => {
+  return (
+    <div>CartItem</div>
+  )
 }
+export default CartItem
