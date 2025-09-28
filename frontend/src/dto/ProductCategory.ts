@@ -1,6 +1,3 @@
 // piano, violin, guitar
 
-export interface ProductCategory {
-  id: number;
-  name: string;
-}
+export type ProductCategory = "piano" | "violin" | "guitar";

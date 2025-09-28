@@ -1,4 +1,6 @@
+import type ProductDto from "./ProductDto";
+
 export default interface CartItemDto {
-  productId: string;
-  amount: string;
+  product: ProductDto;
+  amount: number;
 }
