@@ -6,9 +6,9 @@ export default interface ProductDto {
   category: ProductCategory;
   description: string;
   price: number;
-  shipping_cost: number;
+  shippingCost: number;
   brand: string;
-  stock_status: boolean;
-  shipping_time: number;
+  stockStatus: boolean;
+  shippingTime: number;
   active: boolean;
 }
