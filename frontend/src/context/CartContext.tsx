@@ -4,7 +4,8 @@ import type CartItemDto from "../dto/CartItemDto";
 interface CartContextType {
   cart: CartItemDto[] | undefined;
   addItem: (item: CartItemDto) => void;
-  removeItem: (item: CartItemDto) => void;
+  removeItem: (itemId: string) => void;
+  updateItem: (item: CartItemDto) => void;
   clearCart: () => void;
 }
 
@@ -32,8 +33,16 @@ export const CartContextProvider = ({
     setCart([...cart!, item]);
   };
 
-  const removeItem = (item: CartItemDto) => {
-    setCart([...cart!.filter((i) => i.productId !== item.productId)]);
+  const removeItem = (itemId: string) => {
+    setCart([...cart!.filter((i) => i.product.productId !== itemId)]);
+  };
+
+  const updateItem = (item: CartItemDto) => {
+    setCart([
+      ...cart!.map((i) =>
+        i.product.productId === item.product.productId ? item : i
+      ),
+    ]);
   };
 
   const clearCart = () => {
@@ -45,6 +54,7 @@ export const CartContextProvider = ({
     addItem,
     removeItem,
     clearCart,
+    updateItem,
   };
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;

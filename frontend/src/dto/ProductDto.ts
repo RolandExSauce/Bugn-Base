@@ -1,7 +1,7 @@
 import type { ProductCategory } from "./ProductCategory";
 
 export default interface ProductDto {
-  product_id: string;
+  productId: string;
   name: string;
   category: ProductCategory;
   description: string;
