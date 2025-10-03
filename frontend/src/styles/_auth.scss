@@ -17,3 +17,10 @@
   justify-content: center;
   row-gap: 10px;
 }
+
+.register-hint a {
+  color: rgb(49, 49, 251);
+  &:hover {
+    color: rgb(0, 0, 255);
+  }
+}

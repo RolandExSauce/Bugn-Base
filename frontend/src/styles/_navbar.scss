@@ -21,6 +21,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   border: 1px solid rgba(255, 255, 255, 0);
   padding: 5px;
   & img {
@@ -34,6 +35,11 @@
     border-radius: 5px;
     background-color: $primary-accent;
   }
+}
+
+.navbar-login-button {
+  font-size: 1.2rem;
+  font-weight: 700;
 }
 
 .searchbar-input {

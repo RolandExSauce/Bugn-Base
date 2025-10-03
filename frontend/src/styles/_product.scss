@@ -16,6 +16,9 @@
     border: 1px solid gray;
     border-radius: 5px;
   }
+  & legend {
+    font-size: 1.2rem;
+  }
   & fieldset select {
     background: none;
     border: none;
@@ -23,6 +26,25 @@
       cursor: pointer;
     }
   }
+}
+
+.filter-instrument-radio {
+  margin-right: 10px;
+}
+
+.filter-brands {
+  display: flex;
+  flex-direction: column;
+}
+
+.filter-brands-checkbox {
+  margin-right: 10px;
+}
+
+.filter-actions {
+  display: flex;
+  flex-direction: column;
+  row-gap: 10px;
 }
 
 .instrument-fieldset {
@@ -107,4 +129,17 @@
   border: 1px solid gray;
   border-radius: 5px;
   padding: 5px;
+}
+
+.filter-title {
+  display: flex;
+  align-items: center;
+  column-gap: 10px;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid gray;
+  & img {
+    width: 30px;
+    aspect-ratio: 1/1;
+  }
 }

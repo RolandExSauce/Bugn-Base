@@ -1,25 +1,44 @@
 export default function ProductFilter() {
   return (
     <aside className="filter-sidebar" aria-label="Produktfilter">
+      <span className="filter-title">
+        {" "}
+        <img src="/filter.svg" alt="" /> Filter
+      </span>
       <form className="product-filter" aria-describedby="filter-desc">
         <fieldset className="instrument-fieldset">
           <legend>Instrumententyp</legend>
           <label>
-            <input type="radio" name="instrument" value="gitarre" />
+            <input
+              className="filter-instrument-radio"
+              type="radio"
+              name="instrument"
+              value="gitarre"
+            />
             Gitarre
           </label>
           <label>
-            <input type="radio" name="instrument" value="klavier" />
+            <input
+              className="filter-instrument-radio"
+              type="radio"
+              name="instrument"
+              value="klavier"
+            />
             Klavier
           </label>
           <label>
-            <input type="radio" name="instrument" value="schlagzeug" />
+            <input
+              className="filter-instrument-radio"
+              type="radio"
+              name="instrument"
+              value="schlagzeug"
+            />
             Schlagzeug
           </label>
         </fieldset>
 
         <fieldset>
-          <legend>Preis Sortieren</legend>
+          <legend>Preis</legend>
           <label htmlFor="price-sort" className="sr-only"></label>
           <select id="price-sort" name="priceSort" defaultValue="">
             <option value="">Keine Sortierung</option>
@@ -28,9 +47,20 @@ export default function ProductFilter() {
           </select>
         </fieldset>
 
-        <fieldset id="brand-fieldset">
+        <fieldset className="brand-fieldset">
           <legend>Marke</legend>
-          <div id="brands" aria-live="polite">
+          <div className="filter-brands">
+            {Array.from({ length: 10 }).map((_, i) => (
+              <label key={i}>
+                <input
+                  className="filter-brands-checkbox"
+                  type="checkbox"
+                  name="brand"
+                  value={`brand-${i}`}
+                />
+                Marke {i}
+              </label>
+            ))}
             {/* render fetched brands here, e.g.
             brands.length === 0 ? <p className="loading">Marken werden geladen…</p>
             : brands.map(b => (
@@ -55,7 +85,7 @@ export default function ProductFilter() {
           </select>
         </fieldset>
 
-        <div className="actions">
+        <div className="filter-actions">
           <button type="submit">Anwenden</button>
           <button type="button" id="reset">
             Zurücksetzen

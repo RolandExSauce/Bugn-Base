@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import Searchbar from "./Searchbar";
 
 const NavBar = () => {
+  const auth = true;
   return (
     <nav className="navbar">
       <Link to="/" className="navbar-logo">
@@ -18,14 +19,20 @@ const NavBar = () => {
           <img src="/contact.svg" alt="" />
           <span>Kontakt</span>
         </Link>
-        <Link className="navbar-button" to="/profile">
-          <img src="/profile.svg" alt="" />
-          <span>Profil</span>
-        </Link>
         <Link className="navbar-button" to="/cart">
           <img src="/cart.svg" alt="" />
           <span>Warenkorb</span>
         </Link>
+        {auth ? (
+          <Link className="navbar-button" to="/profile">
+            <img src="/profile.svg" alt="" />
+            <span>Profil</span>
+          </Link>
+        ) : (
+          <Link className="navbar-button" to="/auth/login">
+            <span className="navbar-login-button">Login</span>
+          </Link>
+        )}
       </div>
     </nav>
   );

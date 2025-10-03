@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 const Register = () => {
   return (
     <main className="login-page">
@@ -51,8 +53,8 @@ const Register = () => {
 
         <button type="submit">Registrieren</button>
 
-        <p className="login-hint">
-          Bereits ein Konto? <a href="/auth/login">Hier einloggen</a>
+        <p className="register-hint">
+          Bereits ein Konto? <Link to="/auth/login">Hier einloggen</Link>
         </p>
       </form>
     </main>

@@ -13,7 +13,6 @@ export default function Listing() {
             <ProductItem key={i} />
           </Link>
         ))}
-        <img src="/g-1.jpg" alt="" />
       </div>
     </div>
   );
