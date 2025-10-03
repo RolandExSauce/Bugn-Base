@@ -14,11 +14,11 @@ const NavBar = () => {
           <img src="/guitar.svg" alt="" />
           <span>Produkte</span>
         </Link>
-        <Link className="navbar-button" to="/login">
+        <Link className="navbar-button" to="/contact">
           <img src="/contact.svg" alt="" />
           <span>Kontakt</span>
         </Link>
-        <Link className="navbar-button" to="/login">
+        <Link className="navbar-button" to="/profile">
           <img src="/profile.svg" alt="" />
           <span>Profil</span>
         </Link>
