@@ -57,11 +57,11 @@ export default function Carousel({ imgUrls }: CarouselPropTypes) {
     <div
       onMouseEnter={stopSlide}
       onMouseLeave={startSlide}
-      className="carousel_slider_container"
+      className="carousel_slider_container position-relative overflow-hidden w-100 h-100 border rounded d-flex justify-content-center overflow-y-hidden p-3 bg-white"
     >
       <div
         ref={sliderRef}
-        style={{ transition: "transform 1s ease-out", display: "flex" }}
+        style={{ transition: "transform 0.5s ease-out", display: "flex" }}
       >
         {imgUrls.map((url, index) => (
           <img key={index} src={url} alt={`Slide ${index + 1}`} />
@@ -70,36 +70,16 @@ export default function Carousel({ imgUrls }: CarouselPropTypes) {
       <button
         disabled={activeIndex === 0}
         onClick={prevSlide}
-        className="carousel_prev_btn"
+        className="carousel_prev_btn position-absolute bottom-0 border-0 z-2"
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          height="24"
-          viewBox="0 -960 960 960"
-          width="24"
-        >
-          <path
-            fill="white"
-            d="M400-80 0-480l400-400 71 71-329 329 329 329-71 71Z"
-          />
-        </svg>
+        <img src="/arrow-bck.svg" alt="" />
       </button>
       <button
         disabled={activeIndex === imgUrls.length - 1}
         onClick={nextSlide}
-        className="carousel_next_btn"
+        className="carousel_next_btn position-absolute bottom-0 border-0 z-2"
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          height="24"
-          viewBox="0 -960 960 960"
-          width="24"
-        >
-          <path
-            fill="white"
-            d="m321-80-71-71 329-329-329-329 71-71 400 400L321-80Z"
-          />
-        </svg>
+        <img src="/arrow-frw.svg" alt="" />
       </button>
     </div>
   );

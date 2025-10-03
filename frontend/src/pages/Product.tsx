@@ -3,13 +3,13 @@ import Review from "../components/product/Review";
 
 export default function Product() {
   return (
-    <div className="product-main">
-      <div className="product-main-top">
-        <div className="product-main-top-left">
+    <div className="product-main mt-5 flex-column row-gap-5">
+      <div className="product-main-top d-flex flex-row column-gap-5 w-100">
+        <div className="product-main-top-left w-50">
           <Carousel imgUrls={["/g-1.jpg", "/g-2.jpg", "/g-3.jpg"]} />
         </div>
-        <div className="product-main-top-right">
-          <div className="product-main-top-right-name">Product name</div>
+        <div className="product-main-top-right d-flex flex-column row-gap-3 w-50">
+          <div className="product-main-top-right-name h1">Product name</div>
           <div className="product-main-top-right-description">
             Lorem ipsum dolor sit, amet consectetur adipisicing elit. Enim
             dolor, doloribus fuga temporibus aspernatur odio rerum error labore
@@ -36,8 +36,8 @@ export default function Product() {
           </div>
         </div>
       </div>
-      <div className="product-main-bottom">
-        <span style={{ fontWeight: "bold", fontSize: "2REM" }}>
+      <div className="product-main-bottom d-flex flex-column row-gap-3">
+        <span className="product-main-bottom-title mt-4 fw-bold fs-2 border-top">
           Rezensionen
         </span>
         {Array.from({ length: 10 }).map((_, i) => (

@@ -4,7 +4,7 @@ import Homepage from "./pages/Home";
 import Profile from "./pages/user/UserProfil";
 import AboutUs from "./pages/About";
 import Admin from "./pages/admin/AdminPanel";
-import Auth from "./auth/Auth";
+import Auth from "./pages/admin/Auth";
 import Cart from "./components/cart/Cart";
 import Checkout from "./components/cart/CheckOut";
 import Contact from "./pages/Contact";

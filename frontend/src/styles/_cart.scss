@@ -9,8 +9,13 @@
 
 .cart-listing {
   width: 100%;
-  background-color: orange;
+  border: 1px solid black;
   & table {
     width: 100%;
   }
+}
+
+.cart-listing table tbody tr {
+  border: 1px solid red;
+  background-color: orange;
 }
