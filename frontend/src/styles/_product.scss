@@ -1,0 +1,64 @@
+@import "variables";
+
+.filter-sidebar {
+  width: 20vw;
+  height: 100vh;
+}
+
+.product-filter {
+  display: flex;
+  flex-direction: column;
+  row-gap: 30px;
+  height: 100vh;
+  padding-right: 3vw;
+  border-right: 1px solid gray;
+  & fieldset {
+    border: 1px solid gray;
+    border-radius: 5px;
+  }
+  & fieldset select {
+    background: none;
+    border: none;
+    &:hover {
+      cursor: pointer;
+    }
+  }
+}
+
+.instrument-fieldset {
+  display: flex;
+  flex-direction: column;
+  row-gap: 5px;
+}
+
+.listing-main {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  column-gap: 3vw;
+  padding-top: 5vh;
+}
+
+.listing-products {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  row-gap: 15px;
+  column-gap: 15px;
+}
+
+.product-item {
+  border: 1px solid gray;
+  border-radius: 5px;
+  padding: 5px;
+  display: flex;
+  flex-direction: column;
+  width: clamp(150px, 200px, 250px);
+  transition: 0.1s;
+  &:hover {
+    cursor: pointer;
+    transform: scale(1.05);
+  }
+}

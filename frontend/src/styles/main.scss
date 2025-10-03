@@ -1,5 +1,12 @@
 @import "variables";
+@import "navbar";
+@import "cssResets";
+@import "product";
 
 body {
-  background-color: gray;
+  background-color: white;
+}
+
+.main-div {
+  padding: 0px 2vw;
 }

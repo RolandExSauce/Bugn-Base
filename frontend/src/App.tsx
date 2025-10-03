@@ -8,9 +8,9 @@ import Auth from "./auth/Auth";
 import Cart from "./components/cart/Cart";
 import Checkout from "./components/cart/CheckOut";
 import Contact from "./pages/Contact";
-import Listing from "./components/Listing";
-import Orders from "./components/Orders";
-import Product from "./components/Product";
+import Listing from "./pages/Listing";
+import Orders from "./pages/Orders";
+import Product from "./pages/Product";
 
 export default function App() {
   return (

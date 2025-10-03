@@ -1,3 +1,168 @@
+.navbar {
+  display: flex;
+  background-color: rgb(255, 168, 76);
+  height: 70px;
+  width: auto;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0px 3rem;
+}
+
+.navbar-button {
+  background: none;
+  border: none;
+}
+.navbar-button:hover {
+  cursor: pointer;
+  color: white;
+}
+
+.searchbar-input {
+  width: clamp(300px, 50%, 600px);
+  border-radius: 5px;
+  border: 1px solid rgb(120, 120, 120);
+}
+
+.navbar-logo {
+  display: flex;
+  align-items: center;
+  column-gap: 10px;
+  font-size: 1.3rem;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+}
+
 body {
-  background-color: gray;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+  background-color: rgb(255, 255, 253);
+}
+
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+input,
+button,
+textarea,
+select {
+  font: inherit;
+}
+
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  overflow-wrap: break-word;
+}
+
+#root,
+#__next {
+  isolation: isolate;
+}
+
+li {
+  text-decoration: none;
+  list-style-type: none;
+}
+
+a {
+  text-decoration: none;
+  color: black;
+}
+
+ul {
+  padding: 0;
+}
+
+input:focus {
+  outline: none;
+}
+
+.filter-sidebar {
+  width: 20vw;
+  height: 100vh;
+}
+
+.product-filter {
+  display: flex;
+  flex-direction: column;
+  row-gap: 30px;
+  height: 100vh;
+  padding-right: 3vw;
+  border-right: 1px solid gray;
+}
+.product-filter fieldset {
+  border: 1px solid gray;
+  border-radius: 5px;
+}
+.product-filter fieldset select {
+  background: none;
+  border: none;
+}
+.product-filter fieldset select:hover {
+  cursor: pointer;
+}
+
+.instrument-fieldset {
+  display: flex;
+  flex-direction: column;
+  row-gap: 5px;
+}
+
+.listing-main {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  column-gap: 3vw;
+  padding-top: 5vh;
+}
+
+.listing-products {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  row-gap: 15px;
+  column-gap: 15px;
+}
+
+.product-item {
+  border: 1px solid gray;
+  border-radius: 5px;
+  padding: 5px;
+  display: flex;
+  flex-direction: column;
+  width: 200px;
+  transition: 0.1s;
+}
+.product-item:hover {
+  cursor: pointer;
+  transform: scale(1.05);
+}
+
+body {
+  background-color: white;
+}
+
+.main-div {
+  padding: 0px 2vw;
 }

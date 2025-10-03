@@ -1,0 +1,33 @@
+@import "variables";
+
+.navbar {
+  display: flex;
+  background-color: $secondary-accent;
+  height: 70px;
+  width: auto;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0px 3rem;
+}
+
+.navbar-button {
+  background: none;
+  border: none;
+  &:hover {
+    cursor: pointer;
+    color: white;
+  }
+}
+
+.searchbar-input {
+  width: clamp(300px, 50%, 600px);
+  border-radius: 5px;
+  border: 1px solid rgb(120, 120, 120);
+}
+
+.navbar-logo {
+  display: flex;
+  align-items: center;
+  column-gap: 10px;
+  font-size: 1.3rem;
+}
