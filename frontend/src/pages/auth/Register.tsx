@@ -2,8 +2,8 @@ import { Link } from "react-router-dom";
 
 const Register = () => {
   return (
-    <main className="login-page">
-      <form className="login-form">
+    <main className="login-page d-flex">
+      <form className="login-form d-flex flex-column justify-content-center align-items-center gap-1">
         <h1>Registrierung</h1>
 
         <label htmlFor="firstName">Vorname</label>

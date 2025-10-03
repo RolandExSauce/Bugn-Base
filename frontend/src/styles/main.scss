@@ -5,15 +5,12 @@
 @import "auth";
 @import "carousel";
 @import "cart";
+@import "responsive";
 
 body {
-  background-color: white;
+  background-color: rgb(245, 245, 245);
 }
 
 .main-div {
   padding: 0px 2vw;
-}
-
-th {
-  text-align: left;
 }

@@ -1,11 +1,23 @@
+@charset "UTF-8";
+:root {
+  --bs-primary: #4caf50; /* change primary (blue → green) */
+  --bs-secondary: #ff9800; /* change secondary (gray → orange) */
+}
+
+:root {
+  --bs-primary: #4caf50; /* change primary (blue → green) */
+  --bs-secondary: #ff9800; /* change secondary (gray → orange) */
+}
+
 .navbar {
   display: flex;
-  background-color: rgb(255, 168, 76);
+  background-color: rgb(255, 183, 107);
   height: 70px;
   width: auto;
   align-items: center;
   justify-content: space-between;
   padding: 0px 3rem;
+  box-shadow: 0px 0px 8px 3px rgba(0, 0, 0, 0.25);
 }
 
 .navbar-buttons {
@@ -51,6 +63,11 @@
   align-items: center;
   column-gap: 10px;
   font-size: 1.3rem;
+}
+
+:root {
+  --bs-primary: #4caf50; /* change primary (blue → green) */
+  --bs-secondary: #ff9800; /* change secondary (gray → orange) */
 }
 
 *,
@@ -123,11 +140,20 @@ button {
   border: 1px solid gray;
   border-radius: 5px;
   padding: 5px;
+  background: none;
 }
 
 button:hover {
   cursor: pointer;
-  background-color: rgb(255, 168, 76);
+}
+
+th {
+  text-align: left;
+}
+
+:root {
+  --bs-primary: #4caf50; /* change primary (blue → green) */
+  --bs-secondary: #ff9800; /* change secondary (gray → orange) */
 }
 
 .filter-sidebar {
@@ -136,19 +162,18 @@ button:hover {
 }
 
 .product-filter {
-  display: flex;
-  flex-direction: column;
-  row-gap: 30px;
-  height: 100vh;
-  padding-right: 3vw;
   border-right: 1px solid gray;
 }
 .product-filter fieldset {
   border: 1px solid gray;
   border-radius: 5px;
+  padding: 5px;
+  background-color: white;
 }
 .product-filter legend {
   font-size: 1.2rem;
+  border-bottom: 1px solid rgba(128, 128, 128, 0.322);
+  padding-bottom: 5px;
 }
 .product-filter fieldset select {
   background: none;
@@ -171,10 +196,34 @@ button:hover {
   margin-right: 10px;
 }
 
-.filter-actions {
+.filter-apply-button,
+.filter-reset-button {
   display: flex;
-  flex-direction: column;
-  row-gap: 10px;
+  column-gap: 10px;
+  font-size: 1.1rem;
+  background: none;
+  transition: 0.1s;
+  width: 100%;
+  justify-content: center;
+}
+.filter-apply-button img,
+.filter-reset-button img {
+  width: 30px;
+  aspect-ratio: 1/1;
+}
+
+.filter-apply-button {
+  color: green;
+}
+.filter-apply-button:hover {
+  filter: brightness(1.3);
+}
+
+.filter-reset-button {
+  color: rgb(220, 127, 27);
+}
+.filter-reset-button:hover {
+  filter: brightness(1.3);
 }
 
 .instrument-fieldset {
@@ -184,72 +233,38 @@ button:hover {
 }
 
 .listing-main {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  column-gap: 3vw;
-  padding-top: 5vh;
+  width: 250px;
+  flex-shrink: 0;
 }
 
-.listing-products {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  row-gap: 15px;
-  column-gap: 15px;
+.shop-item-container {
+  min-width: 250px;
+  max-width: 300px;
 }
 
-.product-item {
+.shop-item {
   border: 1px solid gray;
   border-radius: 5px;
-  padding: 5px;
-  display: flex;
-  flex-direction: column;
-  width: 200px;
+  flex-grow: 1;
   transition: 0.1s;
+  box-shadow: 0px 0px 10px 5px rgb(255, 221, 186);
 }
-.product-item:hover {
+.shop-item:hover {
   cursor: pointer;
   transform: scale(1.05);
 }
 
-.product-main {
-  padding-top: 5vh;
-  display: flex;
-  row-gap: 30px;
-  flex-direction: column;
+.shop-item-image {
+  width: 300px;
 }
+
 .product-main-top {
-  display: flex;
-  flex-direction: row;
-  column-gap: 30px;
-  height: 60vh;
-  width: 100%;
-}
-.product-main-top-left {
-  width: 50%;
-}
-.product-main-top-left img {
-  aspect-ratio: 1/1;
-  width: 100%;
-  height: 100%;
-}
-.product-main-top-right {
-  display: flex;
-  flex-direction: column;
-  width: 50%;
-  row-gap: 10px;
+  height: 75vh;
 }
 .product-main-bottom {
   display: flex;
   flex-direction: column;
   row-gap: 10px;
-}
-
-.product-main-top-right-name {
-  font-size: 3rem;
 }
 
 .review-main {
@@ -275,21 +290,31 @@ button:hover {
 .login-page {
   height: 100vh;
   width: 100%;
-  display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
 }
 
 .login-form {
-  border: 1px solid gray;
+  border: 1px solid rgb(220, 127, 27);
   padding: 30px;
   border-radius: 5px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  row-gap: 10px;
+  box-shadow: 0px 0px 8px 1px rgb(255, 221, 186);
+}
+.login-form h1 {
+  color: rgb(220, 127, 27);
+}
+.login-form input {
+  padding: 5px;
+  border-radius: 5px;
+  border: 1px solid rgb(220, 127, 27);
+}
+.login-form button {
+  padding: 5px 15px;
+  border-radius: 5px;
+  border: 1px solid rgb(220, 127, 27);
+}
+.login-form button:hover {
+  box-shadow: 0px 0px 8px 1px rgb(255, 221, 186);
 }
 
 .register-hint a {
@@ -299,46 +324,29 @@ button:hover {
   color: rgb(0, 0, 255);
 }
 
-.carousel_slider_container {
-  position: relative;
-  overflow: hidden;
-  width: 100%;
-  height: 100%;
-  border: 1px solid black;
-  background-color: blue;
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  overflow: hidden;
+:root {
+  --bs-primary: #4caf50; /* change primary (blue → green) */
+  --bs-secondary: #ff9800; /* change secondary (gray → orange) */
 }
+
 .carousel_slider_container div {
   opacity: 1;
-  transition: all 0.5s ease;
   width: 100%;
   height: 100%;
+  transition: all 0.5s ease;
   transition: opacity 1s ease;
-  position: absolute;
   display: flex;
 }
 .carousel_slider_container div img {
   width: 100%;
+  aspect-ratio: 1/1;
   flex-shrink: 0;
-  object-fit: cover;
 }
 .carousel_slider_container button {
-  position: absolute;
-  z-index: 10;
-  bottom: 0;
-  background-color: rgba(255, 255, 255, 0);
-  border: none;
-  width: 80px;
-  height: 100px;
-  opacity: 0.3;
-  border-radius: 10px;
+  transition: 0.1s;
 }
 .carousel_slider_container button:hover {
-  cursor: pointer;
-  background-color: rgba(255, 255, 255, 0.052);
+  transform: scale(1.1);
   opacity: 1;
 }
 .carousel_slider_container button:disabled {
@@ -380,13 +388,9 @@ button:hover {
 }
 
 body {
-  background-color: white;
+  background-color: rgb(245, 245, 245);
 }
 
 .main-div {
   padding: 0px 2vw;
-}
-
-th {
-  text-align: left;
 }
