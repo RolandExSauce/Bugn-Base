@@ -368,10 +368,15 @@ button:hover {
 
 .cart-listing {
   width: 100%;
-  background-color: orange;
+  border: 1px solid black;
 }
 .cart-listing table {
   width: 100%;
+}
+
+.cart-listing table tbody tr {
+  border: 1px solid red;
+  background-color: orange;
 }
 
 body {

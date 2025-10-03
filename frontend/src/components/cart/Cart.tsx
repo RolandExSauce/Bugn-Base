@@ -16,13 +16,18 @@ const Cart = () => {
             <tr>
               <td>
                 <img width="50px" height="50px" src="/g-1.jpg" alt="" />
+                Product 1
               </td>
               <td>2</td>
               <td>500 €</td>
               <td>1000 €</td>
             </tr>
             <tr>
-              <td>Klavier</td>
+              <td>
+                {" "}
+                <img width="50px" height="50px" src="/g-1.jpg" alt="" />
+                Product 2
+              </td>
               <td>1</td>
               <td>3000 €</td>
               <td>3000 €</td>
