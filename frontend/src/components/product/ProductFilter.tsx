@@ -2,10 +2,9 @@ export default function ProductFilter() {
   return (
     <aside className="filter-sidebar" aria-label="Produktfilter">
       <span className="filter-title">
-        {" "}
         <img src="/filter.svg" alt="" /> Filter
       </span>
-      <form className="product-filter" aria-describedby="filter-desc">
+      <form className="product-filter d-flex flex-column row-gap-3 h-100 pe-3 ">
         <fieldset className="instrument-fieldset">
           <legend>Instrumententyp</legend>
           <label>
@@ -39,7 +38,7 @@ export default function ProductFilter() {
 
         <fieldset>
           <legend>Preis</legend>
-          <label htmlFor="price-sort" className="sr-only"></label>
+          <label htmlFor="price-sort"></label>
           <select id="price-sort" name="priceSort" defaultValue="">
             <option value="">Keine Sortierung</option>
             <option value="asc">Aufsteigend</option>
@@ -61,21 +60,13 @@ export default function ProductFilter() {
                 Marke {i}
               </label>
             ))}
-            {/* render fetched brands here, e.g.
-            brands.length === 0 ? <p className="loading">Marken werden geladen…</p>
-            : brands.map(b => (
-                <label key={b}>
-                  <input type="checkbox" name="brand" value={b} /> {b}
-                </label>
-              ))
-        */}
           </div>
         </fieldset>
 
         <fieldset>
           <legend>Bewertung</legend>
-          <label htmlFor="rating" className="sr-only"></label>
-          <select id="rating" name="rating" defaultValue="">
+          <label htmlFor="rating"></label>
+          <select name="rating" defaultValue="">
             <option value="">Alle Bewertungen</option>
             <option value="5">★★★★★ (5)</option>
             <option value="4">★★★★☆ (4+)</option>
@@ -85,9 +76,14 @@ export default function ProductFilter() {
           </select>
         </fieldset>
 
-        <div className="filter-actions">
-          <button type="submit">Anwenden</button>
-          <button type="button" id="reset">
+        <div className="filter-actions d-flex flex-column row-gap-2 align-items-center ">
+          <button className="filter-apply-button" type="submit">
+            <img src="/apply-filter.svg" alt="Apply filter icon" />
+            Anwenden
+          </button>
+
+          <button className="filter-reset-button" type="button">
+            <img src="/filter-reset.svg" alt="Reset filter icon" />
             Zurücksetzen
           </button>
         </div>
