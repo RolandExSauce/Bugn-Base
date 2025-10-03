@@ -21,7 +21,7 @@ export default function App() {
           <Route path="/profile" element={<Profile />} />
           <Route path="/aboutus" element={<AboutUs />} />
           <Route path="/admin" element={<Admin />} />
-          <Route path="/auth" element={<Auth />} />
+          <Route path="/auth/:action" element={<Auth />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/contact" element={<Contact />} />

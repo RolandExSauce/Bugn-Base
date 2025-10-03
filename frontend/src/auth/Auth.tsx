@@ -1,13 +1,15 @@
-import { useLocation } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import Login from "../pages/Login";
 import Signup from "../pages/Register";
 
 export default function Auth() {
-  const location = useLocation();
+  const { action } = useParams();
 
-  if (location.pathname === "/login") {
+  console.log(action);
+
+  if (action === "login") {
     return <Login />;
-  } else if (location.pathname === "/signup") {
+  } else if (action === "signup") {
     return <Signup />;
   }
 

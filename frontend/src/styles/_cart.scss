@@ -1,0 +1,16 @@
+.cart-main {
+  padding: 3vh 3vw;
+}
+
+.cart-title {
+  font-size: 3rem;
+  margin-bottom: 3vh;
+}
+
+.cart-listing {
+  width: 100%;
+  background-color: orange;
+  & table {
+    width: 100%;
+  }
+}

@@ -2,6 +2,9 @@
 @import "navbar";
 @import "cssResets";
 @import "product";
+@import "auth";
+@import "carousel";
+@import "cart";
 
 body {
   background-color: white;
@@ -9,4 +12,8 @@ body {
 
 .main-div {
   padding: 0px 2vw;
+}
+
+th {
+  text-align: left;
 }

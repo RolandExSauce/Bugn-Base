@@ -4,23 +4,27 @@ import Searchbar from "./Searchbar";
 const NavBar = () => {
   return (
     <nav className="navbar">
-      <div className="navbar-logo">
+      <Link to="/" className="navbar-logo">
         <img width="50px" height="50px" src="/logo.png" alt="" />
         Bug'nBass
-      </div>
+      </Link>
       <Searchbar />
       <div className="navbar-buttons">
-        <Link to="/login">
-          <button className="navbar-button">Produkte</button>
+        <Link className="navbar-button" to="/listing">
+          <img src="/guitar.svg" alt="" />
+          <span>Produkte</span>
         </Link>
-        <Link to="/login">
-          <button className="navbar-button">Kontakt</button>
+        <Link className="navbar-button" to="/login">
+          <img src="/contact.svg" alt="" />
+          <span>Kontakt</span>
         </Link>
-        <Link to="/login">
-          <button className="navbar-button">Profil</button>
+        <Link className="navbar-button" to="/login">
+          <img src="/profile.svg" alt="" />
+          <span>Profil</span>
         </Link>
-        <Link to="/login">
-          <button className="navbar-button">Warenkorb</button>
+        <Link className="navbar-button" to="/cart">
+          <img src="/cart.svg" alt="" />
+          <span>Warenkorb</span>
         </Link>
       </div>
     </nav>
