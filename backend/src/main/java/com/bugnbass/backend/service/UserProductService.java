@@ -1,12 +1,11 @@
 package com.bugnbass.backend.service;
-
 import com.bugnbass.backend.dto.ProductFilter;
 import com.bugnbass.backend.exceptions.ProductNotFoundException;
 import com.bugnbass.backend.model.Product;
 import com.bugnbass.backend.repository.ProductRepository;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
+
 
 @Service
 public class UserProductService {
