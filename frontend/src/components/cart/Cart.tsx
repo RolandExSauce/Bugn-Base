@@ -1,49 +1,19 @@
+import CartItem from "./CartItem";
+
 const Cart = () => {
   return (
-    <div className="cart-main">
-      <span className="cart-title">Warenkorb</span>
+    <div className="cart-main d-flex flex-column row-gap-4 p-3">
+      <span className="cart-title fs-1">Warenkorb</span>
       <div className="cart-listing">
-        <table>
-          <thead>
-            <tr>
-              <th>Produkt</th>
-              <th>Menge</th>
-              <th>Einzelpreis</th>
-              <th>Gesamt</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>
-                <img width="50px" height="50px" src="/g-1.jpg" alt="" />
-                Product 1
-              </td>
-              <td>2</td>
-              <td>500 €</td>
-              <td>1000 €</td>
-            </tr>
-            <tr>
-              <td>
-                {" "}
-                <img width="50px" height="50px" src="/g-1.jpg" alt="" />
-                Product 2
-              </td>
-              <td>1</td>
-              <td>3000 €</td>
-              <td>3000 €</td>
-            </tr>
-          </tbody>
-          <tfoot>
-            <tr>
-              <td>
-                <strong>Summe</strong>
-              </td>
-              <td>
-                <strong>4000 €</strong>
-              </td>
-            </tr>
-          </tfoot>
-        </table>
+        {Array.from({ length: 3 }).map((_, i) => (
+          <CartItem key={i} />
+        ))}
+      </div>
+      <div className="cart-actions w-100 d-flex flex-column row-gap-3 align-items-end">
+        <span className="cart-total h3">Gesamt: 3000€</span>
+        <button className="bg-success text-white px-4 py-2 fs-4">
+          Zur Kasse
+        </button>
       </div>
     </div>
   );

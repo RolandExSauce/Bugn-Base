@@ -1,12 +1,16 @@
+$xs: 0px;
 $sm: 650px;
 $md: 950px;
+$lg: 1200px;
+$xl: 1400px;
+$xxl: 1600px;
 
-@mixin S {
+@mixin XS {
   @media (max-width: $sm) {
     @content;
   }
 }
-@mixin M {
+@mixin SM {
   @media (max-width: $md) {
     @content;
   }
@@ -14,6 +18,10 @@ $md: 950px;
 
 // bootstrap reassign
 $grid-breakpoints: (
+  xs: 0,
   sm: 650px,
   md: 950px,
-) !default;
+  lg: 1200px,
+  xl: 1400px,
+  xxl: 1600px,
+);
