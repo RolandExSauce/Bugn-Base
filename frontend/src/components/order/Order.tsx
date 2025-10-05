@@ -1,10 +1,10 @@
 import { useState } from "react";
 import CartItem from "../cart/CartItem";
-import type { Order as OrderDTO } from "../../types/models";
+// import type { Order as OrderDTO } from "../../types/models";
 
-interface OrderProps {
-  order: OrderDTO;
-}
+// interface OrderProps {
+//   order: OrderDTO;
+// }
 
 export function Order() {
   const [showDetails, setShowDetails] = useState(false);
@@ -44,7 +44,7 @@ export function Order() {
         </div>
 
         <button
-          className="btn btn-primary"
+          className="admin-details-button"
           onClick={() => setShowDetails(!showDetails)}
         >
           Details
