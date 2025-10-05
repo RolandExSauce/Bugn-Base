@@ -3,8 +3,8 @@ import Layout from "./Layout";
 import Homepage from "./pages/Home";
 import Profile from "./pages/user/UserProfil";
 import AboutUs from "./pages/About";
-import Admin from "./pages/admin/AdminPanel";
-import Auth from "./pages/admin/Auth";
+import AdminPanel from "./pages/admin/AdminPanel";
+import Auth from "./pages/Auth";
 import Cart from "./components/cart/Cart";
 import Checkout from "./components/cart/CheckOut";
 import Contact from "./pages/Contact";
@@ -20,7 +20,7 @@ export default function App() {
           <Route index element={<Homepage />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/aboutus" element={<AboutUs />} />
-          <Route path="/admin" element={<Admin />} />
+          <Route path="/admin" element={<AdminPanel />} />
           <Route path="/auth/:action" element={<Auth />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/checkout" element={<Checkout />} />

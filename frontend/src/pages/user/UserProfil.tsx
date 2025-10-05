@@ -1,6 +1,10 @@
+import { useState } from "react";
 import { Order } from "../../components/order/Order";
+import { Link } from "react-router-dom";
 
 const UserProfil = () => {
+  const [isAdmin, setIsAdmin] = useState(true);
+
   return (
     <div className="d-flex flex-column container py-4">
       <h1 className="mb-4">Mein Profil</h1>
@@ -22,10 +26,18 @@ const UserProfil = () => {
           <input type="text" className="form-control" placeholder="Adresse" />
           <input type="text" className="form-control" placeholder="PLZ" />
         </div>
-        <div className="d-flex justify-content-end">
+        <div className="d-flex flex-column align-items-end">
           <button className="profile-save-button text-white px-4 py-2 fw-bold h4">
             Speichern
           </button>
+          {isAdmin && (
+            <Link
+              to="/admin"
+              className="profile-save-button bg-success rounded text-white px-4 py-2 fw-bold h4"
+            >
+              zur Adminseite
+            </Link>
+          )}
         </div>
       </form>
 
