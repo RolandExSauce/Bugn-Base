@@ -1,4 +1,4 @@
-const CartItem = () => {
+const CartItem = ({ editable }: { editable: boolean }) => {
   return (
     <div className="d-flex align-items-center justify-content-between border rounded p-3 mb-3 flex-md-row flex-column">
       <div className="d-flex align-items-center column-gap-3">
@@ -28,9 +28,11 @@ const CartItem = () => {
         <div className="text-secondary">Gesamt</div>
         <div>1000 €</div>
       </div>
-      <button className="cart-remove-item-button bg-danger text-white px-4 py-2">
-        Entfernen
-      </button>
+      {editable && (
+        <button className="cart-remove-item-button bg-danger text-white px-4 py-2">
+          Entfernen
+        </button>
+      )}
     </div>
   );
 };

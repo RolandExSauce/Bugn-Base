@@ -6,7 +6,7 @@ const Cart = () => {
       <span className="cart-title fs-1">Warenkorb</span>
       <div className="cart-listing">
         {Array.from({ length: 3 }).map((_, i) => (
-          <CartItem key={i} />
+          <CartItem editable={true} key={i} />
         ))}
       </div>
       <div className="cart-actions w-100 d-flex flex-column row-gap-3 align-items-end">

@@ -444,6 +444,19 @@ th {
   color: rgb(220, 127, 27);
 }
 
+:root {
+  --bs-primary: #4caf50; /* change primary (blue → green) */
+  --bs-secondary: #ff9800; /* change secondary (gray → orange) */
+}
+
+.profile-save-button {
+  background-color: rgb(255, 183, 107);
+  transition: 0.1s;
+}
+.profile-save-button:hover {
+  filter: brightness(1.07);
+}
+
 body {
   background-color: rgb(245, 245, 245);
 }
