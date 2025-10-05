@@ -52,10 +52,25 @@ export function Order() {
       </div>
 
       {showDetails && (
-        <div className="mt-3 border-top pt-3 d-flex flex-column gap-2">
-          <CartItem editable={false} />
-          <CartItem editable={false} />
-          <CartItem editable={false} />
+        <div className="d-flex flex-column row-gap-3 mt-3">
+          <div>
+            <button className="cart-remove-item-button bg-danger text-white px-4 py-2">
+              Retournieren
+            </button>
+          </div>
+          <div className="d-flex flex-column row-gap-2">
+            <span className="fw-bold border-bottom">Lieferadresse:</span>
+            <span>
+              Lorem street <br /> Ipsum City <br /> Doloria
+            </span>
+          </div>
+          <div className="mt-3 border-top pt-3 d-flex flex-column gap-2 ">
+            <span className="fw-bold h5 text--primary">Bestellte Artikel:</span>
+
+            <CartItem editable={false} />
+            <CartItem editable={false} />
+            <CartItem editable={false} />
+          </div>
         </div>
       )}
     </div>

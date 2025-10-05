@@ -1,12 +1,21 @@
-@charset "UTF-8";
 :root {
-  --bs-primary: #4caf50; /* change primary (blue → green) */
-  --bs-secondary: #ff9800; /* change secondary (gray → orange) */
+  --bs-primary: #4caf50;
+  --bs-primary-text: rgb(220, 127, 27);
+  --bs-secondary: #ff9800;
+}
+
+.text--primary {
+  color: rgb(220, 127, 27);
 }
 
 :root {
-  --bs-primary: #4caf50; /* change primary (blue → green) */
-  --bs-secondary: #ff9800; /* change secondary (gray → orange) */
+  --bs-primary: #4caf50;
+  --bs-primary-text: rgb(220, 127, 27);
+  --bs-secondary: #ff9800;
+}
+
+.text--primary {
+  color: rgb(220, 127, 27);
 }
 
 .navbar {
@@ -102,8 +111,13 @@
 }
 
 :root {
-  --bs-primary: #4caf50; /* change primary (blue → green) */
-  --bs-secondary: #ff9800; /* change secondary (gray → orange) */
+  --bs-primary: #4caf50;
+  --bs-primary-text: rgb(220, 127, 27);
+  --bs-secondary: #ff9800;
+}
+
+.text--primary {
+  color: rgb(220, 127, 27);
 }
 
 *,
@@ -188,8 +202,13 @@ th {
 }
 
 :root {
-  --bs-primary: #4caf50; /* change primary (blue → green) */
-  --bs-secondary: #ff9800; /* change secondary (gray → orange) */
+  --bs-primary: #4caf50;
+  --bs-primary-text: rgb(220, 127, 27);
+  --bs-secondary: #ff9800;
+}
+
+.text--primary {
+  color: rgb(220, 127, 27);
 }
 
 .filter-sidebar {
@@ -377,8 +396,13 @@ th {
 }
 
 :root {
-  --bs-primary: #4caf50; /* change primary (blue → green) */
-  --bs-secondary: #ff9800; /* change secondary (gray → orange) */
+  --bs-primary: #4caf50;
+  --bs-primary-text: rgb(220, 127, 27);
+  --bs-secondary: #ff9800;
+}
+
+.text--primary {
+  color: rgb(220, 127, 27);
 }
 
 .carousel_slider_container div {
@@ -445,8 +469,13 @@ th {
 }
 
 :root {
-  --bs-primary: #4caf50; /* change primary (blue → green) */
-  --bs-secondary: #ff9800; /* change secondary (gray → orange) */
+  --bs-primary: #4caf50;
+  --bs-primary-text: rgb(220, 127, 27);
+  --bs-secondary: #ff9800;
+}
+
+.text--primary {
+  color: rgb(220, 127, 27);
 }
 
 .profile-save-button {
