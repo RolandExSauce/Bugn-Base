@@ -8,6 +8,10 @@
   color: rgb(220, 127, 27);
 }
 
+.text--secondary {
+  color: rgb(255, 183, 107);
+}
+
 :root {
   --bs-primary: #4caf50;
   --bs-primary-text: rgb(220, 127, 27);
@@ -16,6 +20,10 @@
 
 .text--primary {
   color: rgb(220, 127, 27);
+}
+
+.text--secondary {
+  color: rgb(255, 183, 107);
 }
 
 .navbar {
@@ -120,6 +128,10 @@
   color: rgb(220, 127, 27);
 }
 
+.text--secondary {
+  color: rgb(255, 183, 107);
+}
+
 *,
 *::before,
 *::after {
@@ -201,6 +213,14 @@ th {
   text-align: left;
 }
 
+.select-no-arrow {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background: none;
+  padding-right: 0.5rem;
+}
+
 :root {
   --bs-primary: #4caf50;
   --bs-primary-text: rgb(220, 127, 27);
@@ -209,6 +229,10 @@ th {
 
 .text--primary {
   color: rgb(220, 127, 27);
+}
+
+.text--secondary {
+  color: rgb(255, 183, 107);
 }
 
 .filter-sidebar {
@@ -405,6 +429,10 @@ th {
   color: rgb(220, 127, 27);
 }
 
+.text--secondary {
+  color: rgb(255, 183, 107);
+}
+
 .carousel_slider_container div {
   opacity: 1;
   width: 100%;
@@ -478,12 +506,47 @@ th {
   color: rgb(220, 127, 27);
 }
 
+.text--secondary {
+  color: rgb(255, 183, 107);
+}
+
 .profile-save-button {
   background-color: rgb(255, 183, 107);
   transition: 0.1s;
 }
 .profile-save-button:hover {
   filter: brightness(1.07);
+}
+
+:root {
+  --bs-primary: #4caf50;
+  --bs-primary-text: rgb(220, 127, 27);
+  --bs-secondary: #ff9800;
+}
+
+.text--primary {
+  color: rgb(220, 127, 27);
+}
+
+.text--secondary {
+  color: rgb(255, 183, 107);
+}
+
+.admin-nav-button--selected {
+  border-radius: 5px;
+  background-color: rgb(220, 127, 27);
+  color: white;
+}
+
+.admin-nav-button {
+  border: 1px solid rgb(220, 127, 27);
+  border-radius: 5px;
+}
+
+.admin-details-button {
+  background-color: rgb(255, 183, 107);
+  color: white;
+  font-weight: 700;
 }
 
 body {

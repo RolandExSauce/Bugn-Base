@@ -79,3 +79,11 @@ button:hover {
 th {
   text-align: left;
 }
+
+.select-no-arrow {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background: none;
+  padding-right: 0.5rem;
+}
