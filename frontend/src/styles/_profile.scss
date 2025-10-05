@@ -1,0 +1,9 @@
+@import "variables";
+
+.profile-save-button {
+  background-color: $primary-accent;
+  transition: 0.1s;
+  &:hover {
+    filter: brightness(1.07);
+  }
+}

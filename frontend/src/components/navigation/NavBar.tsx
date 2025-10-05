@@ -1,7 +1,14 @@
 import { Link } from "react-router-dom";
 import Searchbar from "./Searchbar";
+import { useRef } from "react";
 
 const NavBar = () => {
+  const navbarButtonsRef = useRef<HTMLDivElement>(null);
+
+  const toggleSidemenu = () => {
+    navbarButtonsRef.current?.classList.toggle("navbar-buttons--active");
+  };
+
   const auth = true;
   return (
     <nav className="navbar">
@@ -10,7 +17,7 @@ const NavBar = () => {
         Bug'nBass
       </Link>
       <Searchbar />
-      <div className="navbar-buttons">
+      <div ref={navbarButtonsRef} className="navbar-buttons">
         <Link className="navbar-button" to="/listing">
           <img src="/guitar.svg" alt="" />
           <span>Produkte</span>
@@ -34,6 +41,9 @@ const NavBar = () => {
           </Link>
         )}
       </div>
+      <button onClick={toggleSidemenu} className="navbar-burger">
+        <img src="/burger.svg" alt="" />
+      </button>
     </nav>
   );
 };

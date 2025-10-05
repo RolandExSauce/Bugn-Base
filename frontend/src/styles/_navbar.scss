@@ -1,4 +1,5 @@
 @import "variables";
+@import "responsive";
 
 .navbar {
   display: flex;
@@ -9,21 +10,40 @@
   justify-content: space-between;
   padding: 0px 3rem;
   box-shadow: 0px 0px 8px 3px rgba(0, 0, 0, 0.25);
+  column-gap: 40px;
+  @include SM {
+    padding: 0px 1rem;
+  }
 }
 
 .navbar-buttons {
   display: flex;
   column-gap: 10px;
+  @include SM {
+    position: absolute;
+    top: 70px;
+    right: 0;
+    padding: 30px 0px;
+    row-gap: 10px;
+    flex-direction: column;
+    width: 100px;
+    background-color: $secondary-accent;
+    align-items: center;
+    transform: translateX(100%);
+    transition: transform 0.3s ease-in;
+    &--active {
+      transform: translateX(0);
+    }
+  }
 }
 
 .navbar-button {
   background: none;
-  border: none;
+  border: 1px solid rgba(0, 0, 0, 0);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  border: 1px solid rgba(255, 255, 255, 0);
   padding: 5px;
   & img {
     width: 30px;
@@ -44,9 +64,11 @@
 }
 
 .searchbar-input {
-  width: clamp(300px, 50%, 600px);
   border-radius: 5px;
   border: 1px solid rgb(120, 120, 120);
+  width: 100%;
+  font-size: 1.2rem;
+  padding: 5px;
 }
 
 .navbar-logo {
@@ -54,4 +76,13 @@
   align-items: center;
   column-gap: 10px;
   font-size: 1.3rem;
+}
+
+.navbar-burger {
+  display: none;
+  @include SM {
+    display: block;
+    width: 40px;
+    aspect-ratio: 1;
+  }
 }
