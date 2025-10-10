@@ -4,7 +4,7 @@ import com.bugnbass.backend.model.enums.UserRole;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Collection;
 import java.util.List;
@@ -22,8 +22,14 @@ public class User implements IBaseUser {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    String name;
+    @Column
     String email;
+
+    @Column
+    String username;
+
+    @Column
+    String password;
 
     @Enumerated(EnumType.STRING)
     UserRole role = UserRole.ROLE_USER;
@@ -42,4 +48,8 @@ public class User implements IBaseUser {
     public String getUsername() {
         return "";
     }
+
+    public void encodePw(String plainPw, PasswordEncoder encoder){
+        this.password = encoder.encode(plainPw);
+    };
 };

@@ -1,5 +1,4 @@
 package com.bugnbass.backend.config;
-
 import com.bugnbass.backend.model._interface.IBaseUser;
 import com.bugnbass.backend.repository.AdminRepository;
 import com.bugnbass.backend.repository.UserRepository;
@@ -21,7 +20,7 @@ public class CustUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         // Try to find the user in the user repository
-        IBaseUser user = userRepository.findByUsername(username)
+        return userRepository.findByUsername(username)
                 .map(u -> (IBaseUser) u)
                 .orElseGet(() -> adminRepository.findByUsername(username)
                         .map(a -> (IBaseUser) a)
@@ -29,7 +28,5 @@ public class CustUserDetailsService implements UserDetailsService {
                                 new UsernameNotFoundException("User not found with email: " + username)
                         )
                 );
-
-        return user; // BaseUser implements UserDetails, so this is valid
-    }
-}
+    };
+};

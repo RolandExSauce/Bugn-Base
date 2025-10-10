@@ -7,6 +7,5 @@ import java.util.Collection;
 import java.util.List;
 
 public interface IBaseUser extends UserDetails {
-
-
-}
+    String getEmail();
+};
