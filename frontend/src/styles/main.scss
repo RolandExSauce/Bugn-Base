@@ -16,3 +16,12 @@ body {
 .main-div {
   padding: 0px 2vw;
 }
+
+.footer-link {
+  color: $primary-light;
+  z-index: 100;
+  &:hover {
+    color: $primary-accent;
+    cursor: pointer;
+  }
+}
