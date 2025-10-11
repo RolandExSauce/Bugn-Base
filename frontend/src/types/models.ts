@@ -42,9 +42,20 @@ export interface Cart {
 export interface Order {
   id: string;
   user: User;
-  items: CartItem[];
-  status: "pending" | "shipped" | "delivered" | "cancelled";
-  createdAt: string;
+  orderDate: Date;
+  totalAmount: number;
+  deliveryFullname: string;
+  deliveryAddress: string;
+  deliveryPostcode: number;
+  paymentMethod: PaymentMethod;
+  items: OrderItem[];
+  deliveryStatus: DeliveryStatus;
 }
 
 export type ItemCategory = "piano" | "guitar" | "violin";
+
+export type PaymentMethod = "creditcard" | "transfer";
+
+export type DeliveryStatus = "pending" | "shipped" | "delivered" | "cancelled";
+
+type OrderItem = { product: Product; quantity: number };

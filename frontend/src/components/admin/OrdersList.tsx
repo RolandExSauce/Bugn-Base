@@ -1,57 +1,30 @@
-import { Order } from "../order/Order";
+import { mockOrder } from "../../types/temp/PlaceholderData";
+import type { Order as OrderType } from "../../types/models";
+import FullOrder from "../../components/admin/FullOrder";
 
 export default function OrderList() {
+  const orders: OrderType[] = Array.from({ length: 3 }, () => mockOrder);
+
   return (
     <div className="table-responsive">
       <table className="table table-bordered">
         <thead>
           <tr>
-            <th>Bestellung</th>
+            <th>Bestellnummer</th>
             <th>Kunde</th>
             <th>Datum</th>
+            <th>Gesamtbetrag</th>
+            <th>Lieferadresse</th>
             <th>Status</th>
-            <th>Aktion</th>
+            <th>Zahlungsmethode</th>
+            <th>Bestellte Artikel</th>
+            <th>Aktionen</th>
           </tr>
         </thead>
         <tbody>
-          <td>
-            <Order />
-          </td>
-          <td>Kundenname</td>
-          <td>Status</td>
-          <td>Kundenname</td>
-          <td className="d-flex gap-2">
-            <select className="form-select select-no-arrow ">
-              <option value="pending">pending</option>
-              <option value="shipped">shipped</option>
-              <option value="delivered">delivered</option>
-            </select>
-            <button className=" btn-danger">Stornieren</button>
-          </td>
-        </tbody>
-        <tbody>
-          <td>
-            <Order />
-          </td>
-          <td>Kundenname</td>
-          <td>Status</td>
-          <td>Kundenname</td>
-          <td className="d-flex gap-2">
-            <button className=" btn-success">Nächste</button>
-            <button className=" btn-danger">Stornieren</button>
-          </td>
-        </tbody>
-        <tbody>
-          <td>
-            <Order />
-          </td>
-          <td>Kundenname</td>
-          <td>Status</td>
-          <td>Kundenname</td>
-          <td className="d-flex gap-2">
-            <button className=" btn-success">Nächste</button>
-            <button className=" btn-danger">Stornieren</button>
-          </td>
+          {orders.map((order, i) => {
+            return <FullOrder key={i} order={order} />;
+          })}
         </tbody>
       </table>
     </div>

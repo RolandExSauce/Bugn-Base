@@ -1,5 +1,5 @@
 import { useState } from "react";
-import FullProduct from "./FullProduct";
+import FullProduct from "../../components/admin/FullProduct";
 import { mockProduct } from "../../types/temp/PlaceholderData";
 import type { Product } from "../../types/models";
 
@@ -23,7 +23,8 @@ export default function ProductsList() {
   return (
     <div className="d-flex flex-column">
       <button
-        className="btn bg-success mb-3"
+        className="btn bg-success mb-3 text-white fw-bold fs-3"
+        style={{ height: "60px" }}
         onClick={() => setShowNewForm((prev) => !prev)}
       >
         Add Product

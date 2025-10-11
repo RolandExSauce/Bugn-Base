@@ -1,8 +1,8 @@
-import type { Product, User } from "../models";
+import type { Order, Product, User } from "../models";
 
 export const mockProduct: Product = {
   id: "1",
-  name: "Product name",
+  name: "Placeholder product name",
   category: "guitar",
   description: `Lorem ipsum dolor sit, amet consectetur adipisicing elit. Enim
     dolor, doloribus fuga temporibus aspernatur odio rerum error labore
@@ -29,4 +29,20 @@ export const mockUser: User = {
   active: true,
   createdAt: new Date(),
   role: "USER",
+};
+
+export const mockOrder: Order = {
+  id: "ORD1001",
+  user: mockUser,
+  orderDate: new Date("2025-10-11T14:00:00"),
+  totalAmount: mockProduct.price * 3 + mockProduct.shippingCost * 3, // example total
+  deliveryFullname: "John Doe",
+  deliveryAddress: "123 Main Street",
+  deliveryPostcode: 10115,
+  paymentMethod: "creditcard",
+  deliveryStatus: "pending",
+  items: [
+    { product: mockProduct, quantity: 2 },
+    { product: mockProduct, quantity: 1 },
+  ],
 };
