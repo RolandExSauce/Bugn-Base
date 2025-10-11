@@ -1,0 +1,57 @@
+# ====================
+# Global
+# ====================
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Node / frontend
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+dist/
+build/
+.vscode/
+
+# Java / backend
+*.class
+*.jar
+*.war
+*.ear
+*.iml
+*.log
+target/
+out/
+bin/
+
+# IntelliJ IDEA
+.idea/
+*.iws
+*.ipr
+
+# Eclipse
+.settings/
+*.launch
+*.classpath
+*.project
+
+# VSCode
+.vscode/
+
+# Temporary files
+*.tmp
+*.swp
+*.swo
+*~
+
+# Environment files
+.env
+.env.local
+.env.*.local
