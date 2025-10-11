@@ -1,16 +1,15 @@
-// User.tsx
 import { useState, useEffect } from "react";
 import type { User } from "../../types/models";
+import AdminService from "../../services/admin/admin.service";
 
 interface UserProps {
   user: User;
-  onUpdate: (updated: User) => void;
 }
 
-const UserRow = ({ user, onUpdate }: UserProps) => {
+const UserRow = ({ user }: UserProps) => {
   const [form, setForm] = useState<User>(user);
 
-  useEffect(() => setForm(user), [user]); // sync if parent updates user
+  useEffect(() => setForm(user), [user]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -23,7 +22,13 @@ const UserRow = ({ user, onUpdate }: UserProps) => {
       setForm({ ...form, [name]: value });
     }
   };
-  const handleSave = () => onUpdate(form);
+  const handleSave = () => {
+    AdminService.updateUser(form);
+  };
+
+  const handleDelete = () => {
+    AdminService.deleteUser(form.id);
+  };
 
   return (
     <tr>
