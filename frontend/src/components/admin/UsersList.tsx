@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import UserRow from "./User";
 import type { User } from "../../types/models";
+import { mockUser } from "../../types/temp/PlaceholderData";
 
 const UsersList = () => {
   const [users, setUsers] = useState<User[]>([]);
@@ -9,25 +10,15 @@ const UsersList = () => {
   // placeholder
   useEffect(() => {
     setUsers([
-      {
-        id: "1",
-        firstname: "Alice",
-        lastname: "Smith",
-        phone: "12345",
-        address: "Street 1",
-        postcode: 1000,
-        email: "alice@mail.com",
-        active: true,
-        createdAt: new Date(),
-        role: "USER",
-      },
+      mockUser,
+      mockUser,
+      mockUser,
+      mockUser,
+      mockUser,
+      mockUser,
+      mockUser,
     ]);
   }, []);
-
-  const handleUpdate = (updated: User) => {
-    setUsers((prev) => prev.map((u) => (u.id === updated.id ? updated : u)));
-    // later send PUT request to backend here
-  };
 
   return (
     <table className="table table-striped">
@@ -47,7 +38,7 @@ const UsersList = () => {
       </thead>
       <tbody>
         {users.map((u) => (
-          <UserRow key={u.id} user={u} onUpdate={handleUpdate} />
+          <UserRow key={u.id} user={u} />
         ))}
       </tbody>
     </table>
