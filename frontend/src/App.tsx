@@ -6,7 +6,7 @@ import AboutUs from "./pages/About";
 import AdminPanel from "./pages/admin/AdminPanel";
 import Auth from "./pages/Auth";
 import Cart from "./components/cart/Cart";
-import Checkout from "./components/cart/CheckOut";
+import Checkout from "./pages/Checkout";
 import Contact from "./pages/Contact";
 import Listing from "./pages/Listing";
 import Orders from "./pages/Orders";

@@ -54,7 +54,7 @@ export interface Order {
 
 export type ItemCategory = "piano" | "guitar" | "violin";
 
-export type PaymentMethod = "creditcard" | "transfer";
+export type PaymentMethod = "creditcard" | "paypal" | "receipt";
 
 export type DeliveryStatus = "pending" | "shipped" | "delivered" | "cancelled";
 
