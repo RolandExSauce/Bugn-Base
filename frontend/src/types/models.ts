@@ -1,8 +1,14 @@
 // User
 export interface User {
   id: string;
-  name: string;
+  firstname: string;
+  lastname: string;
+  phone: string;
+  address: string;
+  postcode: number;
   email: string;
+  active: boolean;
+  createdAt: Date;
   role: "USER" | "ADMIN";
 }
 

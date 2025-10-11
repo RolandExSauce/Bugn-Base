@@ -1,4 +1,4 @@
-const AdminProduct = ({ editable }: { editable: boolean }) => {
+const FullProduct = ({ editable }: { editable: boolean }) => {
   return (
     <div className="d-flex align-items-center justify-content-between border rounded p-3 mb-3 flex-md-row flex-column">
       <div className="d-flex align-items-center column-gap-3">
@@ -36,4 +36,4 @@ const AdminProduct = ({ editable }: { editable: boolean }) => {
     </div>
   );
 };
-export default AdminProduct;
+export default FullProduct;
