@@ -20,16 +20,16 @@ public class AuthController {
         this.authService = authService;
     };
 
-    @PostMapping
+    @PostMapping("/register")
     public AuthResponse login(@Valid @RequestBody LoginDTO loginDTO) {
 
-        return authService.login(loginDTO);
+        return authService.handleLogin(loginDTO);
     };
 
-    @PostMapping
+    @PostMapping("/login")
     public AuthResponse regsiter(@Valid @RequestBody RegisterDTO registerDTO) {
 
-        return authService.register(registerDTO);
+        return authService.handleRegister(registerDTO);
     };
 
 }

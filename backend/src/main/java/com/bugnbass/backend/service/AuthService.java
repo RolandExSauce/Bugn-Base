@@ -45,7 +45,7 @@ public class AuthService {
         this.passwordEncoder = passwordEncoder;
     };
 
-    public AuthResponse login(LoginDTO loginDTO) {
+    public AuthResponse handleLogin(LoginDTO loginDTO) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         loginDTO.username(),
@@ -66,7 +66,7 @@ public class AuthService {
     };
 
 
-    public AuthResponse register(RegisterDTO registerDTO) {
+    public AuthResponse handleRegister(RegisterDTO registerDTO) {
 
         UserRole userRole = registerDTO.role();
 
