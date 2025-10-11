@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import CartItem from "./CartItem";
 
 const Cart = () => {
@@ -11,9 +12,9 @@ const Cart = () => {
       </div>
       <div className="cart-actions w-100 d-flex flex-column row-gap-3 align-items-end">
         <span className="cart-total h3">Gesamt: 3000€</span>
-        <button className="bg-success text-white px-4 py-2 fs-4">
+        <Link to="/checkout" className="bg-success text-white px-4 py-2 fs-4">
           Zur Kasse
-        </button>
+        </Link>
       </div>
     </div>
   );
