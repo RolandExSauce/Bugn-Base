@@ -8,20 +8,25 @@
 @import "responsive";
 @import "profile";
 @import "admin";
+@import "home";
 
 body {
-  background-color: rgb(245, 245, 245);
+  background-color: lighten($primary-light, 13%);
 }
 
 .main-div {
   padding: 0px 2vw;
+  min-height: calc(100vh - 70px - 50px); // 70px: navbar, 50px: footer
 }
 
-.footer-link {
-  color: $primary-light;
-  z-index: 100;
-  &:hover {
-    color: $primary-accent;
-    cursor: pointer;
+.footer {
+  height: 50px;
+  & a {
+    color: $primary-light;
+    z-index: 100;
+    &:hover {
+      color: $primary-accent;
+      cursor: pointer;
+    }
   }
 }
