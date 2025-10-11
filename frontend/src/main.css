@@ -563,19 +563,51 @@ th {
   filter: brightness(1.2);
 }
 
+:root {
+  --bs-primary: #4caf50;
+  --bs-primary-text: rgb(220, 127, 27);
+  --bs-secondary: #ff9800;
+}
+
+.text--primary {
+  color: rgb(220, 127, 27);
+}
+
+.text--secondary {
+  color: rgb(255, 183, 107);
+}
+
+.homepage-main h1 {
+  color: rgb(220, 127, 27);
+  font-size: 5rem;
+}
+.homepage-main a {
+  background-color: rgb(220, 127, 27) !important;
+  border: 1px solid rgb(220, 127, 27);
+  font-size: 2rem;
+  transition: 0.1s;
+}
+.homepage-main a:hover {
+  filter: brightness(1.2);
+}
+
 body {
-  background-color: rgb(245, 245, 245);
+  background-color: rgb(255, 253.6695652174, 252.3);
 }
 
 .main-div {
   padding: 0px 2vw;
+  min-height: calc(100vh - 70px - 50px);
 }
 
-.footer-link {
+.footer {
+  height: 50px;
+}
+.footer a {
   color: rgb(255, 221, 186);
   z-index: 100;
 }
-.footer-link:hover {
+.footer a:hover {
   color: rgb(255, 183, 107);
   cursor: pointer;
 }
