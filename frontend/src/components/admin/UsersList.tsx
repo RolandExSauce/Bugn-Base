@@ -1,34 +1,57 @@
+// UsersList.tsx
+import { useState, useEffect } from "react";
+import UserRow from "./User";
+import type { User } from "../../types/models";
+
 const UsersList = () => {
+  const [users, setUsers] = useState<User[]>([]);
+
+  // placeholder
+  useEffect(() => {
+    setUsers([
+      {
+        id: "1",
+        firstname: "Alice",
+        lastname: "Smith",
+        phone: "12345",
+        address: "Street 1",
+        postcode: 1000,
+        email: "alice@mail.com",
+        active: true,
+        createdAt: new Date(),
+        role: "USER",
+      },
+    ]);
+  }, []);
+
+  const handleUpdate = (updated: User) => {
+    setUsers((prev) => prev.map((u) => (u.id === updated.id ? updated : u)));
+    // later send PUT request to backend here
+  };
+
   return (
-    <div className="d-flex flex-column gap-3">
-      <div className="border rounded p-3 d-flex justify-content-between align-items-center">
-        <div>
-          <div>
-            <strong>Name</strong>
-          </div>
-          <div>email@mail.ma</div>
-          <div>Rolle: Admin</div>
-        </div>
-      </div>
-      <div className="border rounded p-3 d-flex justify-content-between align-items-center">
-        <div>
-          <div>
-            <strong>Name</strong>
-          </div>
-          <div>email@mail.ma</div>
-          <div>Rolle: Admin</div>
-        </div>
-      </div>
-      <div className="border rounded p-3 d-flex justify-content-between align-items-center">
-        <div>
-          <div>
-            <strong>Name</strong>
-          </div>
-          <div>email@mail.ma</div>
-          <div>Rolle: Admin</div>
-        </div>
-      </div>
-    </div>
+    <table className="table table-striped">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Firstname</th>
+          <th>Lastname</th>
+          <th>Phone</th>
+          <th>Address</th>
+          <th>Postcode</th>
+          <th>Email</th>
+          <th>Active</th>
+          <th>Role</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {users.map((u) => (
+          <UserRow key={u.id} user={u} onUpdate={handleUpdate} />
+        ))}
+      </tbody>
+    </table>
   );
 };
+
 export default UsersList;
