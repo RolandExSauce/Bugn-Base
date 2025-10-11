@@ -549,6 +549,20 @@ th {
   font-weight: 700;
 }
 
+.admin-user-action-button {
+  border: 1px solid rgba(105, 4, 4, 0);
+}
+.admin-user-action-button:hover {
+  cursor: pointer;
+  border: 1px solid rgb(86, 86, 86);
+  border-radius: 5px;
+  background-color: rgb(255, 183, 107);
+}
+
+.admin-product-add-button:hover {
+  filter: brightness(1.2);
+}
+
 body {
   background-color: rgb(245, 245, 245);
 }

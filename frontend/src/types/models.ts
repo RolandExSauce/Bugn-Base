@@ -16,9 +16,14 @@ export interface User {
 export interface Product {
   id: string;
   name: string;
+  category: ItemCategory;
+  description: string;
   price: number;
-  stock: number;
-  imageUrl?: string;
+  shippingCost: number;
+  brand: string;
+  stockStatus: boolean;
+  shippingTime: number;
+  active: boolean;
 }
 
 // Cart
@@ -41,3 +46,5 @@ export interface Order {
   status: "pending" | "shipped" | "delivered" | "cancelled";
   createdAt: string;
 }
+
+export type ItemCategory = "piano" | "guitar" | "violin";

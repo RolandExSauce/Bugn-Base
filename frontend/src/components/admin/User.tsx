@@ -54,8 +54,22 @@ const UserRow = ({ user }: UserProps) => {
         </select>
       </td>
       <td>
-        <button onClick={handleSave}>Update</button>
-        <button onClick={handleDelete}>Delete</button>
+        <button className="admin-user-action-button" onClick={handleSave}>
+          <img
+            width="25px"
+            height="25px"
+            src="/update.svg"
+            alt="Update user button icon"
+          />
+        </button>
+        <button className="admin-user-action-button" onClick={handleDelete}>
+          <img
+            width="25px"
+            height="25px"
+            src="/delete.svg"
+            alt="Delete user button icon"
+          />
+        </button>
       </td>
     </tr>
   );
