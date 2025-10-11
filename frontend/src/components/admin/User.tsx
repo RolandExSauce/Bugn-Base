@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import type { User } from "../../types/models";
 import AdminService from "../../services/admin/admin.service";
+import AdminDeleteButton from "../common/AdminDeleteButton";
+import AdminUpdateButton from "../common/AdminUpdateButton";
 
 interface UserProps {
   user: User;
@@ -54,22 +56,8 @@ const UserRow = ({ user }: UserProps) => {
         </select>
       </td>
       <td>
-        <button className="admin-user-action-button" onClick={handleSave}>
-          <img
-            width="25px"
-            height="25px"
-            src="/update.svg"
-            alt="Update user button icon"
-          />
-        </button>
-        <button className="admin-user-action-button" onClick={handleDelete}>
-          <img
-            width="25px"
-            height="25px"
-            src="/delete.svg"
-            alt="Delete user button icon"
-          />
-        </button>
+        <AdminUpdateButton action={handleSave} />
+        <AdminDeleteButton action={handleDelete} />
       </td>
     </tr>
   );

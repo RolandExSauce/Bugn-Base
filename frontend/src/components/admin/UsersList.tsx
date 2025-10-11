@@ -1,6 +1,6 @@
 // UsersList.tsx
 import { useState, useEffect } from "react";
-import UserRow from "./User";
+import UserRow from "../../components/admin/User";
 import type { User } from "../../types/models";
 import { mockUser } from "../../types/temp/PlaceholderData";
 

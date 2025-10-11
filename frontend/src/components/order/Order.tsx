@@ -1,31 +1,9 @@
 import { useState } from "react";
 import CartItem from "../cart/CartItem";
-// import type { Order as OrderDTO } from "../../types/models";
+import type { Order } from "../../types/models";
 
-// interface OrderProps {
-//   order: OrderDTO;
-// }
-
-export function Order() {
+export function Order({ order }: { order: Order }) {
   const [showDetails, setShowDetails] = useState(false);
-
-  const order = {
-    id: "123",
-    user: {
-      firstName: "John",
-      lastName: "Doe",
-    },
-    items: [
-      {
-        id: "123",
-        name: "Product 1",
-        amount: 1,
-        price: 100,
-      },
-    ],
-    createdAt: new Date().toISOString(),
-    status: "pending",
-  };
 
   return (
     <div className="border rounded p-3 mb-3">
@@ -36,10 +14,10 @@ export function Order() {
           </div>
           <div>
             <strong>Datum:</strong>{" "}
-            {new Date(order.createdAt).toLocaleDateString()}
+            {new Date(order.orderDate).toLocaleDateString()}
           </div>
           <div>
-            <strong>Status:</strong> {order.status}
+            <strong>Status:</strong> {order.deliveryStatus}
           </div>
         </div>
 
@@ -58,18 +36,30 @@ export function Order() {
               Retournieren
             </button>
           </div>
+
           <div className="d-flex flex-column row-gap-2">
             <span className="fw-bold border-bottom">Lieferadresse:</span>
             <span>
-              Lorem street <br /> Ipsum City <br /> Doloria
+              {order.deliveryFullname} <br />
+              {order.deliveryAddress} <br />
+              {order.deliveryPostcode}
             </span>
           </div>
-          <div className="mt-3 border-top pt-3 d-flex flex-column gap-2 ">
-            <span className="fw-bold h5 text--primary">Bestellte Artikel:</span>
 
-            <CartItem editable={false} />
-            <CartItem editable={false} />
-            <CartItem editable={false} />
+          <div className="d-flex flex-column row-gap-2">
+            <span className="fw-bold border-bottom">Zahlungsmethode:</span>
+            <span>{order.paymentMethod}</span>
+          </div>
+
+          <div className="mt-3 border-top pt-3 d-flex flex-column gap-2">
+            <span className="fw-bold h5 text--primary">Bestellte Artikel:</span>
+            {Array.from({ length: 3 }).map((_, i) => (
+              <CartItem editable={false} key={i} />
+            ))}
+          </div>
+
+          <div className="mt-2">
+            <strong>Gesamtbetrag:</strong> ${order.totalAmount.toFixed(2)}
           </div>
         </div>
       )}

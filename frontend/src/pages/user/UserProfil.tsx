@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Order } from "../../components/order/Order";
 import { Link } from "react-router-dom";
+import { mockOrder } from "../../types/temp/PlaceholderData";
 
 const UserProfil = () => {
   const [isAdmin, setIsAdmin] = useState(true);
@@ -45,9 +46,9 @@ const UserProfil = () => {
         <div className="fw-bold">Meine Bestellungen:</div>
 
         <div id="cart-items" className="d-flex flex-column gap-2">
-          <Order />
-          <Order />
-          <Order />
+          <Order order={mockOrder} />
+          <Order order={mockOrder} />
+          <Order order={mockOrder} />
         </div>
       </div>
     </div>
