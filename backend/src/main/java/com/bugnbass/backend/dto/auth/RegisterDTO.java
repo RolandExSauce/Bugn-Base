@@ -1,4 +1,4 @@
-package com.bugnbass.backend.dto;
+package com.bugnbass.backend.dto.auth;
 
 import com.bugnbass.backend.model.enums.UserRole;
 

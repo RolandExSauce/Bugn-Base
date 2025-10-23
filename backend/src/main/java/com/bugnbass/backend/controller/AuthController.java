@@ -1,7 +1,7 @@
 package com.bugnbass.backend.controller;
-import com.bugnbass.backend.dto.AuthResponse;
-import com.bugnbass.backend.dto.LoginDTO;
-import com.bugnbass.backend.dto.RegisterDTO;
+import com.bugnbass.backend.dto.auth.AuthResponse;
+import com.bugnbass.backend.dto.auth.LoginDTO;
+import com.bugnbass.backend.dto.auth.RegisterDTO;
 import com.bugnbass.backend.service.AuthService;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,21 +15,19 @@ public class AuthController {
 
     private final AuthService authService;
 
-
     public AuthController(AuthService authService) {
         this.authService = authService;
     };
 
-    @PostMapping("/register")
+    @PostMapping("/login")
     public AuthResponse login(@Valid @RequestBody LoginDTO loginDTO) {
-
         return authService.handleLogin(loginDTO);
     };
 
-    @PostMapping("/login")
+    @PostMapping("/register")
     public AuthResponse regsiter(@Valid @RequestBody RegisterDTO registerDTO) {
-
+        System.out.println("dto: " + registerDTO);
         return authService.handleRegister(registerDTO);
     };
 
-}
+};

@@ -1,9 +1,9 @@
 package com.bugnbass.backend.service;
 
 import com.bugnbass.backend.config.JwtUtil;
-import com.bugnbass.backend.dto.AuthResponse;
-import com.bugnbass.backend.dto.LoginDTO;
-import com.bugnbass.backend.dto.RegisterDTO;
+import com.bugnbass.backend.dto.auth.AuthResponse;
+import com.bugnbass.backend.dto.auth.LoginDTO;
+import com.bugnbass.backend.dto.auth.RegisterDTO;
 import com.bugnbass.backend.model.Admin;
 import com.bugnbass.backend.model.User;
 import com.bugnbass.backend.model._interface.IBaseUser;
@@ -13,14 +13,10 @@ import com.bugnbass.backend.repository.UserRepository;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.Collection;
-import java.util.List;
 
 //auth service methods
 @Service

@@ -1,21 +1,20 @@
 package com.bugnbass.backend.controller;
-
 import com.bugnbass.backend.dto.ProductFilter;
 import com.bugnbass.backend.model.Product;
 import com.bugnbass.backend.model.enums.ProductCategory;
-import com.bugnbass.backend.service.UserProductService;
+import com.bugnbass.backend.service.ProductService;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
+
 
 @RestController
 @RequestMapping("/api/products")
 // @CrossOrigin(origins = "http://localhost:3000") // fürs frontend später
-public class UserProductController {
+public class ProductController {
 
-    private final UserProductService userProductService;
+    private final ProductService userProductService;
 
-    public UserProductController(UserProductService userProductService) {
+    public ProductController(ProductService userProductService) {
         this.userProductService = userProductService;
     }
 

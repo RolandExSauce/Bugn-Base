@@ -2,13 +2,13 @@ package com.bugnbass.backend.model;
 import com.bugnbass.backend.model.enums.ProductCategory;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import lombok.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import lombok.*;
 
 
-@Entity(name = "Product")
+@Entity
 @Table(name = "products")
 @NoArgsConstructor
 @AllArgsConstructor
@@ -18,6 +18,7 @@ import java.util.UUID;
 public class Product {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(
             name= "product_id",
             updatable = false

@@ -6,7 +6,7 @@ import lombok.Setter;
 import java.util.UUID;
 
 
-@Entity (name = "Image")
+@Entity
 @Table (name = "images")
 @Getter
 public class Image {
@@ -23,4 +23,4 @@ public class Image {
     @JsonBackReference
     @Setter
     private Product product;
-}
+};

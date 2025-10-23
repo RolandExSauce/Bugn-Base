@@ -1,6 +1,6 @@
 package com.bugnbass.backend.dto;
-
 import jakarta.validation.constraints.*;
+
 
 public record ProductDTO(
         @NotNull

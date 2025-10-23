@@ -2,7 +2,6 @@ package com.bugnbass.backend.config;
 
 //TODO: assigned by Ines
 
-import com.bugnbass.backend.dto.LoginDTO;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
