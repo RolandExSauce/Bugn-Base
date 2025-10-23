@@ -13,10 +13,10 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/admin/products")
 // @CrossOrigin(origins = "http://localhost:3000") // fürs frontend später
-public class AdminProductController {
+public class AdminController {
     private final AdminProductService adminProductService;
 
-    public AdminProductController(AdminProductService adminProductService) {
+    public AdminController(AdminProductService adminProductService) {
         this.adminProductService = adminProductService;
     }
 

@@ -2,15 +2,14 @@ package com.bugnbass.backend.model;
 import com.bugnbass.backend.model._interface.IBaseUser;
 import com.bugnbass.backend.model.enums.UserRole;
 import jakarta.persistence.*;
-import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
 import java.util.Collection;
 import java.util.List;
+import lombok.*;
 
 
-@Entity(name = "Admin")
+@Entity
 @Table(name = "admins")
 @NoArgsConstructor
 @AllArgsConstructor

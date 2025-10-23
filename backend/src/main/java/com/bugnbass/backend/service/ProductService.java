@@ -8,18 +8,18 @@ import java.util.List;
 
 
 @Service
-public class UserProductService {
+public class ProductService {
 
     private final ProductRepository productRepository;
 
-    public UserProductService(ProductRepository productRepository) {
+    public ProductService(ProductRepository productRepository) {
         this.productRepository = productRepository;
     }
 
     public Product getProduct (String id) {
         return productRepository.findByProductIdAndActiveTrue(id)
                 .orElseThrow(ProductNotFoundException::new);
-    }
+    };
 
     public List<Product> getProducts (ProductFilter filter) {
         final int DEFAULT_PAGE_SIZE = 25;
@@ -37,6 +37,6 @@ public class UserProductService {
             .skip(filter.pageSize() == null || filter.pageNumber() == null ? DEFAULT_PAGE_NUMBER : (long) filter.pageNumber() * filter.pageSize())
             .limit(filter.pageSize() == null ? DEFAULT_PAGE_SIZE : filter.pageSize())
             .toList();
-    }
+    };
 
-}
+};
