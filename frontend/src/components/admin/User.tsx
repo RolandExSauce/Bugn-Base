@@ -214,7 +214,7 @@ const UserRow = ({ user, handleSelect, selectedUserId }: UserProps) => {
           </select>
         </td>
         <td>
-          <AdminUpdateButton disabled={isEdited} action={handleSave} />
+          <AdminUpdateButton disabled={!isEdited} action={handleSave} />
           <button
             className="admin-user-action-button"
             onClick={() => handleSelect("")}
@@ -250,7 +250,12 @@ const UserRow = ({ user, handleSelect, selectedUserId }: UserProps) => {
         />
       </td>
       <td>
-        <select name="role" value={form.role} onChange={handleChange}>
+        <select
+          disabled={true}
+          name="role"
+          value={form.role}
+          onChange={handleChange}
+        >
           <option value="USER">USER</option>
           <option value="ADMIN">ADMIN</option>
         </select>

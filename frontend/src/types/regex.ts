@@ -5,4 +5,5 @@ export const ADDRESS_REGEX = /^[a-zA-Z0-9\s,'-]{1,200}$/;
 export const POSTCODE_REGEX = /^[0-9]{3,6}$/;
 export const PHONE_REGEX = /^[0-9]{8,15}$/;
 export const PRICE_REGEX = /^\d+$/;
-export const TEXT_REGEX = /^[a-zA-Z0-9\s,'-]{1,255}$/;
+export const TEXT_REGEX = /^[a-zA-Z0-9\s,'-]+$/;
+export const BRAND_REGEX = /^[a-zA-Z0-9\s,'-]{1,50}$/;

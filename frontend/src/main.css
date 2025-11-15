@@ -584,6 +584,10 @@ th {
   animation: admin-edit-row-success 1s ease;
 }
 
+.add-new-product-div--success {
+  animation: admin-edit-row-success 1s ease;
+}
+
 @keyframes admin-edit-row-success {
   0% {
     background-color: green;
@@ -592,6 +596,10 @@ th {
     background-color: rgba(0, 128, 0, 0);
   }
 }
+.add-new-product-div {
+  background-color: rgb(255, 221, 186);
+}
+
 :root {
   --bs-primary: #4caf50;
   --bs-primary-text: rgb(220, 127, 27);
