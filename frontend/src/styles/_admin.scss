@@ -57,6 +57,10 @@
   }
 }
 
+.add-new-product-div--success {
+  animation: admin-edit-row-success 1s ease;
+}
+
 @keyframes admin-edit-row-success {
   0% {
     background-color: green;
@@ -64,4 +68,8 @@
   100% {
     background-color: rgba(0, 128, 0, 0);
   }
+}
+
+.add-new-product-div {
+  background-color: $primary-light;
 }

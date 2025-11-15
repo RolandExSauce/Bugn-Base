@@ -5,7 +5,7 @@ import AdminUpdateButton from "../common/AdminUpdateButton";
 import AdminDeleteButton from "../common/AdminDeleteButton";
 import AdminSelectRowButton from "../common/AdminSelectRowButton";
 
-import { NAME_REGEX, PRICE_REGEX, TEXT_REGEX } from "../../types/regex";
+import { BRAND_REGEX, PRICE_REGEX } from "../../types/regex";
 
 interface FullProductProps {
   initialProduct: Product;
@@ -56,17 +56,12 @@ export default function FullProduct({
 
     let invalid = false;
 
-    if (!NAME_REGEX.test(product.name)) {
+    if (!BRAND_REGEX.test(product.name)) {
       newInvalidInput.name = true;
       invalid = true;
     }
 
-    if (!TEXT_REGEX.test(product.description)) {
-      newInvalidInput.description = true;
-      invalid = true;
-    }
-
-    if (!PRICE_REGEX.test(String(product.price))) {
+    if (!PRICE_REGEX.test(String(product.price * 100))) {
       newInvalidInput.price = true;
       invalid = true;
     }
@@ -76,7 +71,7 @@ export default function FullProduct({
       invalid = true;
     }
 
-    if (!NAME_REGEX.test(product.brand)) {
+    if (!BRAND_REGEX.test(product.brand)) {
       newInvalidInput.brand = true;
       invalid = true;
     }
@@ -97,7 +92,10 @@ export default function FullProduct({
     trRef.current?.classList.remove("user-row-success");
     void trRef.current?.offsetWidth;
     trRef.current?.classList.add("user-row-success");
-    handleSelect("");
+
+    setTimeout(() => {
+      handleSelect("");
+    }, 800);
   };
 
   const handleDelete = () => {
@@ -116,7 +114,7 @@ export default function FullProduct({
           />
           {invalidInput.name && (
             <span className="text-danger d-block invalid-input">
-              Invalid name
+              Ungültiger Name
             </span>
           )}
         </td>
@@ -147,7 +145,7 @@ export default function FullProduct({
           />
           {invalidInput.description && (
             <span className="text-danger d-block invalid-input">
-              Invalid description
+              Ungültige Beschreibung
             </span>
           )}
         </td>
@@ -191,7 +189,7 @@ export default function FullProduct({
           />
           {invalidInput.brand && (
             <span className="text-danger d-block invalid-input">
-              Invalid brand
+              Ungültiger Hersteller
             </span>
           )}
         </td>
@@ -220,7 +218,7 @@ export default function FullProduct({
           />
           {invalidInput.shippingTime && (
             <span className="text-danger d-block invalid-input">
-              Invalid shipping time
+              Ungültige Lieferzeit
             </span>
           )}
         </td>
@@ -234,7 +232,7 @@ export default function FullProduct({
         </td>
 
         <td className="d-flex column-gap-2">
-          <AdminUpdateButton disabled={isEdited} action={handleSave} />
+          <AdminUpdateButton disabled={!isEdited} action={handleSave} />
 
           <button
             className="admin-user-action-button"
