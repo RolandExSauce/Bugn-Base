@@ -1,37 +1,145 @@
-import { Link } from "react-router-dom";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import type { Register } from "../../types/models";
+import AuthService from "../../services/auth/auth.service";
+import { useAuthContext } from "../../context/AuthContext";
 
 const Register = () => {
+  const navigate = useNavigate();
+
+  const { setAuth } = useAuthContext();
+
+  const [registerForm, setRegisterForm] = useState<Register>({
+    firstname: "",
+    lastname: "",
+    email: "",
+    password: "",
+  });
+
+  const [retypePassword, setRetypePassword] = useState<string>("");
+
+  const [invalidInput, setInvalidInput] = useState({
+    firstname: false,
+    lastname: false,
+    email: false,
+    password: false,
+    retypePassword: false,
+  });
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setRegisterForm({
+      ...registerForm,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleRegister = async (event: React.FormEvent) => {
+    event.preventDefault();
+
+    const newInvalidInput = {
+      firstname: false,
+      lastname: false,
+      email: false,
+      password: false,
+      retypePassword: false,
+    };
+
+    const nameRegex = /^[A-Za-z]+$/;
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d).{8,}$/;
+
+    let hasError = false;
+
+    if (!nameRegex.test(registerForm.firstname)) {
+      newInvalidInput.firstname = true;
+      hasError = true;
+    }
+
+    if (!nameRegex.test(registerForm.lastname)) {
+      newInvalidInput.lastname = true;
+      hasError = true;
+    }
+
+    if (!emailRegex.test(registerForm.email)) {
+      newInvalidInput.email = true;
+      hasError = true;
+    }
+
+    if (!passwordRegex.test(registerForm.password)) {
+      newInvalidInput.password = true;
+      hasError = true;
+    }
+
+    if (registerForm.password !== retypePassword) {
+      newInvalidInput.retypePassword = true;
+      hasError = true;
+    }
+
+    setInvalidInput(newInvalidInput);
+
+    if (hasError) return;
+
+    try {
+      await AuthService.signup(registerForm, setAuth);
+      navigate("/");
+    } catch (error) {
+      console.error(error);
+      // todo: handle error
+    }
+  };
+
   return (
     <main className="login-page d-flex">
-      <form className="login-form d-flex flex-column justify-content-center align-items-center gap-1">
+      <form
+        onSubmit={handleRegister}
+        className="login-form d-flex flex-column justify-content-center align-items-center gap-1"
+      >
         <h1>Registrierung</h1>
 
         <label htmlFor="firstName">Vorname</label>
         <input
           type="text"
-          id="firstName"
-          name="firstName"
+          id="firstname"
+          name="firstname"
           placeholder="Max"
+          onChange={handleChange}
+          value={registerForm.firstname}
           required
         />
+
+        {invalidInput.firstname && (
+          <p className="text-danger">Vorname ist ungültig</p>
+        )}
 
         <label htmlFor="lastName">Nachname</label>
         <input
           type="text"
-          id="lastName"
-          name="lastName"
+          id="lastname"
+          name="lastname"
+          onChange={handleChange}
+          value={registerForm.lastname}
           placeholder="Mustermann"
           required
         />
 
+        {invalidInput.lastname && (
+          <p className="text-danger">Nachname ist ungültig</p>
+        )}
+
         <label htmlFor="email">E-Mail</label>
         <input
-          type="email"
+          type="text"
           id="email"
           name="email"
+          value={registerForm.email}
           placeholder="name@example.com"
+          onChange={handleChange}
           required
         />
+
+        {invalidInput.email && (
+          <p className="text-danger">E-Mail ist ungültig</p>
+        )}
 
         <label htmlFor="password">Passwort</label>
         <input
@@ -39,8 +147,17 @@ const Register = () => {
           id="password"
           name="password"
           placeholder="••••••••"
+          value={registerForm.password}
+          onChange={handleChange}
           required
         />
+
+        {invalidInput.password && (
+          <p className="text-danger">
+            Passwort muss mindestens 8 Zeichen haben, eine Groß- und eine
+            Kleinbuchstabe und eine Zahl enthalten
+          </p>
+        )}
 
         <label htmlFor="confirmPassword">Passwort wiederholen</label>
         <input
@@ -48,8 +165,14 @@ const Register = () => {
           id="confirmPassword"
           name="confirmPassword"
           placeholder="••••••••"
+          value={retypePassword}
+          onChange={(e) => setRetypePassword(e.target.value)}
           required
         />
+
+        {invalidInput.retypePassword && (
+          <p className="text-danger">Passwörter stimmen nicht überein</p>
+        )}
 
         <button type="submit">Registrieren</button>
 

@@ -1,15 +1,17 @@
 import { Link } from "react-router-dom";
 import Searchbar from "./Searchbar";
 import { useRef } from "react";
+import { useAuthContext } from "../../context/AuthContext";
 
 const NavBar = () => {
+  const { auth } = useAuthContext();
+
   const navbarButtonsRef = useRef<HTMLDivElement>(null);
 
   const toggleSidemenu = () => {
     navbarButtonsRef.current?.classList.toggle("navbar-buttons--active");
   };
 
-  const auth = true;
   return (
     <nav className="navbar">
       <Link to="/" className="navbar-logo">
@@ -36,8 +38,8 @@ const NavBar = () => {
             <span>Profil</span>
           </Link>
         ) : (
-          <Link className="navbar-button" to="/auth/login">
-            <span className="navbar-login-button">Login</span>
+          <Link className="navbar-button navbar-login-button" to="/auth/login">
+            <span>Login</span>
           </Link>
         )}
       </div>
