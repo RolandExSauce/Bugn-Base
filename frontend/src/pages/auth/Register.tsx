@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import type { Register } from "../../types/models";
 import AuthService from "../../services/auth/auth.service";
 import { useAuthContext } from "../../context/AuthContext";
+import { EMAIL_REGEX, NAME_REGEX, PASSWORD_REGEX } from "../../types/regex";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -44,28 +45,24 @@ const Register = () => {
       retypePassword: false,
     };
 
-    const nameRegex = /^[A-Za-z]+$/;
-    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d).{8,}$/;
-
     let hasError = false;
 
-    if (!nameRegex.test(registerForm.firstname)) {
+    if (!NAME_REGEX.test(registerForm.firstname)) {
       newInvalidInput.firstname = true;
       hasError = true;
     }
 
-    if (!nameRegex.test(registerForm.lastname)) {
+    if (!NAME_REGEX.test(registerForm.lastname)) {
       newInvalidInput.lastname = true;
       hasError = true;
     }
 
-    if (!emailRegex.test(registerForm.email)) {
+    if (!EMAIL_REGEX.test(registerForm.email)) {
       newInvalidInput.email = true;
       hasError = true;
     }
 
-    if (!passwordRegex.test(registerForm.password)) {
+    if (!PASSWORD_REGEX.test(registerForm.password)) {
       newInvalidInput.password = true;
       hasError = true;
     }

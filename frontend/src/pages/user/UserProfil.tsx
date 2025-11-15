@@ -1,37 +1,205 @@
-import { useState } from "react";
-import { Order } from "../../components/order/Order";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { Order } from "../../components/order/Order";
 import { mockOrder } from "../../types/temp/PlaceholderData";
+import { useAuthContext } from "../../context/AuthContext";
+import type { User } from "../../types/models";
+import {
+  EMAIL_REGEX,
+  NAME_REGEX,
+  PHONE_REGEX,
+  POSTCODE_REGEX,
+} from "../../types/regex";
 
 const UserProfil = () => {
-  const [isAdmin, setIsAdmin] = useState(true);
+  const { auth, setAuth } = useAuthContext();
+
+  const [userProfileForm, setUserProfileForm] = useState<Partial<User>>({
+    firstname: "",
+    lastname: "",
+    phone: undefined,
+    address: undefined,
+    postcode: undefined,
+    email: "",
+  });
+
+  const [invalidInput, setInvalidInput] = useState({
+    firstname: false,
+    lastname: false,
+    phone: false,
+    address: false,
+    postcode: false,
+    email: false,
+    password: false,
+  });
+
+  useEffect(() => {
+    if (!auth) return;
+
+    setUserProfileForm({
+      firstname: auth.user.firstname ?? "",
+      lastname: auth.user.lastname ?? "",
+      phone: auth.user.phone ?? undefined,
+      address: auth.user.address ?? undefined,
+      postcode: auth.user.postcode ?? undefined,
+      email: auth.user.email ?? "",
+    });
+  }, [auth]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setUserProfileForm({
+      ...userProfileForm,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleSaveUserDetails = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const newInvalidInput = {
+      firstname: false,
+      lastname: false,
+      phone: false,
+      address: false,
+      postcode: false,
+      email: false,
+      password: false,
+    };
+
+    let hasError = false;
+
+    if (!NAME_REGEX.test(userProfileForm.firstname ?? "")) {
+      newInvalidInput.firstname = true;
+      hasError = true;
+    }
+    if (!NAME_REGEX.test(userProfileForm.lastname ?? "")) {
+      newInvalidInput.lastname = true;
+      hasError = true;
+    }
+    if (!PHONE_REGEX.test(String(userProfileForm.phone ?? ""))) {
+      newInvalidInput.phone = true;
+      hasError = true;
+    }
+    if (!NAME_REGEX.test(userProfileForm.address ?? "")) {
+      newInvalidInput.address = true;
+      hasError = true;
+    }
+    if (!POSTCODE_REGEX.test(String(userProfileForm.postcode ?? ""))) {
+      newInvalidInput.postcode = true;
+      hasError = true;
+    }
+    if (!EMAIL_REGEX.test(userProfileForm.email ?? "")) {
+      newInvalidInput.email = true;
+      hasError = true;
+    }
+
+    setInvalidInput(newInvalidInput);
+
+    if (hasError) return;
+
+    // TODO: Call API to save updated profile
+  };
 
   return (
     <div className="d-flex flex-column container py-4">
       <h1 className="mb-4">Mein Profil</h1>
 
-      <form className="border rounded p-3 mb-4 d-flex flex-column gap-3">
+      <form
+        className="border rounded p-3 mb-4 d-flex flex-column gap-3"
+        onSubmit={handleSaveUserDetails}
+      >
         <div className="fw-bold">Persönliche Daten:</div>
 
         <div className="d-flex flex-row gap-3">
-          <input type="text" className="form-control" placeholder="Vorname" />
-          <input type="text" className="form-control" placeholder="Nachname" />
+          <input
+            type="text"
+            className="form-control"
+            placeholder="Vorname"
+            name="firstname"
+            value={userProfileForm.firstname ?? ""}
+            onChange={handleChange}
+            required
+          />
+
+          <input
+            type="text"
+            className="form-control"
+            placeholder="Nachname"
+            name="lastname"
+            value={userProfileForm.lastname ?? ""}
+            onChange={handleChange}
+            required
+          />
         </div>
 
         <div className="d-flex gap-3 flex-row">
-          <input type="email" className="form-control" placeholder="Email" />
-          <input type="tel" className="form-control" placeholder="Tel" />
+          <input
+            type="text"
+            className="form-control"
+            placeholder="Email"
+            name="email"
+            value={userProfileForm.email ?? ""}
+            onChange={handleChange}
+            required
+          />
+
+          <input
+            type="tel"
+            className="form-control"
+            placeholder="Tel"
+            name="phone"
+            value={userProfileForm.phone ?? ""}
+            onChange={handleChange}
+          />
         </div>
 
         <div className="d-flex gap-3 flex-row">
-          <input type="text" className="form-control" placeholder="Adresse" />
-          <input type="text" className="form-control" placeholder="PLZ" />
+          <input
+            type="text"
+            className="form-control"
+            placeholder="Adresse"
+            name="address"
+            value={userProfileForm.address ?? ""}
+            onChange={handleChange}
+          />
+          <input
+            type="number"
+            className="form-control"
+            placeholder="PLZ"
+            name="postcode"
+            value={userProfileForm.postcode ?? ""}
+            onChange={handleChange}
+          />
         </div>
+
         <div className="d-flex flex-column align-items-end">
-          <button className="profile-save-button text-white px-4 py-2 fw-bold h4">
+          <button
+            type="submit"
+            className="profile-save-button text-white px-4 py-2 fw-bold h4"
+          >
             Speichern
           </button>
-          {isAdmin && (
+          {invalidInput.firstname && (
+            <p className="text-danger">Gultiger Vorname ist erforderlich</p>
+          )}
+          {invalidInput.lastname && (
+            <p className="text-danger">Gültiger Nachname ist erforderlich</p>
+          )}
+
+          {invalidInput.email && (
+            <p className="text-danger">Gültiger E-Mail ist erforderlich</p>
+          )}
+          {invalidInput.phone && (
+            <p className="text-danger">Telefon ist ungültig</p>
+          )}
+          {invalidInput.address && (
+            <p className="text-danger">Adresse ist ungültig</p>
+          )}
+          {invalidInput.postcode && (
+            <p className="text-danger">PLZ ist ungültig</p>
+          )}
+
+          {auth?.role === "ADMIN" && (
             <Link
               to="/admin"
               className="profile-save-button bg-success rounded text-white px-4 py-2 fw-bold h4"
@@ -44,7 +212,6 @@ const UserProfil = () => {
 
       <div className="border rounded p-3 d-flex flex-column gap-3">
         <div className="fw-bold">Meine Bestellungen:</div>
-
         <div id="cart-items" className="d-flex flex-column gap-2">
           <Order order={mockOrder} />
           <Order order={mockOrder} />
@@ -54,4 +221,5 @@ const UserProfil = () => {
     </div>
   );
 };
+
 export default UserProfil;

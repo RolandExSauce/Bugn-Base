@@ -3,6 +3,7 @@ import AuthService from "../../services/auth/auth.service";
 import { Link, useNavigate } from "react-router-dom";
 import type { Login } from "../../types/models";
 import { useAuthContext } from "../../context/AuthContext";
+import { EMAIL_REGEX, PASSWORD_REGEX } from "../../types/regex";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -28,19 +29,16 @@ const Login = () => {
   const handleLogin = async (event: React.FormEvent) => {
     event.preventDefault();
 
-    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d).{8,}$/;
-
     let hasError = false;
 
     const newInvalidInput = { email: false, password: false };
 
-    if (!emailRegex.test(loginForm.email)) {
+    if (!EMAIL_REGEX.test(loginForm.email)) {
       newInvalidInput.email = true;
       hasError = true;
     }
 
-    if (!passwordRegex.test(loginForm.password)) {
+    if (!PASSWORD_REGEX.test(loginForm.password)) {
       newInvalidInput.password = true;
       hasError = true;
     }

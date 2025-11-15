@@ -26,10 +26,42 @@
     border-radius: 5px;
     background-color: rgb(255, 183, 107);
   }
+
+  &--disabled {
+    opacity: 0.5;
+    &:hover {
+      cursor: default;
+    }
+  }
 }
 
 .admin-product-add-button {
   &:hover {
     filter: brightness(1.2);
+  }
+}
+
+.editable-user-row {
+  border-bottom: 1px solid $primary-accent;
+  & td {
+    background-color: $primary-light;
+  }
+  & td input {
+    max-width: 120px;
+  }
+}
+
+.user-row-success {
+  & td {
+    animation: admin-edit-row-success 1s ease;
+  }
+}
+
+@keyframes admin-edit-row-success {
+  0% {
+    background-color: green;
+  }
+  100% {
+    background-color: rgba(0, 128, 0, 0);
   }
 }

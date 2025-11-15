@@ -22,7 +22,33 @@ export const mockUser: User = {
   id: "1",
   firstname: "Alice",
   lastname: "Smith",
-  phone: "12345",
+  phone: 12345,
+  address: "Street 1",
+  postcode: 1000,
+  email: "alice@mail.com",
+  active: true,
+  createdAt: new Date(),
+  role: "ADMIN",
+};
+
+export const mockUser2: User = {
+  id: "2",
+  firstname: "Emmy",
+  lastname: "Smith",
+  phone: 12345,
+  address: "Street 1",
+  postcode: 1000,
+  email: "alice@mail.com",
+  active: true,
+  createdAt: new Date(),
+  role: "USER",
+};
+
+export const mockUser3: User = {
+  id: "3",
+  firstname: "Otto",
+  lastname: "Smith",
+  phone: 12345,
   address: "Street 1",
   postcode: 1000,
   email: "alice@mail.com",

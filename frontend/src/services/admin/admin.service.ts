@@ -25,4 +25,9 @@ export default class AdminService {
     // TODO: implement DELETE request
     return;
   };
+
+  public static updateOrder = async (orderStatus: string): Promise<void> => {
+    // TODO: implement update order status request
+    return;
+  };
 }

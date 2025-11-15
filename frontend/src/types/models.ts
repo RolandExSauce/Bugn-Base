@@ -3,9 +3,9 @@ export interface User {
   id: string;
   firstname: string;
   lastname: string;
-  phone: string;
-  address: string;
-  postcode: number;
+  phone: number | undefined;
+  address: string | undefined;
+  postcode: number | undefined;
   email: string;
   active: boolean;
   createdAt: Date;
@@ -28,7 +28,7 @@ export interface Product {
 
 // Auth
 export interface AuthState {
-  userId: string;
+  user: User;
   accessToken: string;
   role: string;
 }
