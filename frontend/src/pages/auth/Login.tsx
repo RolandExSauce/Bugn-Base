@@ -1,9 +1,13 @@
 import { useState } from "react";
 import AuthService from "../../services/auth/auth.service";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import type { Login } from "../../types/models";
+import { useAuthContext } from "../../context/AuthContext";
 
 const Login = () => {
+  const navigate = useNavigate();
+  const { setAuth } = useAuthContext();
+
   const [loginForm, setLoginForm] = useState<Login>({
     email: "",
     password: "",
@@ -14,20 +18,6 @@ const Login = () => {
     password: false,
   });
 
-  const handlePasswordInvalid = () => {
-    setInvalidInput({
-      ...invalidInput,
-      password: true,
-    });
-  };
-
-  const handleEmailInvalid = () => {
-    setInvalidInput({
-      ...invalidInput,
-      email: true,
-    });
-  };
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setLoginForm({
       ...loginForm,
@@ -35,42 +25,60 @@ const Login = () => {
     });
   };
 
-  const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
+  const handleLogin = async (event: React.FormEvent) => {
     event.preventDefault();
 
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d).{8,}$/;
+
+    let hasError = false;
+
+    const newInvalidInput = { email: false, password: false };
+
+    if (!emailRegex.test(loginForm.email)) {
+      newInvalidInput.email = true;
+      hasError = true;
+    }
+
+    if (!passwordRegex.test(loginForm.password)) {
+      newInvalidInput.password = true;
+      hasError = true;
+    }
+
+    setInvalidInput(newInvalidInput);
+
+    if (hasError) return;
+
     try {
-      const data = await AuthService.login(loginForm);
+      await AuthService.login(loginForm, setAuth);
+      navigate("/");
     } catch (error) {
+      console.error(error);
       // todo: handle error
-    } finally {
-      // reset invalid messages
-      setInvalidInput({
-        email: false,
-        password: false,
-      });
     }
   };
 
   return (
     <main className="login-page d-flex">
-      <form className="login-form d-flex flex-column justify-content-center align-items-center gap-3">
+      <form
+        onSubmit={handleLogin}
+        className="login-form d-flex flex-column justify-content-center align-items-center gap-3"
+      >
         <h1>Anmeldung</h1>
 
         <label htmlFor="email">E-Mail</label>
         <input
-          type="email"
+          type="text"
           id="email"
           name="email"
           placeholder="name@example.com"
-          pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
-          onInvalid={handleEmailInvalid}
           onChange={handleChange}
           value={loginForm.email}
           required
         />
 
         {invalidInput.email && (
-          <p className="text-danger">Please enter a valid email address.</p>
+          <p className="text-danger">E-Mail ist ungültig</p>
         )}
 
         <label htmlFor="password">Passwort</label>
@@ -79,9 +87,6 @@ const Login = () => {
           id="password"
           name="password"
           placeholder="••••••••"
-          // at least 1 upper, 1 lower case and 1 number (min 8 characters)
-          pattern="^(?=.*[A-Z])(?=.*[a-z])(?=.*\d).{8,}$"
-          onInvalid={handlePasswordInvalid}
           onChange={handleChange}
           value={loginForm.password}
           required
@@ -89,8 +94,8 @@ const Login = () => {
 
         {invalidInput.password && (
           <p className="text-danger">
-            The password must be at least 8 characters long and contain at least
-            one uppercase letter, one lowercase letter, and one number.
+            Passwort muss mindestens 8 Zeichen haben, eine Groß- und eine
+            Kleinbuchstabe und eine Zahl enthalten
           </p>
         )}
 

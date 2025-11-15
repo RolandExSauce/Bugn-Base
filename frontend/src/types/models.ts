@@ -9,7 +9,7 @@ export interface User {
   email: string;
   active: boolean;
   createdAt: Date;
-  role: "USER" | "ADMIN";
+  role: Role;
 }
 
 // Product
@@ -27,7 +27,20 @@ export interface Product {
 }
 
 // Auth
+export interface AuthState {
+  userId: string;
+  accessToken: string;
+  role: string;
+}
+
 export interface Login {
+  email: string;
+  password: string;
+}
+
+export interface Register {
+  firstname: string;
+  lastname: string;
   email: string;
   password: string;
 }
@@ -58,10 +71,33 @@ export interface Order {
   deliveryStatus: DeliveryStatus;
 }
 
+// Review Dto
+export default interface Review {
+  reviewId: string;
+  product: Product;
+  username: string;
+  rating: number;
+  comment: string;
+  createdAt: Date;
+}
+
+// MEssageDto
+
+export default interface MessageDto {
+  messageId: string;
+  name: string;
+  email: string;
+  subject: string;
+  message: string;
+  createdAt: Date;
+}
+
 export type ItemCategory = "piano" | "guitar" | "violin";
 
 export type PaymentMethod = "creditcard" | "paypal" | "receipt";
 
 export type DeliveryStatus = "pending" | "shipped" | "delivered" | "cancelled";
+
+export type Role = "USER" | "ADMIN";
 
 type OrderItem = { product: Product; quantity: number };
