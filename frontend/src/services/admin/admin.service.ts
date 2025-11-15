@@ -2,6 +2,9 @@ import type { User, Product } from "../../types/models";
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
+// TODO: omit return type, implement status check. if not ok, throw error (component caches it),
+// otherwise return void or return await repsonse.json()
+
 export default class AdminService {
   public static updateUser = async (user: User): Promise<User> => {
     // TODO: implement PUT request

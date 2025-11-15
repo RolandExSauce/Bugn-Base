@@ -394,6 +394,7 @@ th {
   padding: 30px;
   border-radius: 5px;
   box-shadow: 0px 0px 8px 1px rgb(255, 221, 186);
+  max-width: 320px;
 }
 .login-form h1 {
   color: rgb(220, 127, 27);
