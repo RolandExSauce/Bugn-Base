@@ -26,6 +26,12 @@ export interface Product {
   active: boolean;
 }
 
+// Auth
+export interface Login {
+  email: string;
+  password: string;
+}
+
 // Cart
 export interface CartItem {
   id: string;
