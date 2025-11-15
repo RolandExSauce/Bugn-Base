@@ -4,7 +4,9 @@ import { useRef } from "react";
 import { useAuthContext } from "../../context/AuthContext";
 
 const NavBar = () => {
-  const { auth } = useAuthContext();
+  // const { auth } = useAuthContext();
+  const auth = true;
+  // temporarily set auth to true
 
   const navbarButtonsRef = useRef<HTMLDivElement>(null);
 

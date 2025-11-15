@@ -1,41 +1,56 @@
-import { useState } from "react";
-import type { Order } from "../../types/models";
+import { useEffect, useRef, useState } from "react";
+import type { DeliveryStatus, Order } from "../../types/models";
 import AdminDeleteButton from "../common/AdminDeleteButton";
 import AdminUpdateButton from "../common/AdminUpdateButton";
+import AdminService from "../../services/admin/admin.service";
 
 type FullOrderProps = {
   order: Order;
 };
 
 export default function FullOrder({ order }: FullOrderProps) {
-  const [currentOrder, setCurrentOrder] = useState(order);
+  const trRef = useRef<HTMLTableRowElement>(null);
+
+  const [updateOrderStatus, setUpdateOrderStatus] = useState(
+    order.deliveryStatus
+  );
+
+  useEffect(() => {
+    setUpdateOrderStatus(order.deliveryStatus);
+  }, [order]);
 
   const handleStatusChange = (
     e: React.ChangeEvent<HTMLSelectElement>
   ): void => {
-    const newStatus = e.target.value as Order["deliveryStatus"];
-    setCurrentOrder((prev) => ({ ...prev, deliveryStatus: newStatus }));
+    setUpdateOrderStatus(e.target.value as DeliveryStatus);
   };
 
-  const handleSave = () => {};
+  const handleSave = () => {
+    AdminService.updateOrder(updateOrderStatus);
+
+    // success:
+    trRef.current?.classList.remove("user-row-success");
+    void trRef.current?.offsetWidth;
+    trRef.current?.classList.add("user-row-success");
+  };
 
   const handleDelete = () => {};
 
   return (
-    <tr key={currentOrder.id}>
-      <td>{currentOrder.id}</td>
-      <td>{currentOrder.user.firstname}</td>
-      <td>{new Date(currentOrder.orderDate).toLocaleDateString()}</td>
-      <td>${currentOrder.totalAmount.toFixed(2)}</td>
+    <tr ref={trRef} key={order.id}>
+      <td>{order.id}</td>
+      <td>{order.user.firstname}</td>
+      <td>{new Date(order.orderDate).toLocaleDateString()}</td>
+      <td>${order.totalAmount.toFixed(2)}</td>
       <td>
-        {currentOrder.deliveryFullname} <br />
-        {currentOrder.deliveryAddress} <br />
-        {currentOrder.deliveryPostcode}
+        {order.deliveryFullname} <br />
+        {order.deliveryAddress} <br />
+        {order.deliveryPostcode}
       </td>
       <td>
         <select
           className="form-select"
-          value={currentOrder.deliveryStatus}
+          value={updateOrderStatus}
           onChange={handleStatusChange}
         >
           <option value="pending">pending</option>
@@ -44,10 +59,10 @@ export default function FullOrder({ order }: FullOrderProps) {
           <option value="cancelled">cancelled</option>
         </select>
       </td>
-      <td>{currentOrder.paymentMethod}</td>
+      <td>{order.paymentMethod}</td>
       <td>
         <div className="d-flex flex-column gap-2">
-          {currentOrder.items.map((item, index) => (
+          {order.items.map((item, index) => (
             <div key={index}>
               {item.quantity} × {item.product.name}
             </div>
@@ -55,7 +70,10 @@ export default function FullOrder({ order }: FullOrderProps) {
         </div>
       </td>
       <td>
-        <AdminUpdateButton action={handleSave} />
+        <AdminUpdateButton
+          disabled={updateOrderStatus === order.deliveryStatus}
+          action={handleSave}
+        />
         <AdminDeleteButton action={handleDelete} />
       </td>
     </tr>

@@ -2,22 +2,25 @@
 import { useState, useEffect } from "react";
 import UserRow from "../../components/admin/User";
 import type { User } from "../../types/models";
-import { mockUser } from "../../types/temp/PlaceholderData";
+import {
+  mockUser,
+  mockUser2,
+  mockUser3,
+} from "../../types/temp/PlaceholderData";
 
 const UsersList = () => {
   const [users, setUsers] = useState<User[]>([]);
 
+  const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
+
+  const handleSelect = (id: string) => {
+    if (selectedUserId === id) return;
+    setSelectedUserId(id);
+  };
+
   // placeholder
   useEffect(() => {
-    setUsers([
-      mockUser,
-      mockUser,
-      mockUser,
-      mockUser,
-      mockUser,
-      mockUser,
-      mockUser,
-    ]);
+    setUsers([mockUser, mockUser2, mockUser3]);
   }, []);
 
   return (
@@ -38,7 +41,14 @@ const UsersList = () => {
       </thead>
       <tbody>
         {users.map((u) => (
-          <UserRow key={u.id} user={u} />
+          <UserRow
+            key={u.id}
+            user={u}
+            handleSelect={(id: string) => {
+              handleSelect(id);
+            }}
+            selectedUserId={selectedUserId}
+          />
         ))}
       </tbody>
     </table>

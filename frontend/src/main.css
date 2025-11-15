@@ -559,11 +559,39 @@ th {
   border-radius: 5px;
   background-color: rgb(255, 183, 107);
 }
+.admin-user-action-button--disabled {
+  opacity: 0.5;
+}
+.admin-user-action-button--disabled:hover {
+  cursor: default;
+}
 
 .admin-product-add-button:hover {
   filter: brightness(1.2);
 }
 
+.editable-user-row {
+  border-bottom: 1px solid rgb(255, 183, 107);
+}
+.editable-user-row td {
+  background-color: rgb(255, 221, 186);
+}
+.editable-user-row td input {
+  max-width: 120px;
+}
+
+.user-row-success td {
+  animation: admin-edit-row-success 1s ease;
+}
+
+@keyframes admin-edit-row-success {
+  0% {
+    background-color: green;
+  }
+  100% {
+    background-color: rgba(0, 128, 0, 0);
+  }
+}
 :root {
   --bs-primary: #4caf50;
   --bs-primary-text: rgb(220, 127, 27);

@@ -4,6 +4,8 @@ import { mockProduct } from "../../types/temp/PlaceholderData";
 import type { Product } from "../../types/models";
 
 export default function ProductsList() {
+  const [selectedProductId, setSelectedProductId] = useState<string>("");
+
   const [products, setProducts] = useState(
     Array.from({ length: 10 }, (_, i) => ({
       ...mockProduct,
@@ -18,6 +20,11 @@ export default function ProductsList() {
       { ...newProduct, id: String(prev.length + 1) },
     ]);
     setShowNewForm(false);
+  };
+
+  const handleSelectedProduct = (id: string) => {
+    if (selectedProductId === id) return;
+    setSelectedProductId(id);
   };
 
   return (
@@ -130,7 +137,12 @@ export default function ProductsList() {
         </thead>
         <tbody>
           {products.map((product) => (
-            <FullProduct key={product.id} initialProduct={product} />
+            <FullProduct
+              handleSelect={handleSelectedProduct}
+              selectedProductId={selectedProductId}
+              key={product.id}
+              initialProduct={product}
+            />
           ))}
         </tbody>
       </table>
