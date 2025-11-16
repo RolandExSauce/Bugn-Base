@@ -58,7 +58,7 @@ const Login = () => {
       setAuth({
         user: {
           email: loginForm.email,
-          role: "ADMIN",
+          role: "admin",
           id: "1",
           firstname: "Max",
           lastname: "Mustermann",
@@ -69,7 +69,7 @@ const Login = () => {
           createdAt: new Date(),
         },
         accessToken: "token",
-        role: "ADMIN",
+        role: "admin",
       });
       setTimeout(() => {
         navigate("/");

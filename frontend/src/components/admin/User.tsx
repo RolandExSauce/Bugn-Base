@@ -215,8 +215,8 @@ const UserRow = ({ user, handleSelect, selectedUserId }: UserProps) => {
         </td>
         <td>
           <select name="role" value={form.role} onChange={handleChange}>
-            <option value="USER">USER</option>
-            <option value="ADMIN">ADMIN</option>
+            <option value="user">USER</option>
+            <option value="admin">ADMIN</option>
           </select>
         </td>
         <td>
@@ -259,8 +259,8 @@ const UserRow = ({ user, handleSelect, selectedUserId }: UserProps) => {
           value={form.role}
           onChange={handleChange}
         >
-          <option value="USER">USER</option>
-          <option value="ADMIN">ADMIN</option>
+          <option value="user">USER</option>
+          <option value="admin">ADMIN</option>
         </select>
       </td>
       <td>
