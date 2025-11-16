@@ -9,7 +9,6 @@ import Cart from "./components/cart/Cart";
 import Checkout from "./pages/Checkout";
 import Contact from "./pages/Contact";
 import Listing from "./pages/Listing";
-import Orders from "./pages/Orders";
 import Product from "./pages/Product";
 
 export default function App() {
@@ -26,7 +25,6 @@ export default function App() {
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/listing" element={<Listing />} />
-          <Route path="/orders" element={<Orders />} />
           <Route path="/product/:productId" element={<Product />} />
         </Route>
       </Routes>

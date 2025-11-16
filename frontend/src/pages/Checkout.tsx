@@ -53,22 +53,26 @@ export default function Checkout() {
       paymentMethod,
     };
 
-    // UserService.placeOrder(newOrder);
+    try {
+      // UserService.placeOrder(newOrder);
 
-    divRef.current?.classList.remove("order-success");
-    void divRef.current?.offsetWidth;
-    divRef.current?.classList.add("order-success");
+      // success animation in the background
+      divRef.current?.classList.remove("order-success");
+      void divRef.current?.offsetWidth;
+      divRef.current?.classList.add("order-success");
 
-    setIsOrderPlaced(true);
-    clearCart();
-    setFormData({
-      deliveryFullname: "",
-      deliveryAddress: "",
-      deliveryPostcode: 0,
-    });
-
-    // catch:
-    // handle error
+      // reset states:
+      setIsOrderPlaced(true);
+      clearCart();
+      setFormData({
+        deliveryFullname: "",
+        deliveryAddress: "",
+        deliveryPostcode: 0,
+      });
+    } catch (err) {
+      console.log(err);
+      // todo: handle error in the ui
+    }
   };
 
   useEffect(() => {

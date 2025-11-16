@@ -14,6 +14,7 @@ export default function Listing() {
 
   const applyFilter = (filter: FilterDto) => {
     // todo: apply filter
+    // api call -> update products
   };
 
   return (

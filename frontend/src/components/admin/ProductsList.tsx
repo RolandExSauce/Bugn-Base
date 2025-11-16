@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import FullProduct from "../../components/admin/FullProduct";
 import { mockProduct } from "../../types/temp/PlaceholderData";
 import type { Product } from "../../types/models";
@@ -10,12 +10,26 @@ export default function ProductsList() {
 
   const divRef = useRef<HTMLDivElement>(null);
 
+  // later remove the dummy data and instead use below:
   const [products, setProducts] = useState(
     Array.from({ length: 10 }, (_, i) => ({
       ...mockProduct,
       id: String(i + 1),
     }))
   );
+
+  // const fetchProducts = async () => {
+  //   try {
+  //     const data = await AdminService.getProducts();
+  //     setProducts(data);
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   fetchProducts();
+  // }, []);
 
   const [showNewForm, setShowNewForm] = useState(false);
 
@@ -45,6 +59,7 @@ export default function ProductsList() {
     setSelectedProductId(id);
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleNewChange = (key: keyof Product, value: any) => {
     setNewProductForm((prev) => ({ ...prev, [key]: value }));
   };
@@ -103,34 +118,41 @@ export default function ProductsList() {
       active: newProductForm.active ?? false,
     };
 
-    // AdminService.addProduct(productToAdd)
+    try {
+      // AdminService.addProduct(productToAdd)
 
-    divRef.current?.classList.remove("success-animation");
-    void divRef.current?.offsetWidth;
-    divRef.current?.classList.add("success-animation");
+      // success animation
+      divRef.current?.classList.remove("success-animation");
+      void divRef.current?.offsetWidth;
+      divRef.current?.classList.add("success-animation");
 
-    setTimeout(() => {
-      setShowNewForm(false);
-      setNewProductForm({
-        name: "",
-        category: "piano",
-        description: "",
-        price: 0,
-        shippingCost: 0,
-        brand: "",
-        stockStatus: true,
-        shippingTime: 0,
-        active: true,
-      });
-      setNewInvalid({
-        name: false,
-        description: false,
-        price: false,
-        shippingCost: false,
-        brand: false,
-        shippingTime: false,
-      });
-    }, 1000);
+      // reset states:
+      setTimeout(() => {
+        setShowNewForm(false);
+        setNewProductForm({
+          name: "",
+          category: "piano",
+          description: "",
+          price: 0,
+          shippingCost: 0,
+          brand: "",
+          stockStatus: true,
+          shippingTime: 0,
+          active: true,
+        });
+        setNewInvalid({
+          name: false,
+          description: false,
+          price: false,
+          shippingCost: false,
+          brand: false,
+          shippingTime: false,
+        });
+      }, 1000);
+    } catch (error) {
+      console.log(error);
+      // todo: ipmlement error handling in the ui
+    }
   };
 
   return (
