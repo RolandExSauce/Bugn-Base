@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import type { Register } from "../../types/models";
+import type { RegisterDto } from "../../types/models";
 import AuthService from "../../services/auth/auth.service";
 import { useAuthContext } from "../../context/AuthContext";
 import { EMAIL_REGEX, NAME_REGEX, PASSWORD_REGEX } from "../../types/regex";
@@ -10,7 +10,7 @@ const Register = () => {
 
   const { setAuth } = useAuthContext();
 
-  const [registerForm, setRegisterForm] = useState<Register>({
+  const [registerForm, setRegisterForm] = useState<RegisterDto>({
     firstname: "",
     lastname: "",
     email: "",
@@ -81,7 +81,7 @@ const Register = () => {
       navigate("/");
     } catch (error) {
       console.error(error);
-      // todo: handle error
+      // todo: handle signup failure in the UI
     }
   };
 

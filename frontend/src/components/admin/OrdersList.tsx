@@ -5,6 +5,8 @@ import FullOrder from "../../components/admin/FullOrder";
 export default function OrderList() {
   const orders: OrderType[] = Array.from({ length: 3 }, () => mockOrder);
 
+  // todo: implement fetching orders and storing them in state
+
   return (
     <div className="table-responsive">
       <table className="table table-bordered">

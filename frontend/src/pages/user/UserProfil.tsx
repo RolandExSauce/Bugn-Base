@@ -11,6 +11,9 @@ import {
   PHONE_REGEX,
   POSTCODE_REGEX,
 } from "../../types/regex";
+import AuthService from "../../services/auth/auth.service";
+
+// TODO: implement fetch logic for users orders and remove dummy data in the html
 
 const UserProfil = () => {
   const { auth, setAuth } = useAuthContext();
@@ -102,17 +105,22 @@ const UserProfil = () => {
 
     if (hasError) return;
 
-    // TODO: Call API to save updated profile
+    try {
+      // TODO: Call API to save updated profile
 
-    formRef.current?.classList.remove("success-animation");
-    void formRef.current?.offsetWidth;
-    formRef.current?.classList.add("success-animation");
-    setIsEdited(false);
+      formRef.current?.classList.remove("success-animation");
+      void formRef.current?.offsetWidth;
+      formRef.current?.classList.add("success-animation");
+      setIsEdited(false);
+      // TODO: here also update the user info in the auth context and localstorage
+    } catch (error) {
+      console.log(error);
+      // TODO: handle error in the ui
+    }
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("accessToken");
-    setAuth(undefined);
+    AuthService.logout(setAuth);
     window.location.href = "/";
   };
 

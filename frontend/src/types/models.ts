@@ -33,12 +33,12 @@ export interface AuthState {
   role: string;
 }
 
-export interface Login {
+export interface LoginDto {
   email: string;
   password: string;
 }
 
-export interface Register {
+export interface RegisterDto {
   firstname: string;
   lastname: string;
   email: string;

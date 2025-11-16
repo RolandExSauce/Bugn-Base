@@ -13,6 +13,7 @@ export default function Carousel({ imgUrls }: CarouselPropTypes) {
   useEffect(() => {
     startSlide();
     return () => clearInterval(intervalRef.current);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [imgUrls.length]);
 
   const startSlide = () => {

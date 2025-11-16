@@ -1,16 +1,16 @@
 import { useRef, useState } from "react";
-import AuthService from "../../services/auth/auth.service";
 import { Link, useNavigate } from "react-router-dom";
-import type { Login } from "../../types/models";
+import type { LoginDto } from "../../types/models";
 import { useAuthContext } from "../../context/AuthContext";
 import { EMAIL_REGEX, PASSWORD_REGEX } from "../../types/regex";
+import AuthService from "../../services/auth/auth.service";
 
 const Login = () => {
   const navigate = useNavigate();
   const { setAuth } = useAuthContext();
   const mainRef = useRef<HTMLFormElement>(null);
 
-  const [loginForm, setLoginForm] = useState<Login>({
+  const [loginForm, setLoginForm] = useState<LoginDto>({
     email: "",
     password: "",
   });
@@ -49,34 +49,19 @@ const Login = () => {
     if (hasError) return;
 
     try {
-      // await AuthService.login(loginForm, setAuth);
+      await AuthService.login(loginForm, setAuth);
+
+      // success background color animation
       mainRef.current?.classList.remove("success-animation");
       void mainRef.current?.offsetWidth;
       mainRef.current?.classList.add("success-animation");
 
-      //temporary:
-      setAuth({
-        user: {
-          email: loginForm.email,
-          role: "admin",
-          id: "1",
-          firstname: "Max",
-          lastname: "Mustermann",
-          phone: 12345,
-          address: "Street 1",
-          postcode: 1000,
-          active: true,
-          createdAt: new Date(),
-        },
-        accessToken: "token",
-        role: "admin",
-      });
       setTimeout(() => {
         navigate("/");
       }, 800);
     } catch (error) {
       console.error(error);
-      // todo: handle error
+      // TODO: handle login error in the UI
     }
   };
 
