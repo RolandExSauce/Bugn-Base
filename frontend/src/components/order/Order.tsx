@@ -48,18 +48,43 @@ export function Order({ order }: { order: Order }) {
 
           <div className="d-flex flex-column row-gap-2">
             <span className="fw-bold border-bottom">Zahlungsmethode:</span>
-            <span>{order.paymentMethod}</span>
+
+            <span className="d-flex align-items-center gap-2">
+              {order.paymentMethod === "creditcard" && (
+                <>
+                  <img src="/card.svg" alt="Kreditkarte" />
+                  Kreditkarte
+                </>
+              )}
+
+              {order.paymentMethod === "paypal" && (
+                <>
+                  <img src="/paypal.svg" alt="PayPal" />
+                  PayPal
+                </>
+              )}
+
+              {order.paymentMethod === "receipt" && (
+                <>
+                  <img src="/rechnung.svg" alt="Rechnung" />
+                  Rechnung
+                </>
+              )}
+            </span>
           </div>
 
           <div className="mt-3 border-top pt-3 d-flex flex-column gap-2">
             <span className="fw-bold h5 text--primary">Bestellte Artikel:</span>
-            {Array.from({ length: 3 }).map((_, i) => (
-              <CartItem editable={false} key={i} />
+            {Array.from({ length: 2 }).map((_, i) => (
+              <CartItem item={order.items[i]} editable={false} key={i} />
             ))}
           </div>
 
           <div className="mt-2">
-            <strong>Gesamtbetrag:</strong> ${order.totalAmount.toFixed(2)}
+            <strong>Gesamtbetrag: </strong>
+            <span className="text--primary h4">
+              {order.totalAmount.toFixed(2)} €
+            </span>
           </div>
         </div>
       )}

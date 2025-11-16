@@ -1,11 +1,11 @@
 import { createContext, useContext, useState } from "react";
-import type { CartItem } from "../types/models";
+import type { CartItemType } from "../types/models";
 
 interface CartContextType {
-  cart: CartItem[] | undefined;
-  addItem: (item: CartItem) => void;
+  cart: CartItemType[];
+  addItem: (item: CartItemType) => void;
   removeItem: (itemId: string) => void;
-  updateItem: (item: CartItem) => void;
+  updateItem: (item: CartItemType) => void;
   clearCart: () => void;
 }
 
@@ -27,17 +27,27 @@ export const CartContextProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
-  const [cart, setCart] = useState<CartItem[] | undefined>(undefined);
+  const [cart, setCart] = useState<CartItemType[]>([]);
 
-  const addItem = (item: CartItem) => {
-    setCart([...cart!, item]);
+  const addItem = (item: CartItemType) => {
+    if (cart.some((i) => i.product.id === item.product.id)) {
+      setCart(
+        cart.map((i) =>
+          i.product.id === item.product.id
+            ? { ...i, quantity: i.quantity + item.quantity }
+            : i
+        )
+      );
+    } else {
+      setCart([...cart, item]);
+    }
   };
 
   const removeItem = (itemId: string) => {
     setCart([...cart!.filter((i) => i.product.id !== itemId)]);
   };
 
-  const updateItem = (item: CartItem) => {
+  const updateItem = (item: CartItemType) => {
     setCart([
       ...cart!.map((i) => (i.product.id === item.product.id ? item : i)),
     ]);

@@ -87,19 +87,39 @@ export default function FullProduct({
     }
 
     setInvalidInput(newInvalidInput);
+
+    // todo
+    // try
     // AdminService.updateProduct(product);
 
     trRef.current?.classList.remove("user-row-success");
     void trRef.current?.offsetWidth;
     trRef.current?.classList.add("user-row-success");
 
+    setInvalidInput({
+      name: false,
+      description: false,
+      price: false,
+      shippingCost: false,
+      brand: false,
+      shippingTime: false,
+    });
+
     setTimeout(() => {
       handleSelect("");
+      setIsEdited(false);
     }, 800);
+
+    // catch - msg: try again
   };
 
   const handleDelete = () => {
     AdminService.deleteProduct(product.id);
+  };
+
+  const handleUndoEdit = () => {
+    handleSelect("");
+    setProduct(initialProduct);
   };
 
   if (selectedProductId === product.id) {
@@ -234,12 +254,7 @@ export default function FullProduct({
         <td className="d-flex column-gap-2">
           <AdminUpdateButton disabled={!isEdited} action={handleSave} />
 
-          <button
-            className="admin-user-action-button"
-            onClick={() => {
-              handleSelect("");
-            }}
-          >
+          <button className="admin-user-action-button" onClick={handleUndoEdit}>
             <img width="25px" height="25px" src="/undo.svg" alt="undo" />
           </button>
         </td>

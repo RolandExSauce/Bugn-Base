@@ -2,11 +2,11 @@ import { Link } from "react-router-dom";
 import Searchbar from "./Searchbar";
 import { useRef } from "react";
 import { useAuthContext } from "../../context/AuthContext";
+import { useCartContext } from "../../context/CartContext";
 
 const NavBar = () => {
-  // const { auth } = useAuthContext();
-  const auth = true;
-  // temporarily set auth to true
+  const { auth } = useAuthContext();
+  const { cart } = useCartContext();
 
   const navbarButtonsRef = useRef<HTMLDivElement>(null);
 
@@ -32,6 +32,11 @@ const NavBar = () => {
         </Link>
         <Link className="navbar-button" to="/cart">
           <img src="/cart.svg" alt="" />
+          {cart && cart.length > 0 && (
+            <span className="cart-amount-circle">
+              {cart.reduce((a, b) => a + b.quantity, 0)}
+            </span>
+          )}
           <span>Warenkorb</span>
         </Link>
         {auth ? (

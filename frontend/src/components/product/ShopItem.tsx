@@ -1,7 +1,7 @@
 //use a card like element to display a single shop item
 const ShopItem = () => {
   return (
-    <div className="shop-item d-flex flex-column p-4 row-gap-1 bg-white">
+    <div className="shop-item d-flex align-items-center flex-column p-4 row-gap-1 bg-white">
       <div className="shop-item-image mw-100">
         <img src="/g-1.jpg" alt="" />
       </div>

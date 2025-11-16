@@ -1,6 +1,5 @@
 import { createContext, useState, useContext } from "react";
 import type { AuthState } from "../types/models";
-import { mockUser } from "../types/temp/PlaceholderData";
 
 type AuthContextType = {
   setAuth: React.Dispatch<React.SetStateAction<AuthState | undefined>>;
@@ -27,11 +26,7 @@ export const useAuthContext = (): AuthContextType => {
 
 export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
   // temporarily setting to mock admin
-  const [auth, setAuth] = useState<AuthState | undefined>({
-    user: mockUser,
-    accessToken: "",
-    role: "ADMIN",
-  });
+  const [auth, setAuth] = useState<AuthState | undefined>(undefined);
 
   const value: AuthContextType = {
     auth,

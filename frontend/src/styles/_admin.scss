@@ -4,11 +4,22 @@
   border-radius: 5px;
   background-color: $primary-dark;
   color: white;
+  padding: 5px 15px;
+  font-weight: 700;
+  & img {
+    width: 40px;
+    height: 40px;
+  }
 }
 
 .admin-nav-button {
   border: 1px solid $primary-dark;
   border-radius: 5px;
+  padding: 5px 15px;
+  & img {
+    width: 40px;
+    height: 40px;
+  }
 }
 
 .admin-details-button {
@@ -57,10 +68,6 @@
   }
 }
 
-.add-new-product-div--success {
-  animation: admin-edit-row-success 1s ease;
-}
-
 @keyframes admin-edit-row-success {
   0% {
     background-color: green;
@@ -72,4 +79,15 @@
 
 .add-new-product-div {
   background-color: $primary-light;
+}
+
+.success-animation {
+  animation: admin-edit-row-success 1s ease;
+}
+
+.button-disabled {
+  opacity: 0.5;
+  &:hover {
+    cursor: default;
+  }
 }

@@ -108,12 +108,18 @@ const UserRow = ({ user, handleSelect, selectedUserId }: UserProps) => {
     trRef.current?.classList.add("user-row-success");
     setTimeout(() => {
       handleSelect("");
+      setIsEdited(false);
     }, 800);
   };
 
   const handleDelete = () => {
     // first confirm, do you really want to delete
     AdminService.deleteUser(form.id);
+  };
+
+  const handleUndoEdit = () => {
+    handleSelect("");
+    setForm(user);
   };
 
   // render editable row if the row is selected
@@ -215,10 +221,7 @@ const UserRow = ({ user, handleSelect, selectedUserId }: UserProps) => {
         </td>
         <td>
           <AdminUpdateButton disabled={!isEdited} action={handleSave} />
-          <button
-            className="admin-user-action-button"
-            onClick={() => handleSelect("")}
-          >
+          <button className="admin-user-action-button" onClick={handleUndoEdit}>
             <img
               width="25px"
               height="25px"

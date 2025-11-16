@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import AuthService from "../../services/auth/auth.service";
 import { Link, useNavigate } from "react-router-dom";
 import type { Login } from "../../types/models";
@@ -8,6 +8,7 @@ import { EMAIL_REGEX, PASSWORD_REGEX } from "../../types/regex";
 const Login = () => {
   const navigate = useNavigate();
   const { setAuth } = useAuthContext();
+  const mainRef = useRef<HTMLFormElement>(null);
 
   const [loginForm, setLoginForm] = useState<Login>({
     email: "",
@@ -48,8 +49,31 @@ const Login = () => {
     if (hasError) return;
 
     try {
-      await AuthService.login(loginForm, setAuth);
-      navigate("/");
+      // await AuthService.login(loginForm, setAuth);
+      mainRef.current?.classList.remove("success-animation");
+      void mainRef.current?.offsetWidth;
+      mainRef.current?.classList.add("success-animation");
+
+      //temporary:
+      setAuth({
+        user: {
+          email: loginForm.email,
+          role: "ADMIN",
+          id: "1",
+          firstname: "Max",
+          lastname: "Mustermann",
+          phone: 12345,
+          address: "Street 1",
+          postcode: 1000,
+          active: true,
+          createdAt: new Date(),
+        },
+        accessToken: "token",
+        role: "ADMIN",
+      });
+      setTimeout(() => {
+        navigate("/");
+      }, 800);
     } catch (error) {
       console.error(error);
       // todo: handle error
@@ -59,6 +83,7 @@ const Login = () => {
   return (
     <main className="login-page d-flex">
       <form
+        ref={mainRef}
         onSubmit={handleLogin}
         className="login-form d-flex flex-column justify-content-center align-items-center gap-3"
       >

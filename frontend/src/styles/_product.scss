@@ -142,7 +142,24 @@
   }
 }
 
+.add-cart-button {
+  background-color: #198754;
+}
+
 .product-amount-title {
   color: $primary-dark;
   font-size: 1.2rem;
+}
+
+.green-button-success {
+  animation: green-button-success-animation 1s ease;
+}
+
+@keyframes green-button-success-animation {
+  0% {
+    background-color: #ffffff;
+  }
+  100% {
+    background-color: #198754;
+  }
 }
