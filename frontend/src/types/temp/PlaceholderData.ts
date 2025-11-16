@@ -65,7 +65,7 @@ export const mockUser: User = {
   email: "alice@mail.com",
   active: true,
   createdAt: new Date(),
-  role: "ADMIN",
+  role: "admin",
 };
 
 export const mockUser2: User = {
@@ -78,7 +78,7 @@ export const mockUser2: User = {
   email: "alice@mail.com",
   active: true,
   createdAt: new Date(),
-  role: "USER",
+  role: "user",
 };
 
 export const mockUser3: User = {
@@ -91,7 +91,7 @@ export const mockUser3: User = {
   email: "alice@mail.com",
   active: true,
   createdAt: new Date(),
-  role: "USER",
+  role: "user",
 };
 
 export const mockOrder: Order = {

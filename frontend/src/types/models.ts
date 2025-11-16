@@ -104,6 +104,6 @@ export type PaymentMethod = "creditcard" | "paypal" | "receipt";
 
 export type DeliveryStatus = "pending" | "shipped" | "delivered" | "cancelled";
 
-export type Role = "USER" | "ADMIN";
+export type Role = "user" | "admin";
 
 export type SortType = "price-asc" | "price-desc" | "";
