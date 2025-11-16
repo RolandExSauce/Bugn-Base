@@ -1,10 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { Order } from "../../components/order/Order";
 import { mockOrder } from "../../types/temp/PlaceholderData";
 import { useAuthContext } from "../../context/AuthContext";
 import type { User } from "../../types/models";
 import {
+  ADDRESS_REGEX,
   EMAIL_REGEX,
   NAME_REGEX,
   PHONE_REGEX,
@@ -13,6 +14,9 @@ import {
 
 const UserProfil = () => {
   const { auth, setAuth } = useAuthContext();
+  const [isEdited, setIsEdited] = useState(false);
+
+  const formRef = useRef<HTMLFormElement>(null);
 
   const [userProfileForm, setUserProfileForm] = useState<Partial<User>>({
     firstname: "",
@@ -47,6 +51,7 @@ const UserProfil = () => {
   }, [auth]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setIsEdited(true);
     setUserProfileForm({
       ...userProfileForm,
       [e.target.name]: e.target.value,
@@ -80,7 +85,7 @@ const UserProfil = () => {
       newInvalidInput.phone = true;
       hasError = true;
     }
-    if (!NAME_REGEX.test(userProfileForm.address ?? "")) {
+    if (!ADDRESS_REGEX.test(userProfileForm.address ?? "")) {
       newInvalidInput.address = true;
       hasError = true;
     }
@@ -98,6 +103,17 @@ const UserProfil = () => {
     if (hasError) return;
 
     // TODO: Call API to save updated profile
+
+    formRef.current?.classList.remove("success-animation");
+    void formRef.current?.offsetWidth;
+    formRef.current?.classList.add("success-animation");
+    setIsEdited(false);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("accessToken");
+    setAuth(undefined);
+    window.location.href = "/";
   };
 
   return (
@@ -105,6 +121,7 @@ const UserProfil = () => {
       <h1 className="mb-4">Mein Profil</h1>
 
       <form
+        ref={formRef}
         className="border rounded p-3 mb-4 d-flex flex-column gap-3"
         onSubmit={handleSaveUserDetails}
       >
@@ -175,7 +192,11 @@ const UserProfil = () => {
         <div className="d-flex flex-column align-items-end">
           <button
             type="submit"
-            className="profile-save-button text-white px-4 py-2 fw-bold h4"
+            className={`profile-save-button text-white px-4 py-2 fw-bold h4 ${
+              isEdited ? "" : "button-disabled"
+            }`}
+            onClick={handleSaveUserDetails}
+            disabled={!isEdited}
           >
             Speichern
           </button>
@@ -207,6 +228,13 @@ const UserProfil = () => {
               zur Adminseite
             </Link>
           )}
+
+          <button
+            onClick={handleLogout}
+            className="profile-save-button bg-danger rounded text-white px-4 py-2 fw-bold h4"
+          >
+            Abmelden
+          </button>
         </div>
       </form>
 

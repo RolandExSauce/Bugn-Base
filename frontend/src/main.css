@@ -28,7 +28,7 @@
 
 .navbar {
   display: flex;
-  background-color: rgb(255, 183, 107);
+  background: linear-gradient(280deg, rgb(255, 183, 107) 10%, rgb(220, 127, 27) 100%);
   height: 70px;
   width: auto;
   align-items: center;
@@ -67,6 +67,7 @@
 }
 
 .navbar-button {
+  position: relative;
   background: none;
   border: 1px solid rgba(0, 0, 0, 0);
   display: flex;
@@ -116,6 +117,22 @@
     width: 40px;
     aspect-ratio: 1;
   }
+}
+
+.cart-amount-circle {
+  position: absolute;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  background-color: rgb(220, 127, 27);
+  color: white;
+  font-weight: 600;
+  top: 0;
+  right: 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 0.8rem;
 }
 
 :root {
@@ -377,11 +394,27 @@ th {
   aspect-ratio: 1/1;
 }
 
+.add-cart-button {
+  background-color: #198754;
+}
+
 .product-amount-title {
   color: rgb(220, 127, 27);
   font-size: 1.2rem;
 }
 
+.green-button-success {
+  animation: green-button-success-animation 1s ease;
+}
+
+@keyframes green-button-success-animation {
+  0% {
+    background-color: #ffffff;
+  }
+  100% {
+    background-color: #198754;
+  }
+}
 .login-page {
   height: 100vh;
   width: 100%;
@@ -537,11 +570,22 @@ th {
   border-radius: 5px;
   background-color: rgb(220, 127, 27);
   color: white;
+  padding: 5px 15px;
+  font-weight: 700;
+}
+.admin-nav-button--selected img {
+  width: 40px;
+  height: 40px;
 }
 
 .admin-nav-button {
   border: 1px solid rgb(220, 127, 27);
   border-radius: 5px;
+  padding: 5px 15px;
+}
+.admin-nav-button img {
+  width: 40px;
+  height: 40px;
 }
 
 .admin-details-button {
@@ -584,10 +628,6 @@ th {
   animation: admin-edit-row-success 1s ease;
 }
 
-.add-new-product-div--success {
-  animation: admin-edit-row-success 1s ease;
-}
-
 @keyframes admin-edit-row-success {
   0% {
     background-color: green;
@@ -598,6 +638,17 @@ th {
 }
 .add-new-product-div {
   background-color: rgb(255, 221, 186);
+}
+
+.success-animation {
+  animation: admin-edit-row-success 1s ease;
+}
+
+.button-disabled {
+  opacity: 0.5;
+}
+.button-disabled:hover {
+  cursor: default;
 }
 
 :root {

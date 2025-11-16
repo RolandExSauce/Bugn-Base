@@ -46,14 +46,13 @@ export interface Register {
 }
 
 // Cart
-export interface CartItem {
-  id: string;
+export interface CartItemType {
   product: Product;
   quantity: number;
 }
 
 export interface Cart {
-  items: CartItem[];
+  items: CartItemType[];
   totalPrice: number;
 }
 
@@ -67,12 +66,12 @@ export interface Order {
   deliveryAddress: string;
   deliveryPostcode: number;
   paymentMethod: PaymentMethod;
-  items: OrderItem[];
+  items: CartItemType[];
   deliveryStatus: DeliveryStatus;
 }
 
 // Review Dto
-export default interface Review {
+export interface Review {
   reviewId: string;
   product: Product;
   username: string;
@@ -83,13 +82,20 @@ export default interface Review {
 
 // MEssageDto
 
-export default interface MessageDto {
+export interface MessageDto {
   messageId: string;
   name: string;
   email: string;
   subject: string;
   message: string;
   createdAt: Date;
+}
+
+export interface FilterDto {
+  category: ItemCategory;
+  brands: string[];
+  sort: SortType;
+  stars: number | undefined;
 }
 
 export type ItemCategory = "piano" | "guitar" | "violin";
@@ -100,4 +106,4 @@ export type DeliveryStatus = "pending" | "shipped" | "delivered" | "cancelled";
 
 export type Role = "USER" | "ADMIN";
 
-type OrderItem = { product: Product; quantity: number };
+export type SortType = "price-asc" | "price-desc" | "";

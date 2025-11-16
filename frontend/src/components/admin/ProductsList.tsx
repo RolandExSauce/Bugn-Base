@@ -105,9 +105,9 @@ export default function ProductsList() {
 
     // AdminService.addProduct(productToAdd)
 
-    divRef.current?.classList.remove("add-new-product-div--success");
+    divRef.current?.classList.remove("success-animation");
     void divRef.current?.offsetWidth;
-    divRef.current?.classList.add("add-new-product-div--success");
+    divRef.current?.classList.add("success-animation");
 
     setTimeout(() => {
       setShowNewForm(false);
