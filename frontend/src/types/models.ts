@@ -3,9 +3,9 @@ export interface User {
   id: string;
   firstname: string;
   lastname: string;
-  phone: number | undefined;
-  address: string | undefined;
-  postcode: number | undefined;
+  phone?: string | number;
+  address?: string;
+  postcode: number;
   email: string;
   active: boolean;
   createdAt: Date;
@@ -30,7 +30,6 @@ export interface Product {
 export interface AuthState {
   user: User;
   accessToken: string;
-  role: string;
 }
 
 export interface LoginDto {
@@ -95,7 +94,7 @@ export interface FilterDto {
   category: ItemCategory;
   brands: string[];
   sort: SortType;
-  stars: number | undefined;
+  stars?: number;
 }
 
 export type ItemCategory = "piano" | "guitar" | "violin";
@@ -104,6 +103,6 @@ export type PaymentMethod = "creditcard" | "paypal" | "receipt";
 
 export type DeliveryStatus = "pending" | "shipped" | "delivered" | "cancelled";
 
-export type Role = "user" | "admin";
+export type Role = "ROLE_USER" | "ROLE_ADMIN";
 
 export type SortType = "price-asc" | "price-desc" | "";

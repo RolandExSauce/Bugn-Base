@@ -1,13 +1,14 @@
 import { useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import type { LoginDto } from "../../types/models";
-import { useAuthContext } from "../../context/AuthContext";
 import { EMAIL_REGEX, PASSWORD_REGEX } from "../../types/regex";
-import AuthService from "../../services/auth/auth.service";
+import { useAuth } from "../../context/AuthContext";
 
 const Login = () => {
+  
   const navigate = useNavigate();
-  const { setAuth } = useAuthContext();
+  const { login } = useAuth();
+
   const mainRef = useRef<HTMLFormElement>(null);
 
   const [loginForm, setLoginForm] = useState<LoginDto>({
@@ -49,7 +50,7 @@ const Login = () => {
     if (hasError) return;
 
     try {
-      await AuthService.login(loginForm, setAuth);
+      await login(loginForm);
 
       // success background color animation
       mainRef.current?.classList.remove("success-animation");

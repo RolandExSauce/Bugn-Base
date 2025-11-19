@@ -46,3 +46,9 @@ initiiert die db und befüllt sie mit sql vom init.sql file wenn der container g
 3b) um die postgres db innerhalb des containers über terminal zu erreichen:
 
 docker exec -it bugnbass-postgres-container psql -U bugnbass -d bugnbass
+
+
+# LOGIN/REGISTER ENDPOINTS AT: 
+
+POST http://localhost:8080/bugnbass/auth/login
+POST http://localhost:8080/bugnbass/auth/register

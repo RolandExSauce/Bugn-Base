@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { Order } from "../../components/order/Order";
 import { mockOrder } from "../../types/temp/PlaceholderData";
-import { useAuthContext } from "../../context/AuthContext";
 import type { User } from "../../types/models";
 import {
   ADDRESS_REGEX,
@@ -11,12 +10,11 @@ import {
   PHONE_REGEX,
   POSTCODE_REGEX,
 } from "../../types/regex";
-import AuthService from "../../services/auth/auth.service";
+import { useAuth } from "../../context/AuthContext";
 
-// TODO: implement fetch logic for users orders and remove dummy data in the html
 
 const UserProfil = () => {
-  const { auth, setAuth } = useAuthContext();
+  const { auth, logout } = useAuth();
   const [isEdited, setIsEdited] = useState(false);
 
   const formRef = useRef<HTMLFormElement>(null);
@@ -119,10 +117,10 @@ const UserProfil = () => {
     }
   };
 
-  const handleLogout = () => {
-    AuthService.logout(setAuth);
-    window.location.href = "/";
-  };
+  // const handleLogout = () => {
+  //   AuthService.logout(setAuth);
+  //   window.location.href = "/";
+  // };
 
   return (
     <div className="d-flex flex-column container py-4">
@@ -200,9 +198,8 @@ const UserProfil = () => {
         <div className="d-flex flex-column align-items-end">
           <button
             type="submit"
-            className={`profile-save-button text-white px-4 py-2 fw-bold h4 ${
-              isEdited ? "" : "button-disabled"
-            }`}
+            className={`profile-save-button text-white px-4 py-2 fw-bold h4 ${isEdited ? "" : "button-disabled"
+              }`}
             onClick={handleSaveUserDetails}
             disabled={!isEdited}
           >
@@ -238,7 +235,7 @@ const UserProfil = () => {
           )}
 
           <button
-            onClick={handleLogout}
+            onClick={logout}
             className="profile-save-button bg-danger rounded text-white px-4 py-2 fw-bold h4"
           >
             Abmelden

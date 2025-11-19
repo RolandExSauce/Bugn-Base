@@ -1,32 +1,24 @@
 package com.bugnbass.backend.config;
 import com.bugnbass.backend.model._interface.IBaseUser;
 import com.bugnbass.backend.repository.AdminRepository;
-import com.bugnbass.backend.repository.UserRepository;
+import com.bugnbass.backend.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-//TODO: assigned by Ines
-
 @Service
 @RequiredArgsConstructor
 public class CustUserDetailsService implements UserDetailsService {
 
-    private final UserRepository userRepository;
-    private final AdminRepository adminRepository;
+    private final UserService userService;
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        // Try to find the user in the user repository
-        return userRepository.findByUsername(username)
-                .map(u -> (IBaseUser) u)
-                .orElseGet(() -> adminRepository.findByUsername(username)
-                        .map(a -> (IBaseUser) a)
-                        .orElseThrow(() ->
-                                new UsernameNotFoundException("User not found with email: " + username)
-                        )
+    public UserDetails loadUserByUsername(String email) {
+        return userService.findByEmail(email)
+                .orElseThrow(() ->
+                    new UsernameNotFoundException("User not found with email: " + email)
                 );
-    };
-};
+    }
+}

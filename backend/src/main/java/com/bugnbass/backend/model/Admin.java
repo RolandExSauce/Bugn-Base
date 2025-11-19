@@ -21,9 +21,11 @@ public class Admin implements IBaseUser {
     @Id
     private Long id;
 
-    String email;
-    String username;
-    String password;
+    @Column(nullable = false, unique = true)
+    private String email;
+
+    @Column(nullable = false)
+    private String password;
 
     @Enumerated(EnumType.STRING)
     UserRole role = UserRole.ROLE_ADMIN;
@@ -35,12 +37,12 @@ public class Admin implements IBaseUser {
 
     @Override
     public String getPassword() {
-        return "";
+        return this.password;
     }
 
     @Override
     public String getUsername() {
-        return "";
+        return this.email;
     }
 
     public void encodePw(String plainPw, PasswordEncoder encoder){

@@ -1,68 +1,87 @@
 import type { AuthState, LoginDto, RegisterDto } from "../../types/models";
+import axios, { type AxiosInstance } from "axios";
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
-export default class AuthService {
+class AuthService {
+  private static api: AxiosInstance = axios.create({
+    baseURL: `${BASE_URL}/bugnbass`,
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  // Attach token automatically to all requests
+  static initializeInterceptors() {
+    AuthService.api.interceptors.request.use(
+      (config) => {
+        const auth = localStorage.getItem("auth");
+        if (auth) {
+          const token = JSON.parse(auth).accessToken;
+          if (config.headers) {
+            config.headers.Authorization = `Bearer ${token}`;
+          }
+        }
+        return config;
+      },
+      (error) => Promise.reject(error)
+    );
+
+    // Optional: response interceptor for handling 401 globally
+    AuthService.api.interceptors.response.use(
+      (response) => response,
+      (error) => {
+        if (error.response?.status === 401) {
+          localStorage.removeItem("auth");
+          // You could also trigger a global logout here if using context
+          console.warn("Unauthorized, logging out...");
+        }
+        return Promise.reject(error);
+      }
+    );
+  }
+
   public static login = async (
     loginForm: LoginDto,
-    setAuth: React.Dispatch<React.SetStateAction<AuthState | undefined>>
+    setAuth: React.Dispatch<React.SetStateAction<AuthState | null>>
   ) => {
-    console.log(BASE_URL);
-    const response = await fetch(`${BASE_URL}/bugnbass/auth/login`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(loginForm),
-    });
+    try {
+      const response = await AuthService.api.post<AuthState>("/auth/login", loginForm);
+      const data = response.data;
 
-    if (!response.ok) {
-      throw new Error(`${response.status}`);
-      //todo: catch this in the component and show an error message
+      setAuth(data);
+      localStorage.setItem("auth", JSON.stringify(data));
+      return data;
+    } catch (err: any) {
+      throw new Error(err.response?.data?.message || "Login failed");
     }
-
-    const data = await response.json();
-    // assuming BE returns a response "AuthState", sets the auth context
-    setAuth(data);
-    // stores auth data in local storage
-    localStorage.setItem("auth", JSON.stringify(data));
-    return data;
   };
 
   public static logout = (
-    setAuth: React.Dispatch<React.SetStateAction<AuthState | undefined>>
+    setAuth: React.Dispatch<React.SetStateAction<AuthState | null>>
   ) => {
-    // removes auth data from local storage
     localStorage.removeItem("auth");
-    // sets the auth context to undefined
-    setAuth(undefined);
+    setAuth(null);
   };
 
   public static signup = async (
     registerForm: RegisterDto,
-    setAuth: React.Dispatch<React.SetStateAction<AuthState | undefined>>
+    setAuth: React.Dispatch<React.SetStateAction<AuthState | null>>
   ) => {
-    const response = await fetch(`${BASE_URL}/bugnbass/auth/register`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(registerForm),
-    });
-
-    if (!response.ok) {
-      throw new Error(`${response.status}`);
-      //todo: catch this in the component and show an error message
-    }
-
-    // assuming backend automatically logs the user in after registering. returning a  response "AuthState"
     try {
-      const data = await response.json();
+      const response = await AuthService.api.post<AuthState>("/auth/register", registerForm);
+      const data = response.data;
+
       setAuth(data);
+      localStorage.setItem("auth", JSON.stringify(data));
       return data;
-    } catch {
-      return;
-      // auto login upon signup failed. doesnt have to be handled necessarily
+    } catch (err: any) {
+      throw new Error(err.response?.data?.message || "Registration failed");
     }
   };
 }
+
+// initialize interceptors once
+AuthService.initializeInterceptors();
+
+export default AuthService;
