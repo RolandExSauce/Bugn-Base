@@ -1,13 +1,13 @@
-package com.bugnbass.backend.model;
 import com.bugnbass.backend.model._interface.IBaseUser;
 import com.bugnbass.backend.model.enums.UserRole;
 import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import java.time.Instant;
 import java.util.Collection;
 import java.util.List;
 import lombok.*;
-
 
 @Entity
 @Table(name = "users")
@@ -23,31 +23,35 @@ public class User implements IBaseUser {
     private Long id;
 
     @Column(nullable = false, unique = true)
-    String email;
+    private String email;
 
     @Column
-    String username;
+    private String firstname;
+
+    @Column
+    private String lastname;
 
     @Column(nullable = false)
-    String password;
+    private String password;
 
     @Enumerated(EnumType.STRING)
-    UserRole role = UserRole.ROLE_USER;
+    private UserRole role = UserRole.ROLE_USER;
 
-
-    @Column(nullable = false, unique = true)
-    private String fullName; // For customer users, use the full name for profile picture
-
+    @Column
+    private String phone;
 
     @Column(nullable = false)
-    private String phoneNumber;
+    private Integer postcode;
+
+    @Column
+    private String address;
 
     @Column(nullable = false)
-    private String stateAndDistrict; // state and district of customer, e.g. Vienna, 1220
+    private boolean active = true;
 
-    @Column(nullable = false)
-    private String shippingAddress; //Can be updated when making order
-
+    @CreationTimestamp
+    @Column(updatable = false)
+    private Instant createdAt;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -56,15 +60,15 @@ public class User implements IBaseUser {
 
     @Override
     public String getPassword() {
-        return "";
+        return this.password;
     }
 
     @Override
     public String getUsername() {
-        return "";
+        return this.email;
     }
 
     public void encodePw(String plainPw, PasswordEncoder encoder){
         this.password = encoder.encode(plainPw);
-    };
-};
+    }
+}

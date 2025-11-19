@@ -1,11 +1,11 @@
 import { Link } from "react-router-dom";
 import Searchbar from "./Searchbar";
 import { useRef } from "react";
-import { useAuthContext } from "../../context/AuthContext";
 import { useCartContext } from "../../context/CartContext";
+import { useAuth } from "../../context/AuthContext";
 
 const NavBar = () => {
-  const { auth } = useAuthContext();
+  const { auth } = useAuth();
   const { cart } = useCartContext();
 
   const navbarButtonsRef = useRef<HTMLDivElement>(null);

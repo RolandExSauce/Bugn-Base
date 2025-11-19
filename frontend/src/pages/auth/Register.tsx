@@ -1,14 +1,14 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import type { RegisterDto } from "../../types/models";
-import AuthService from "../../services/auth/auth.service";
-import { useAuthContext } from "../../context/AuthContext";
 import { EMAIL_REGEX, NAME_REGEX, PASSWORD_REGEX } from "../../types/regex";
+import { useAuth } from "../../context/AuthContext";
+
 
 const Register = () => {
-  const navigate = useNavigate();
 
-  const { setAuth } = useAuthContext();
+  const navigate = useNavigate();
+  const { signup  } = useAuth();
 
   const [registerForm, setRegisterForm] = useState<RegisterDto>({
     firstname: "",
@@ -18,7 +18,6 @@ const Register = () => {
   });
 
   const [retypePassword, setRetypePassword] = useState<string>("");
-
   const [invalidInput, setInvalidInput] = useState({
     firstname: false,
     lastname: false,
@@ -73,11 +72,11 @@ const Register = () => {
     }
 
     setInvalidInput(newInvalidInput);
-
+    
     if (hasError) return;
 
     try {
-      await AuthService.signup(registerForm, setAuth);
+      await signup(registerForm);
       navigate("/");
     } catch (error) {
       console.error(error);

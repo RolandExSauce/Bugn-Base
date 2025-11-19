@@ -1,5 +1,4 @@
 package com.bugnbass.backend.service;
-
 import com.bugnbass.backend.dto.ProductDTO;
 import com.bugnbass.backend.exceptions.ProductNotFoundException;
 import com.bugnbass.backend.model.Product;
@@ -9,8 +8,8 @@ import com.bugnbass.backend.repository.ProductRepository;
 import com.bugnbass.backend.validator.ProductValidator;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
+
 
 @Service
 public class AdminProductService {
@@ -70,27 +69,23 @@ public class AdminProductService {
 
         product.setActive(false);
 
-
-        //
         //  Achtung. Lösche die Bilder nicht wirklich!
         //  Produktbilder sind in development geteilt...
         //
+        // try {
+        //     Iterator<Image> imagesIterator = product.getImages().iterator();
 
-/*         try {
-            Iterator<Image> imagesIterator = product.getImages().iterator();
-
-            while(imagesIterator.hasNext()) {
-                Image image = imagesIterator.next();
-                imagesIterator.remove();
-                imageService.deleteImage(image.getImageId());
-            }
-        }
-        catch (Exception e) {
-            throw new RuntimeException("Produkt konnte nicht angelegt werden.");
-        }*/
-
-
+        //     while(imagesIterator.hasNext()) {
+        //         Image image = imagesIterator.next();
+        //         imagesIterator.remove();
+        //         imageService.deleteImage(image.getImageId());
+        //     }
+        // }
+        // catch (Exception e) {
+        //     throw new RuntimeException("Produkt konnte nicht angelegt werden.");
+        // }
     }
+
 
     @Transactional
     public void updateProduct(String id, ProductDTO productDTO) {

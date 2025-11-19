@@ -1,14 +1,12 @@
 package com.bugnbass.backend.controller;
-
-
 import com.bugnbass.backend.dto.ProductDTO;
 import com.bugnbass.backend.model.Product;
 import com.bugnbass.backend.service.AdminProductService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
+
 
 @RestController
 @RequestMapping("/api/admin/products")

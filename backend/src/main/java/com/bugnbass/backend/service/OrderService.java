@@ -12,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -33,77 +32,54 @@ public class OrderService {
         this.orderItemRepo = orderItemRepo;
         this.productService = productService;
         this.userService = userService;
-    };
+    }
 
     @Transactional
     public OrderStatus createOrder(OrderDTO orderDTO) {
 
-        // Check if user exists by email
-        Optional<User> userOptional = userService.findUserByEmail(orderDTO.userEmailToMakeOrderFor());
+        // Find customer by email (new field name)
+        var user = userService
+                .findByEmail(orderDTO.customerEmail())
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
 
-        //Extract the user from Optional first
-        User user = userOptional.orElseThrow(() ->
-                new IllegalArgumentException("User not found")
-        );
-
-        boolean userDataUpdated = false;
-
-        // Check if the email has been updated
-        if (!user.getEmail().equals(orderDTO.updatedOrNotUserEmail())) {
-            user.setEmail(orderDTO.updatedOrNotUserEmail());
-            userDataUpdated = true;
-        }
-
-        // Check if the phone number has been updated
-        if (!user.getPhoneNumber().equals(orderDTO.updatedOrNotUserPhoneNumber())) {
-            user.setPhoneNumber(orderDTO.updatedOrNotUserPhoneNumber());
-            userDataUpdated = true;
-        }
-
-        // Check if the state and district have been updated
-        if (!user.getStateAndDistrict().equals(orderDTO.updatedOrNotStateAndDistrict())) {
-            user.setStateAndDistrict(orderDTO.updatedOrNotStateAndDistrict());
-            userDataUpdated = true;
-        }
-
-        // Check if the shipping address has been updated
-        if (!user.getShippingAddress().equals(orderDTO.updatedOrNotShippingAddress())) {
-            user.setShippingAddress(orderDTO.updatedOrNotShippingAddress());
-            userDataUpdated = true;
-        }
-
-        // Save the updated customer details if any changes were made
-        if (userDataUpdated) {
-            userService.updateCustomer(user); // Fixed variable name from 'customer' to 'user'
-        }
+        // ❗ NO USER INFO UPDATE HERE — this DTO no longer handles updates.
+        // The shipping info below belongs only to the ORDER, not the user profile.
 
         // Create order
         Order order = new Order();
-
-        order.setUser(user);
         order.setUser(user);
         order.setTotalOrderPrice(BigDecimal.valueOf(orderDTO.totalOrderPrice()));
         order.setDeliveryDate(LocalDate.now().plusWeeks(2));
         order.setOrderedDate(LocalDate.now());
         order.setOrderStatus(OrderStatus.RECEIVED);
 
-        Order finalOrder = order;
-        List<OrderItem> orderItems = orderDTO.orderItems().stream().map(dto -> {
-            Product product = productService.getProduct(dto.productId());
+        // Set shipping information inside Order (if your Order entity supports it)
+        order.setShippingPhone(orderDTO.customerPhoneNumber());
+        order.setShippingStateAndDistrict(orderDTO.shippingStateAndDistrict());
+        order.setShippingAddress(orderDTO.shippingAddress());
 
-            OrderItem orderItem = new OrderItem();
-            orderItem.setProduct(product);
-            orderItem.setQuantity(dto.quantity());
-            orderItem.setPrice(BigDecimal.valueOf(dto.price()));
-            orderItem.setOrder(finalOrder);
-            return orderItem;
-        }).collect(Collectors.toList());
+        Order savedParent = order;
+
+        // Map order items
+        List<OrderItem> orderItems = orderDTO.orderItems().stream()
+                .map(dto -> {
+                    Product product = productService.getProduct(dto.productId());
+
+                    OrderItem item = new OrderItem();
+                    item.setProduct(product);
+                    item.setQuantity(dto.quantity());
+                    item.setPrice(BigDecimal.valueOf(dto.price()));
+                    item.setOrder(savedParent);
+                    return item;
+                })
+                .collect(Collectors.toList());
 
         order.setOrderItems(orderItems);
-        order = orderRepo.save(order);
+
+        // Save order + items
+        orderRepo.save(order);
         orderItemRepo.saveAll(orderItems);
 
         return order.getOrderStatus();
-    };
-
-};
+    }
+}

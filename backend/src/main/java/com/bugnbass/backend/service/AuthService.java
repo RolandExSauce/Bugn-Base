@@ -1,5 +1,4 @@
 package com.bugnbass.backend.service;
-
 import com.bugnbass.backend.config.JwtUtil;
 import com.bugnbass.backend.dto.auth.AuthResponse;
 import com.bugnbass.backend.dto.auth.LoginDTO;
@@ -18,78 +17,83 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-//auth service methods
+
 @Service
+@RequiredArgsConstructor
 public class AuthService {
 
     private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
-    private final UserRepository userRepository;
-    private final AdminRepository adminRepository;
+    private final UserService userService;
     private final PasswordEncoder passwordEncoder;
-
-    public AuthService(
-            AuthenticationManager authenticationManager,
-            JwtUtil jwtUtil,
-            AdminRepository adminRepository,
-            UserRepository userRepository, PasswordEncoder passwordEncoder
-    ) {
-        this.authenticationManager = authenticationManager;
-        this.userRepository = userRepository;
-        this.adminRepository = adminRepository;
-        this.jwtUtil = jwtUtil;
-        this.passwordEncoder = passwordEncoder;
-    };
+    private final AdminRepository adminRepository;
 
     public AuthResponse handleLogin(LoginDTO loginDTO) {
-        Authentication authentication = authenticationManager.authenticate(
+
+        Authentication auth = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        loginDTO.username(),
+                        loginDTO.email(),
                         loginDTO.password()
                 )
         );
-        UserDetails userDetails = (IBaseUser) authentication.getPrincipal();
-        String username = userDetails.getUsername();
-        IBaseUser baseUser = userRepository.findByUsername(username)
-                .map(u -> (IBaseUser) u)
-                .orElseGet(() -> adminRepository.findByUsername(username)
-                        .map(a -> (IBaseUser) a)
-                        .orElseThrow(() ->
-                                new UsernameNotFoundException("User not found with email: " + username)
-                        )
-                );
-        return buildAuthResponse(baseUser);
-    };
 
-
-    public AuthResponse handleRegister(RegisterDTO registerDTO) {
-
-        UserRole userRole = registerDTO.role();
-
-        if(userRole.equals(UserRole.ROLE_ADMIN)){
-            Admin newAdmin = new Admin();
-            newAdmin.setEmail(registerDTO.email());
-            newAdmin.setUsername(registerDTO.username());
-
-            newAdmin.setPassword(passwordEncoder.encode(registerDTO.password()));
-            return buildAuthResponse(newAdmin);
-        }
-        else {
-            User newUser = new User();
-            newUser.setEmail(registerDTO.email());
-            newUser.setUsername(registerDTO.username());
-
-            newUser.encodePw(registerDTO.password(), passwordEncoder);
-            return buildAuthResponse(newUser);
-        }
-    };
-
-    public AuthResponse buildAuthResponse(IBaseUser baseUser) {
-        return new AuthResponse(
-                baseUser.getEmail(),
-                baseUser.getUsername(),
-                jwtUtil.generateToken(baseUser.getUsername())
-        );
+        IBaseUser user = (IBaseUser) auth.getPrincipal();
+        return buildResponse(user);
     }
 
-};
+    public AuthResponse handleRegister(RegisterDTO dto) {
+        User newUser = userService.registerUser(dto, passwordEncoder);
+        return buildResponse(newUser);
+    }
+
+private AuthResponse buildResponse(IBaseUser user) {
+
+    // Cast to User or Admin to access entity fields
+    String id = "";
+    String firstname = "";
+    String lastname = "";
+    String phone = null;
+    String address = null;
+    Integer postcode = null;
+    boolean active = true;
+    Instant createdAt = Instant.now();
+
+    if (user instanceof User u) {
+        id = u.getId().toString();
+        firstname = u.getFirstname();
+        lastname = u.getLastname();
+        phone = u.getPhone();
+        address = u.getAddress();
+        postcode = u.getPostcode();
+        active = u.isActive();
+        createdAt = u.getCreatedAt();
+    } 
+    
+
+    //some fields are empty cuz admin may not have it
+    else if (user instanceof Admin a) {
+        id = a.getId().toString();
+        createdAt = Instant.now(); 
+    }
+
+    UserDTO userDTO = new UserDTO(
+            id,
+            firstname,
+            lastname,
+            phone,
+            address,
+            postcode,
+            user.getEmail(),
+            active,
+            createdAt,
+            user.getRole().name()
+    );
+
+    return new AuthResponse(
+            userDTO,
+            jwtUtil.generateToken(user.getEmail(), user.getRole())
+    );
+}
+
+}
+

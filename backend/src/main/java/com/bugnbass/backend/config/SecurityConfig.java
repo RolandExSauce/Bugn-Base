@@ -13,8 +13,6 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import static org.springframework.security.config.Customizer.withDefaults;
 
-//sources used: https://docs.spring.io/spring-security/reference/servlet/authentication/passwords/form.html
-//https://medium.com/@victoronu/implementing-jwt-authentication-in-a-simple-spring-boot-application-with-java-b3135dbdb17b
 
 @Configuration
 @EnableWebSecurity
@@ -25,9 +23,9 @@ public class SecurityConfig {
     private final AuthEntryPoint unauthorizedHandler;
 
     public SecurityConfig(
-            CustUserDetailsService custUserDetailsService,
-            AuthEntryPoint unauthorizedHandler,
-            JwtUtil jwtUtils
+        CustUserDetailsService custUserDetailsService,
+        AuthEntryPoint unauthorizedHandler,
+        JwtUtil jwtUtils
     ) {
         this.custUserDetailsService = custUserDetailsService;
         this.unauthorizedHandler = unauthorizedHandler;
@@ -36,7 +34,7 @@ public class SecurityConfig {
 
     @Bean
     public AuthTokenFilter authenticationJwtTokenFilter() {
-        return new AuthTokenFilter(jwtUtils, custUserDetailsService);
+        return new AuthTokenFilter(jwtUtils);
     };
 
     @Bean
@@ -55,8 +53,8 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                //.csrf(AbstractHttpConfigurer::disable) // Disable CSRF
-                //.cors(AbstractHttpConfigurer::disable) // Disable CORS
+                .csrf(AbstractHttpConfigurer::disable)
+                //.cors(AbstractHttpConfigurer::disable)
                 .cors(withDefaults())
                 .exceptionHandling(exceptionHandling ->
                         exceptionHandling.authenticationEntryPoint(unauthorizedHandler)
