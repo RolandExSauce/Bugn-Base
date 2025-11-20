@@ -1,4 +1,5 @@
 package com.bugnbass.backend.config;
+import com.bugnbass.backend.model.enums.UserRole;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;

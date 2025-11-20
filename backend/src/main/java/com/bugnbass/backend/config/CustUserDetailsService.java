@@ -1,6 +1,4 @@
 package com.bugnbass.backend.config;
-import com.bugnbass.backend.model._interface.IBaseUser;
-import com.bugnbass.backend.repository.AdminRepository;
 import com.bugnbass.backend.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;

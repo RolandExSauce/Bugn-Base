@@ -3,19 +3,19 @@ import com.bugnbass.backend.config.JwtUtil;
 import com.bugnbass.backend.dto.auth.AuthResponse;
 import com.bugnbass.backend.dto.auth.LoginDTO;
 import com.bugnbass.backend.dto.auth.RegisterDTO;
+import com.bugnbass.backend.dto.auth.UserDTO;
 import com.bugnbass.backend.model.Admin;
 import com.bugnbass.backend.model.User;
 import com.bugnbass.backend.model._interface.IBaseUser;
-import com.bugnbass.backend.model.enums.UserRole;
 import com.bugnbass.backend.repository.AdminRepository;
-import com.bugnbass.backend.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.time.Instant;
 
 
 @Service
@@ -73,7 +73,7 @@ private AuthResponse buildResponse(IBaseUser user) {
     //some fields are empty cuz admin may not have it
     else if (user instanceof Admin a) {
         id = a.getId().toString();
-        createdAt = Instant.now(); 
+        createdAt = Instant.now();
     }
 
     UserDTO userDTO = new UserDTO(
