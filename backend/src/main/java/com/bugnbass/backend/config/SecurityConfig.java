@@ -65,7 +65,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests
                                 .requestMatchers(
-                                        "/bugnbass/auth/",
+                                        "/bugnbass/auth/**",
                                         "/bugnbass/test/all",
                                         "/swagger-ui/",
                                         "/v3/api-docs/"

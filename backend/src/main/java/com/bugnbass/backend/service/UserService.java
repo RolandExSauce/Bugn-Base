@@ -28,8 +28,8 @@ public class UserService {
     public User registerUser(RegisterDTO dto, PasswordEncoder encoder) {
        User user = User.builder()
         .email(dto.email())
-        .firstname(dto.firstName())
-        .lastname(dto.lastName())
+        .firstname(dto.firstname())
+        .lastname(dto.lastname())
         .password(encoder.encode(dto.password()))
         .role(UserRole.ROLE_USER)
         .build();
