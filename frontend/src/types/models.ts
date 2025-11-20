@@ -30,6 +30,7 @@ export interface Product {
 export interface AuthState {
   user: User;
   accessToken: string;
+  role: Role;
 }
 
 export interface LoginDto {

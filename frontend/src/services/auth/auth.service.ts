@@ -1,5 +1,18 @@
-import type { AuthState, LoginDto, RegisterDto } from "../../types/models";
+import { jwtDecode } from "jwt-decode";
+import type {
+  AuthState,
+  LoginDto,
+  RegisterDto,
+  Role,
+} from "../../types/models";
 import axios, { type AxiosInstance } from "axios";
+
+interface TokenPayload {
+  sub: string;
+  role: string;
+  exp: number;
+  iat: number;
+}
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
@@ -10,6 +23,11 @@ class AuthService {
       "Content-Type": "application/json",
     },
   });
+
+  private static decodeRole(token: string) {
+    const payload = jwtDecode<TokenPayload>(token);
+    return payload.role;
+  }
 
   // Attach token automatically to all requests
   static initializeInterceptors() {
@@ -52,8 +70,16 @@ class AuthService {
       );
       const data = response.data;
 
-      setAuth(data);
-      localStorage.setItem("auth", JSON.stringify(data));
+      const role = AuthService.decodeRole(data.accessToken) as Role;
+
+      const newAuthState: AuthState = {
+        user: data.user,
+        accessToken: data.accessToken,
+        role,
+      };
+
+      setAuth(newAuthState);
+      localStorage.setItem("auth", JSON.stringify(newAuthState));
       return data;
     } catch (err: any) {
       throw new Error(err.response?.data?.message || "Login failed");
