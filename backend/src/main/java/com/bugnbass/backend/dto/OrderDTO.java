@@ -1,5 +1,4 @@
 package com.bugnbass.backend.dto;
-package com.bugnbass.backend.dto;
 
 import java.util.List;
 

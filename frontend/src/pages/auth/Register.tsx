@@ -2,13 +2,11 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import type { RegisterDto } from "../../types/models";
 import { EMAIL_REGEX, NAME_REGEX, PASSWORD_REGEX } from "../../types/regex";
-import { useAuth } from "../../context/AuthContext";
-
+import { useAuthContext } from "../../context/AuthContext";
 
 const Register = () => {
-
   const navigate = useNavigate();
-  const { signup  } = useAuth();
+  const { signup } = useAuthContext();
 
   const [registerForm, setRegisterForm] = useState<RegisterDto>({
     firstname: "",
@@ -72,7 +70,7 @@ const Register = () => {
     }
 
     setInvalidInput(newInvalidInput);
-    
+
     if (hasError) return;
 
     try {
