@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { use, useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { Order } from "../../components/order/Order";
 import { mockOrder } from "../../types/temp/PlaceholderData";
@@ -81,15 +81,25 @@ const UserProfil = () => {
       newInvalidInput.lastname = true;
       hasError = true;
     }
-    if (!PHONE_REGEX.test(String(userProfileForm.phone ?? ""))) {
+    if (
+      userProfileForm.phone &&
+      !PHONE_REGEX.test(String(userProfileForm.phone ?? ""))
+    ) {
       newInvalidInput.phone = true;
       hasError = true;
     }
-    if (!ADDRESS_REGEX.test(userProfileForm.address ?? "")) {
+    if (
+      userProfileForm.address != "" &&
+      !ADDRESS_REGEX.test(userProfileForm.address ?? "")
+    ) {
       newInvalidInput.address = true;
       hasError = true;
     }
-    if (!POSTCODE_REGEX.test(String(userProfileForm.postcode ?? ""))) {
+    if (
+      userProfileForm.address &&
+      userProfileForm.postcode &&
+      !POSTCODE_REGEX.test(String(userProfileForm.postcode ?? ""))
+    ) {
       newInvalidInput.postcode = true;
       hasError = true;
     }
@@ -222,10 +232,12 @@ const UserProfil = () => {
             <p className="text-danger">Adresse ist ungültig</p>
           )}
           {invalidInput.postcode && (
-            <p className="text-danger">PLZ ist ungültig</p>
+            <p className="text-danger">
+              PLZ ist ungültig oder Adresse ist leer
+            </p>
           )}
 
-          {auth?.role === "admin" && (
+          {auth?.role === "ROLE_ADMIN" && (
             <Link
               to="/admin"
               className="profile-save-button bg-success rounded text-white px-4 py-2 fw-bold h4"
