@@ -236,6 +236,7 @@ const UserProfil = () => {
 
           <button
             onClick={logout}
+            type="button"
             className="profile-save-button bg-danger rounded text-white px-4 py-2 fw-bold h4"
           >
             Abmelden

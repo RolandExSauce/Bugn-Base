@@ -5,7 +5,7 @@ const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 class AuthService {
   private static api: AxiosInstance = axios.create({
-    baseURL: `${BASE_URL}/bugnbass`,
+    baseURL: `${BASE_URL}`,
     headers: {
       "Content-Type": "application/json",
     },
@@ -46,7 +46,10 @@ class AuthService {
     setAuth: React.Dispatch<React.SetStateAction<AuthState | null>>
   ) => {
     try {
-      const response = await AuthService.api.post<AuthState>("/auth/login", loginForm);
+      const response = await AuthService.api.post<AuthState>(
+        "/auth/login",
+        loginForm
+      );
       const data = response.data;
 
       setAuth(data);
@@ -62,6 +65,7 @@ class AuthService {
   ) => {
     localStorage.removeItem("auth");
     setAuth(null);
+    window.location.href = "/";
   };
 
   public static signup = async (
@@ -69,7 +73,10 @@ class AuthService {
     setAuth: React.Dispatch<React.SetStateAction<AuthState | null>>
   ) => {
     try {
-      const response = await AuthService.api.post<AuthState>("/auth/register", registerForm);
+      const response = await AuthService.api.post<AuthState>(
+        "/auth/register",
+        registerForm
+      );
       const data = response.data;
 
       setAuth(data);

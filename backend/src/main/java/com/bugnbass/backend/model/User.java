@@ -41,7 +41,7 @@ public class User implements IBaseUser {
     @Column
     private String phone;
 
-    @Column(nullable = false)
+    @Column
     private Integer postcode;
 
     @Column
