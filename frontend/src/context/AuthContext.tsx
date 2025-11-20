@@ -2,13 +2,12 @@ import { createContext, useContext, useState, type ReactNode } from "react";
 import type { AuthState, LoginDto, RegisterDto } from "../types/models";
 import AuthService from "../services/auth/auth.service";
 
-
 export interface AuthContextType {
   auth: AuthState | null;
   login: (loginForm: LoginDto) => Promise<void>;
   signup: (registerForm: RegisterDto) => Promise<void>;
   logout: () => void;
-};
+}
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -18,8 +17,7 @@ export const MyAuthProvider = ({ children }: { children: ReactNode }) => {
     return savedAuth ? JSON.parse(savedAuth) : null;
   });
 
-
-  //auth service will handle data save 
+  //auth service will handle data save
   const login = async (loginForm: LoginDto) => {
     await AuthService.login(loginForm, setAuth);
   };
@@ -29,7 +27,7 @@ export const MyAuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const logout = () => {
-    AuthService.logout(setAuth); 
+    AuthService.logout(setAuth);
   };
 
   return (
@@ -39,7 +37,7 @@ export const MyAuthProvider = ({ children }: { children: ReactNode }) => {
   );
 };
 
-export const useAuth = () => {
+export const useAuthContext = () => {
   const context = useContext(AuthContext);
   if (!context) throw new Error("useAuth must be used within AuthProvider");
   return context;

@@ -10,11 +10,10 @@ import {
   PHONE_REGEX,
   POSTCODE_REGEX,
 } from "../../types/regex";
-import { useAuth } from "../../context/AuthContext";
-
+import { useAuthContext } from "../../context/AuthContext";
 
 const UserProfil = () => {
-  const { auth, logout } = useAuth();
+  const { auth, logout } = useAuthContext();
   const [isEdited, setIsEdited] = useState(false);
 
   const formRef = useRef<HTMLFormElement>(null);
@@ -198,8 +197,9 @@ const UserProfil = () => {
         <div className="d-flex flex-column align-items-end">
           <button
             type="submit"
-            className={`profile-save-button text-white px-4 py-2 fw-bold h4 ${isEdited ? "" : "button-disabled"
-              }`}
+            className={`profile-save-button text-white px-4 py-2 fw-bold h4 ${
+              isEdited ? "" : "button-disabled"
+            }`}
             onClick={handleSaveUserDetails}
             disabled={!isEdited}
           >

@@ -34,7 +34,7 @@ public class OrderService {
         this.userService = userService;
     }
 
-    @Transactional
+/*    @Transactional
     public OrderStatus createOrder(OrderDTO orderDTO) {
 
         // Find customer by email (new field name)
@@ -81,5 +81,5 @@ public class OrderService {
         orderItemRepo.saveAll(orderItems);
 
         return order.getOrderStatus();
-    }
+    }*/
 }

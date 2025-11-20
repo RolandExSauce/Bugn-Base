@@ -7,7 +7,7 @@ public record OrderItemDTO(
         double price
 ) {
 
-    public OrderItemDTO {
+ /*   public OrderItemDTO {
         if (productId == null || productId.isBlank()) {
             throw new IllegalArgumentException("Product ID is required");
         }
@@ -30,6 +30,6 @@ public record OrderItemDTO(
 
     public double getItemTotal() {
         return quantity * price;
-    };
+    };*/
 
 };
