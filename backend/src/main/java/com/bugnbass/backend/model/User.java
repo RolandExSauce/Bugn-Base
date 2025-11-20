@@ -1,3 +1,4 @@
+package com.bugnbass.backend.model;
 import com.bugnbass.backend.model._interface.IBaseUser;
 import com.bugnbass.backend.model.enums.UserRole;
 import jakarta.persistence.*;

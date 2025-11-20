@@ -1,9 +1,9 @@
 package com.bugnbass.backend.model._interface;
-import org.springframework.security.core.GrantedAuthority;
+import com.bugnbass.backend.model.enums.UserRole;
 import org.springframework.security.core.userdetails.UserDetails;
-import java.util.Collection;
-import java.util.List;
+
 
 public interface IBaseUser extends UserDetails {
     String getEmail();
+    UserRole getRole();
 };
