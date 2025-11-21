@@ -51,7 +51,7 @@ private AuthResponse buildResponse(IBaseUser user) {
     String id = "";
     String firstname = "";
     String lastname = "";
-    String phone = null;
+    Integer phone = null;
     String address = null;
     Integer postcode = null;
     boolean active = true;
@@ -74,6 +74,7 @@ private AuthResponse buildResponse(IBaseUser user) {
         id = a.getId().toString();
         createdAt = Instant.now();
     }
+
 
     UserDTO userDTO = new UserDTO(
             id,

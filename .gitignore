@@ -51,3 +51,7 @@ bin/
 *.swo
 *~
 
+# Environment files
+# .env
+# .env.local
+# .env.*.local

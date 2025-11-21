@@ -5,7 +5,7 @@ public record UserDTO(
     String id,
     String firstname,
     String lastname,
-    String phone,
+    Integer phone,
     String address,
     Integer postcode,
     String email,
