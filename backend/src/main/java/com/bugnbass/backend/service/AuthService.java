@@ -52,7 +52,7 @@ private AuthResponse buildResponse(IBaseUser user) {
     String id = "";
     String firstname = "";
     String lastname = "";
-    String phone = null;
+    Integer phone = null;
     String address = null;
     Integer postcode = null;
     boolean active = true;
@@ -62,7 +62,7 @@ private AuthResponse buildResponse(IBaseUser user) {
         id = u.getId().toString();
         firstname = u.getFirstname();
         lastname = u.getLastname();
-        phone = String.valueOf(u.getPhone());
+        phone = u.getPhone();
         address = u.getAddress();
         postcode = u.getPostcode();
         active = u.isActive();
@@ -76,13 +76,12 @@ private AuthResponse buildResponse(IBaseUser user) {
         createdAt = Instant.now();
     }
 
-    Integer p = Integer.parseInt(phone);
 
     UserDTO userDTO = new UserDTO(
             id,
             firstname,
             lastname,
-            p,
+            phone,
             address,
             postcode,
             user.getEmail(),
