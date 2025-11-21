@@ -3,6 +3,7 @@ import com.bugnbass.backend.model._interface.IBaseUser;
 import com.bugnbass.backend.model.enums.UserRole;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.GenericGenerator;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import java.time.Instant;
@@ -20,8 +21,12 @@ import lombok.*;
 public class User implements IBaseUser {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(
+            name = "UUID",
+            strategy = "org.hibernate.id.UUIDGenerator"
+    )
+    private String id;
 
     @Column(nullable = false, unique = true)
     private String email;
@@ -39,7 +44,7 @@ public class User implements IBaseUser {
     private UserRole role = UserRole.ROLE_USER;
 
     @Column
-    private String phone;
+    private Integer phone;
 
     @Column
     private Integer postcode;
