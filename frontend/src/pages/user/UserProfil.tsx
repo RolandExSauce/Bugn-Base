@@ -1,4 +1,4 @@
-import { use, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { Order } from "../../components/order/Order";
 import { mockOrder } from "../../types/temp/PlaceholderData";
@@ -89,7 +89,7 @@ const UserProfil = () => {
       hasError = true;
     }
     if (
-      userProfileForm.address != "" &&
+      userProfileForm.address &&
       !ADDRESS_REGEX.test(userProfileForm.address ?? "")
     ) {
       newInvalidInput.address = true;
