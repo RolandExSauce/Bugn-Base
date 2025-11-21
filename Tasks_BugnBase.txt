@@ -1,0 +1,12 @@
+Tasks:
+
+Roland: 
+frontend queries/requests for product entity 
+in backend controllers 
+Multipart file upload/product
+admin service frontend/backend
+reflect backend model to match frontend 
+
+Ines: 
+Orderservice frontend/backend
+OrderControllers/request validation if its an registered user 
