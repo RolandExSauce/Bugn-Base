@@ -21,14 +21,14 @@ const Contact = () => {
   };
 
   const handleSubmit = () => {
-    const nextInvalid = {
+    const invalidFields = {
       name: !NAME_REGEX.test(formData.name),
       email: !EMAIL_REGEX.test(formData.email),
       message: !TEXT_REGEX.test(formData.message),
     };
-    setFormInvalid(nextInvalid);
+    setFormInvalid(invalidFields);
 
-    const hasError = Object.values(nextInvalid).some(Boolean);
+    const hasError = Object.values(invalidFields).some(Boolean);
     if (hasError) return;
 
     formRef.current?.classList.remove("success-animation");
