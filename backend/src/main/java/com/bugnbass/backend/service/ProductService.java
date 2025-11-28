@@ -6,7 +6,6 @@ import com.bugnbass.backend.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
-
 @Service
 public class ProductService {
 
@@ -16,27 +15,28 @@ public class ProductService {
         this.productRepository = productRepository;
     }
 
-    public Product getProduct (String id) {
-        return productRepository.findByProductIdAndActiveTrue(id)
+    public Product getProduct(String id) {
+        return productRepository.findByIdAndActiveTrue(Long.valueOf(id))
                 .orElseThrow(ProductNotFoundException::new);
-    };
+    }
 
-    public List<Product> getProducts (ProductFilter filter) {
+    public List<Product> getProducts(ProductFilter filter) {
+
         final int DEFAULT_PAGE_SIZE = 25;
         final int DEFAULT_PAGE_NUMBER = 0;
 
-        List<Product> allProducts = productRepository.findAll();
+        List<Product> allProducts = productRepository.findAll().stream()
+                .filter(Product::getActive)
+                .toList();
 
         return allProducts.stream()
-            .filter(p -> filter.name() == null || p.getName().toLowerCase().contains(filter.name().toLowerCase()))
-            .filter(p -> filter.category() == null || p.getCategory().equals(filter.category()))
-            .filter(p -> filter.priceMin() == null || p.getPrice() >= filter.priceMin())
-            .filter(p -> filter.priceMax() == null || p.getPrice() <= filter.priceMax())
-            .filter(p -> filter.brand() == null || filter.brand().contains(p.getBrand()))
-            .filter(Product::getActive)
-            .skip(filter.pageSize() == null || filter.pageNumber() == null ? DEFAULT_PAGE_NUMBER : (long) filter.pageNumber() * filter.pageSize())
-            .limit(filter.pageSize() == null ? DEFAULT_PAGE_SIZE : filter.pageSize())
-            .toList();
-    };
-
-};
+                .filter(p -> filter.name() == null || p.getName().toLowerCase().contains(filter.name().toLowerCase()))
+                .filter(p -> filter.category() == null || p.getCategory().equals(filter.category()))
+                .filter(p -> filter.priceMin() == null || p.getPrice() >= filter.priceMin())
+                .filter(p -> filter.priceMax() == null || p.getPrice() <= filter.priceMax())
+                .filter(p -> filter.brand() == null || filter.brand().contains(p.getBrand()))
+                .skip(filter.pageNumber() == null ? DEFAULT_PAGE_NUMBER : (long) filter.pageNumber() * filter.pageSize())
+                .limit(filter.pageSize() == null ? DEFAULT_PAGE_SIZE : filter.pageSize())
+                .toList();
+    }
+}

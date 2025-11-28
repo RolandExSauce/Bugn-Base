@@ -1,26 +1,27 @@
 package com.bugnbass.backend.model;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 import java.util.UUID;
-
+import lombok.*;
 
 @Entity
 @Table (name = "images")
-@Getter
+@Data
+@NoArgsConstructor
 public class Image {
 
     @Id
-    @Column(name= "image_id", updatable = false)
-    private String imageId = UUID.randomUUID().toString();
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name= "image_id", updatable = false, nullable = false)
+    private UUID imageId;
 
-    @Setter
+    @Column(nullable = false)
     private String url;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
     @JsonBackReference
     @Setter
     private Product product;
-};
+}

@@ -1,4 +1,5 @@
 package com.bugnbass.backend.dto;
+import com.bugnbass.backend.model.enums.StockStatus;
 import jakarta.validation.constraints.*;
 
 
@@ -15,7 +16,7 @@ public record ProductDTO(
         String description,
 
         @Positive(message = "Der Preis muss positiv sein")
-        Integer price,
+        Double price,
 
         @Positive(message = "Die Versandkosten müssen positiv sein")
         Integer shippingCost,
@@ -23,7 +24,7 @@ public record ProductDTO(
         @Size(max = 25, message = "Der Hersteller ist zu lang.")
         String brand,
 
-        Boolean stockStatus,
+        StockStatus stockStatus,
 
         @Min(1)
         @Max(5)

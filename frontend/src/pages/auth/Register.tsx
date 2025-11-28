@@ -42,36 +42,36 @@ const Register = () => {
       retypePassword: false,
     };
 
-    let hasError = false;
+    // let hasError = false;
 
-    if (!NAME_REGEX.test(registerForm.firstname)) {
-      newInvalidInput.firstname = true;
-      hasError = true;
-    }
+    // if (!NAME_REGEX.test(registerForm.firstname)) {
+    //   newInvalidInput.firstname = true;
+    //   hasError = true;
+    // }
 
-    if (!NAME_REGEX.test(registerForm.lastname)) {
-      newInvalidInput.lastname = true;
-      hasError = true;
-    }
+    // if (!NAME_REGEX.test(registerForm.lastname)) {
+    //   newInvalidInput.lastname = true;
+    //   hasError = true;
+    // }
 
-    if (!EMAIL_REGEX.test(registerForm.email)) {
-      newInvalidInput.email = true;
-      hasError = true;
-    }
+    // if (!EMAIL_REGEX.test(registerForm.email)) {
+    //   newInvalidInput.email = true;
+    //   hasError = true;
+    // }
 
-    if (!PASSWORD_REGEX.test(registerForm.password)) {
-      newInvalidInput.password = true;
-      hasError = true;
-    }
+    // if (!PASSWORD_REGEX.test(registerForm.password)) {
+    //   newInvalidInput.password = true;
+    //   hasError = true;
+    // }
 
-    if (registerForm.password !== retypePassword) {
-      newInvalidInput.retypePassword = true;
-      hasError = true;
-    }
+    // if (registerForm.password !== retypePassword) {
+    //   newInvalidInput.retypePassword = true;
+    //   hasError = true;
+    // }
 
     setInvalidInput(newInvalidInput);
 
-    if (hasError) return;
+    // if (hasError) return;
 
     try {
       await signup(registerForm);

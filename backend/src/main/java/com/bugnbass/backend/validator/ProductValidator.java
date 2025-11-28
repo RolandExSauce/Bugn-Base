@@ -1,12 +1,10 @@
 package com.bugnbass.backend.validator;
-
 import com.bugnbass.backend.dto.ProductDTO;
 import com.bugnbass.backend.exceptions.ProductNameAlreadyExistsException;
 import com.bugnbass.backend.model.Product;
 import com.bugnbass.backend.model.enums.ProductCategory;
 import com.bugnbass.backend.repository.ProductRepository;
 import org.springframework.stereotype.Component;
-
 import java.util.Optional;
 
 @Component
@@ -23,7 +21,7 @@ public class ProductValidator {
     }
 
     private void validateName(String name) {
-        Optional<Product> productWithSameName = productRepository.findProductByName(name);
+        Optional<Product> productWithSameName = productRepository.findByName(name);
         if (productWithSameName.isPresent()) throw new ProductNameAlreadyExistsException();
     }
     private void validateCategory(String category) {
@@ -34,5 +32,4 @@ public class ProductValidator {
             throw new IllegalArgumentException("Falsche Eíngabe für Kategorie!");
         }
     }
-
 }
