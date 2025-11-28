@@ -7,7 +7,7 @@ public record UserDTO(
     String lastname,
     Integer phone,
     String address,
-    Integer postcode,
+    String postcode,
     String email,
     boolean active,
     Instant createdAt,

@@ -25,10 +25,8 @@ public class AuthService {
     private final JwtUtil jwtUtil;
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
-    private final AdminRepository adminRepository;
 
     public AuthResponse handleLogin(LoginDTO loginDTO) {
-
         Authentication auth = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         loginDTO.email(),
@@ -45,55 +43,52 @@ public class AuthService {
         return buildResponse(newUser);
     }
 
-private AuthResponse buildResponse(IBaseUser user) {
 
-    // Cast to User or Admin to access entity fields
-    String id = "";
-    String firstname = "";
-    String lastname = "";
-    Integer phone = null;
-    String address = null;
-    Integer postcode = null;
-    boolean active = true;
-    Instant createdAt = Instant.now();
+    //build dto auth reponse
+    private AuthResponse buildResponse(IBaseUser user) {
+        // Cast to User or Admin to access entity fields
+        String id = "";
+        String firstname = "";
+        String lastname = "";
+        Integer phone = null;
+        String address = null;
+        String postcode = null;
+        boolean active = true;
+        Instant createdAt = Instant.now();
 
-    if (user instanceof User u) {
-        id = u.getId().toString();
-        firstname = u.getFirstname();
-        lastname = u.getLastname();
-        phone = u.getPhone();
-        address = u.getAddress();
-        postcode = u.getPostcode();
-        active = u.isActive();
-        createdAt = u.getCreatedAt();
-    } 
-    
+        if (user instanceof User u) {
+            id = u.getId();
+            firstname = u.getFirstname();
+            lastname = u.getLastname();
+            phone = u.getPhone();
+            address = u.getAddress();
+            postcode = u.getPostcode();
+            active = u.isActive();
+            createdAt = u.getCreatedAt();
+        }
 
-    //some fields are empty cuz admin may not have it
-    else if (user instanceof Admin a) {
-        id = a.getId().toString();
-        createdAt = Instant.now();
+        //some fields are empty cuz admin may not have it
+        else if (user instanceof Admin a) {
+            id = a.getId().toString();
+            createdAt = Instant.now();
+        }
+        UserDTO userDTO = new UserDTO(
+                id,
+                firstname,
+                lastname,
+                phone,
+                address,
+                postcode,
+                user.getEmail(),
+                active,
+                createdAt,
+                user.getRole().name()
+        );
+
+        return new AuthResponse(
+                userDTO,
+                jwtUtil.generateToken(user.getEmail(), user.getRole())
+        );
     }
-
-
-    UserDTO userDTO = new UserDTO(
-            id,
-            firstname,
-            lastname,
-            phone,
-            address,
-            postcode,
-            user.getEmail(),
-            active,
-            createdAt,
-            user.getRole().name()
-    );
-
-    return new AuthResponse(
-            userDTO,
-            jwtUtil.generateToken(user.getEmail(), user.getRole())
-    );
-}
-
 }
 

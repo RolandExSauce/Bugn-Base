@@ -107,3 +107,46 @@ export type DeliveryStatus = "pending" | "shipped" | "delivered" | "cancelled";
 export type Role = "ROLE_USER" | "ROLE_ADMIN";
 
 export type SortType = "price-asc" | "price-desc" | "";
+
+
+
+export interface Product {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  category: ItemCategory;
+  brand: string;
+  images: Image[];
+  stock: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ProductDTO {
+  name: string;
+  description: string;
+  price: number;
+  category: ItemCategory;
+  brand: string;
+  stock: number;
+}
+
+export interface ProductFilter {
+  id?: string;
+  name?: string;
+  category?: ItemCategory;
+  priceMin?: number;
+  priceMax?: number;
+  brand?: string[];
+  pageNo?: number;
+  pageSize?: number;
+}
+
+export interface Image {
+  id: string;
+  url: string;
+  altText?: string;
+  productId: string;
+  createdAt: string;
+}

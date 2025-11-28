@@ -3,11 +3,9 @@ import com.bugnbass.backend.model._interface.IBaseUser;
 import com.bugnbass.backend.model.enums.UserRole;
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import java.util.Collection;
 import java.util.List;
 import lombok.*;
-
 
 @Entity
 @Table(name = "admins")
@@ -19,6 +17,7 @@ import lombok.*;
 public class Admin implements IBaseUser {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false, unique = true)
@@ -44,10 +43,6 @@ public class Admin implements IBaseUser {
     public String getUsername() {
         return this.email;
     }
-
-    public void encodePw(String plainPw, PasswordEncoder encoder){
-        this.password = encoder.encode(plainPw);
-    };
-};
+}
 
 

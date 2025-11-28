@@ -10,7 +10,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.util.Optional;
 
-
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -24,7 +23,6 @@ public class UserService {
             .or(() -> adminRepository.findByEmail(email).map(a -> (IBaseUser) a));
     }
 
-
     public User registerUser(RegisterDTO dto, PasswordEncoder encoder) {
        User user = User.builder()
         .email(dto.email())
@@ -33,8 +31,6 @@ public class UserService {
         .password(encoder.encode(dto.password()))
         .role(UserRole.ROLE_USER)
         .build();
-
-
         return userRepository.save(user);
     }
 }

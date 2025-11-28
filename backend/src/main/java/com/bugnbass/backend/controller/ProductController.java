@@ -6,10 +6,8 @@ import com.bugnbass.backend.service.ProductService;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
-
 @RestController
-@RequestMapping("/api/products")
-// @CrossOrigin(origins = "http://localhost:3000") // fürs frontend später
+@RequestMapping("/api/shop/products")
 public class ProductController {
 
     private final ProductService userProductService;

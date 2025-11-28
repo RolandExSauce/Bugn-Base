@@ -1,11 +1,11 @@
 package com.bugnbass.backend.repository;
 import com.bugnbass.backend.model.Image;
-import jakarta.persistence.Table;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import java.util.List;
+import java.util.UUID;
 
 @Repository
-public interface ImageRepository extends JpaRepository<Image, String> {
-    List<Image> findAllByProduct_ProductId(String productId);
+public interface ImageRepository extends JpaRepository<Image, UUID> {
+    List<Image> findAllByProduct_Id(Long productId);
 }

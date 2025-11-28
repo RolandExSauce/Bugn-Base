@@ -39,10 +39,10 @@ const Login = () => {
       hasError = true;
     }
 
-    if (!PASSWORD_REGEX.test(loginForm.password)) {
-      newInvalidInput.password = true;
-      hasError = true;
-    }
+    // if (!PASSWORD_REGEX.test(loginForm.password)) {
+    //   newInvalidInput.password = true;
+    //   hasError = true;
+    // }
 
     setInvalidInput(newInvalidInput);
 
@@ -100,12 +100,12 @@ const Login = () => {
           required
         />
 
-        {invalidInput.password && (
+        {/* {invalidInput.password && (
           <p className="text-danger">
             Passwort muss mindestens 8 Zeichen haben, eine Groß- und eine
             Kleinbuchstabe und eine Zahl enthalten
           </p>
-        )}
+        )} */}
 
         <button type="submit">Einloggen</button>
 

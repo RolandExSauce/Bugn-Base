@@ -3,7 +3,6 @@ import com.bugnbass.backend.model._interface.IBaseUser;
 import com.bugnbass.backend.model.enums.UserRole;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.GenericGenerator;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import java.time.Instant;
@@ -15,8 +14,7 @@ import lombok.*;
 @Table(name = "users")
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
+@Data
 @Builder
 public class User implements IBaseUser {
 
@@ -43,7 +41,7 @@ public class User implements IBaseUser {
     private Integer phone;
 
     @Column
-    private Integer postcode;
+    private String postcode;
 
     @Column
     private String address;
@@ -68,9 +66,5 @@ public class User implements IBaseUser {
     @Override
     public String getUsername() {
         return this.email;
-    }
-
-    public void encodePw(String plainPw, PasswordEncoder encoder){
-        this.password = encoder.encode(plainPw);
     }
 }

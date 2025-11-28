@@ -1,5 +1,6 @@
 package com.bugnbass.backend.model;
 import com.bugnbass.backend.model.enums.OrderStatus;
+import com.bugnbass.backend.model.enums.PaymentMethod;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -10,7 +11,6 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-
 
 @Table(name = "orders")
 @Entity
@@ -23,6 +23,9 @@ public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(unique = true)
+    private String orderNumber;
 
     //user can have multiple orders
     @ManyToOne(fetch = FetchType.LAZY)
@@ -47,5 +50,11 @@ public class Order {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private OrderStatus orderStatus;
+
+    @Column(nullable = false)
+    private String shippingAddress;
+
+    @Enumerated(EnumType.STRING)
+    private PaymentMethod paymentMethod;
 };
 
