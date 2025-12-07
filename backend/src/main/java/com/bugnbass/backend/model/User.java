@@ -67,4 +67,6 @@ public class User implements IBaseUser {
     public String getUsername() {
         return this.email;
     }
+
+    public String getPhoneNumber() {return this.phone+"";}
 }
