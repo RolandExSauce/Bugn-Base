@@ -3,6 +3,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -16,6 +17,7 @@ import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 public class SecurityConfig {
 
     private final JwtUtil jwtUtils;
@@ -67,13 +69,16 @@ public class SecurityConfig {
                                 .requestMatchers(
                                         "/bugnbass/auth/**",
                                         "/bugnbass/test/all",
-                                        "/swagger-ui/",
-                                        "/v3/api-docs/"
+                                        "/swagger-ui/**",
+                                        "/v3/api-docs/**"
                                 ).permitAll()
-                                .requestMatchers("/bugnbass/")
-                                .authenticated()
+
+                                .requestMatchers("/api/orders/**").authenticated()
+                                .requestMatchers("/bugnbass/**").authenticated()
+
                                 .anyRequest().denyAll()
                 )
+
                 //disable basic auth and form login
                 .formLogin(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable);
