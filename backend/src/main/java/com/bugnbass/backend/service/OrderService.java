@@ -177,6 +177,33 @@ public class OrderService {
         orderRepo.delete(order);
     }
 
+    public OrderStatus returnOrder(Long id, String email) {
+
+        Order order = orderRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Order not found"));
+
+        // User darf nur eigene Order zurückgeben
+        if (!order.getUser().getEmail().equals(email)) {
+            throw new RuntimeException("You can only return your own orders");
+        }
+
+        // Order muss vorher geliefert worden sein
+        if (order.getOrderStatus() != OrderStatus.DELIVERED) {
+            throw new RuntimeException("Only delivered orders can be returned");
+        }
+
+        // Optional: verhindern, dass mehrfach returnt wird
+        if (order.getOrderStatus() == OrderStatus.RETURNED) {
+            throw new RuntimeException("Order already returned");
+        }
+
+        order.setOrderStatus(OrderStatus.RETURNED);
+        orderRepo.save(order);
+
+        return OrderStatus.RETURNED;
+    }
+
+
 
 
 
