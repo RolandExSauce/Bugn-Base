@@ -23,6 +23,11 @@ public class UserService {
             .or(() -> adminRepository.findByEmail(email).map(a -> (IBaseUser) a));
     }
 
+    public Optional<User> findCustomerByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
+
+
     public User registerUser(RegisterDTO dto, PasswordEncoder encoder) {
        User user = User.builder()
         .email(dto.email())
