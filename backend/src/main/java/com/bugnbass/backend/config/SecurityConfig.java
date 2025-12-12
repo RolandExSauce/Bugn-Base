@@ -1,4 +1,7 @@
 package com.bugnbass.backend.config;
+
+import static org.springframework.security.config.Customizer.withDefaults;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -12,81 +15,81 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import static org.springframework.security.config.Customizer.withDefaults;
-
 
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfig {
 
-    private final JwtUtil jwtUtils;
-    private final CustUserDetailsService custUserDetailsService;
-    private final AuthEntryPoint unauthorizedHandler;
+  private final JwtUtil jwtUtils;
+  private final CustUserDetailsService custUserDetailsService;
+  private final AuthEntryPoint unauthorizedHandler;
 
-    public SecurityConfig(
-        CustUserDetailsService custUserDetailsService,
-        AuthEntryPoint unauthorizedHandler,
-        JwtUtil jwtUtils
-    ) {
-        this.custUserDetailsService = custUserDetailsService;
-        this.unauthorizedHandler = unauthorizedHandler;
-        this.jwtUtils = jwtUtils;
-    };
+  public SecurityConfig(
+      CustUserDetailsService custUserDetailsService,
+      AuthEntryPoint unauthorizedHandler,
+      JwtUtil jwtUtils) {
+    this.custUserDetailsService = custUserDetailsService;
+    this.unauthorizedHandler = unauthorizedHandler;
+    this.jwtUtils = jwtUtils;
+  }
+  ;
 
-    @Bean
-    public AuthTokenFilter authenticationJwtTokenFilter() {
-        return new AuthTokenFilter(jwtUtils, custUserDetailsService);
-    };
+  @Bean
+  public AuthTokenFilter authenticationJwtTokenFilter() {
+    return new AuthTokenFilter(jwtUtils, custUserDetailsService);
+  }
+  ;
 
-    @Bean
-    public AuthenticationManager authenticationManager(
-            AuthenticationConfiguration authenticationConfiguration
-    ) throws Exception {
-        return authenticationConfiguration.getAuthenticationManager();
-    };
+  @Bean
+  public AuthenticationManager authenticationManager(
+      AuthenticationConfiguration authenticationConfiguration) throws Exception {
+    return authenticationConfiguration.getAuthenticationManager();
+  }
+  ;
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    };
+  @Bean
+  public PasswordEncoder passwordEncoder() {
+    return new BCryptPasswordEncoder();
+  }
+  ;
 
-    //security filter chain
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .csrf(AbstractHttpConfigurer::disable)
-                //.cors(AbstractHttpConfigurer::disable)
-                .cors(withDefaults())
-                .exceptionHandling(exceptionHandling ->
-                        exceptionHandling.authenticationEntryPoint(unauthorizedHandler)
-                )
-                .sessionManagement(sessionManagement ->
-                        sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                )
-                .authorizeHttpRequests(authorizeRequests ->
-                        authorizeRequests
-                                .requestMatchers(
-                                        "/bugnbass/auth/**",
-                                        "/bugnbass/test/all",
-                                        "/swagger-ui/**",
-                                        "/v3/api-docs/**"
-                                ).permitAll()
+  // security filter chain
+  @Bean
+  public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    http.csrf(AbstractHttpConfigurer::disable)
+        // .cors(AbstractHttpConfigurer::disable)
+        .cors(withDefaults())
+        .exceptionHandling(
+            exceptionHandling -> exceptionHandling.authenticationEntryPoint(unauthorizedHandler))
+        .sessionManagement(
+            sessionManagement ->
+                sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        .authorizeHttpRequests(
+            authorizeRequests ->
+                authorizeRequests
+                    .requestMatchers(
+                        "/bugnbass/auth/**",
+                        "/bugnbass/test/all",
+                        "/swagger-ui/**",
+                        "/v3/api-docs/**")
+                    .permitAll()
+                    .requestMatchers("/api/orders/**")
+                    .authenticated()
+                    .requestMatchers("/bugnbass/**")
+                    .authenticated()
+                    .anyRequest()
+                    .denyAll())
 
-                                .requestMatchers("/api/orders/**").authenticated()
-                                .requestMatchers("/bugnbass/**").authenticated()
+        // disable basic auth and form login
+        .formLogin(AbstractHttpConfigurer::disable)
+        .httpBasic(AbstractHttpConfigurer::disable);
 
-                                .anyRequest().denyAll()
-                )
-
-                //disable basic auth and form login
-                .formLogin(AbstractHttpConfigurer::disable)
-                .httpBasic(AbstractHttpConfigurer::disable);
-
-        // Add the JWT Token filter before the usernamePasswordAuthenticationFilter
-        http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
-        return http.build();
-    };
-};
-
-
+    // Add the JWT Token filter before the usernamePasswordAuthenticationFilter
+    http.addFilterBefore(
+        authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+    return http.build();
+  }
+  ;
+}
+;

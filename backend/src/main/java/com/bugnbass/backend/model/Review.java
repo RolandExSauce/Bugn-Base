@@ -1,10 +1,9 @@
 package com.bugnbass.backend.model;
 
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
-
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "reviews")
@@ -15,25 +14,25 @@ import java.time.LocalDateTime;
 @Builder
 public class Review {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "review_id")
-    private String id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.UUID)
+  @Column(name = "review_id")
+  private String id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id")
-    private Product product;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "product_id")
+  private Product product;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "user_id")
+  private User user;
 
-    @Column(nullable = false)
-    private Integer rating;
+  @Column(nullable = false)
+  private Integer rating;
 
-    private String comment;
+  private String comment;
 
-    @CreationTimestamp
-    @Column(name = "created_at")
-    private LocalDateTime createdAt;
+  @CreationTimestamp
+  @Column(name = "created_at")
+  private LocalDateTime createdAt;
 }
