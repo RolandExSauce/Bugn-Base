@@ -33,63 +33,49 @@ public class SecurityConfig {
     this.unauthorizedHandler = unauthorizedHandler;
     this.jwtUtils = jwtUtils;
   }
-  ;
 
   @Bean
   public AuthTokenFilter authenticationJwtTokenFilter() {
     return new AuthTokenFilter(jwtUtils, custUserDetailsService);
   }
-  ;
 
   @Bean
   public AuthenticationManager authenticationManager(
       AuthenticationConfiguration authenticationConfiguration) throws Exception {
     return authenticationConfiguration.getAuthenticationManager();
   }
-  ;
 
   @Bean
   public PasswordEncoder passwordEncoder() {
     return new BCryptPasswordEncoder();
   }
-  ;
 
-  // security filter chain
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     http.csrf(AbstractHttpConfigurer::disable)
-        // .cors(AbstractHttpConfigurer::disable)
         .cors(withDefaults())
-        .exceptionHandling(
-            exceptionHandling -> exceptionHandling.authenticationEntryPoint(unauthorizedHandler))
-        .sessionManagement(
-            sessionManagement ->
-                sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-        .authorizeHttpRequests(
-            authorizeRequests ->
-                authorizeRequests
-                    .requestMatchers(
-                        "/bugnbass/auth/**",
-                        "/bugnbass/test/all",
-                        "/swagger-ui/**",
-                        "/v3/api-docs/**")
-                    .permitAll()
-                    .requestMatchers("/api/orders/**")
-                    .authenticated()
-                    .requestMatchers("/bugnbass/**")
-                    .authenticated()
-                    .anyRequest()
-                    .denyAll())
-
-        // disable basic auth and form login
+        .exceptionHandling(exceptionHandling ->
+            exceptionHandling.authenticationEntryPoint(unauthorizedHandler))
+        .sessionManagement(session ->
+            session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        .authorizeHttpRequests(auth -> auth
+            // Public routes
+            .requestMatchers("/", "/index.html", "/static/**",
+                "/bugnbass/auth/**", "/bugnbass/test/all",
+                "/swagger-ui/**", "/v3/api-docs/**").permitAll()
+            // Orders require authentication
+            .requestMatchers("/api/orders/**").authenticated()
+            // Admin requires ADMIN role
+            .requestMatchers("/bugnbass/admin/**").hasRole("ADMIN")
+            // Everything else permitted
+            .anyRequest().permitAll()
+        )
         .formLogin(AbstractHttpConfigurer::disable)
         .httpBasic(AbstractHttpConfigurer::disable);
 
-    // Add the JWT Token filter before the usernamePasswordAuthenticationFilter
-    http.addFilterBefore(
-        authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+    http.addFilterBefore(authenticationJwtTokenFilter(),
+        UsernamePasswordAuthenticationFilter.class);
+
     return http.build();
   }
-  ;
 }
-;
