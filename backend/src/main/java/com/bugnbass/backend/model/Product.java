@@ -1,4 +1,5 @@
 package com.bugnbass.backend.model;
+
 import com.bugnbass.backend.model.enums.ProductCategory;
 import com.bugnbass.backend.model.enums.StockStatus;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -15,40 +16,39 @@ import lombok.*;
 @Builder
 public class Product {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name= "product_id", updatable = false)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "product_id", updatable = false)
+  private Long id;
 
-    private String name;
+  private String name;
 
-    @Enumerated(EnumType.STRING)
-    private ProductCategory category;
+  @Enumerated(EnumType.STRING)
+  private ProductCategory category;
 
-    private String description;
+  private String description;
 
-    private Double price;
+  private Double price;
 
-    @Column(name = "shipping_cost")
-    private int shippingCost;
+  @Column(name = "shipping_cost")
+  private int shippingCost;
 
-    private String brand;
+  private String brand;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "stock_status")
-    private StockStatus stockStatus;
+  @Enumerated(EnumType.STRING)
+  @Column(name = "stock_status")
+  private StockStatus stockStatus;
 
-    @Column(name = "shipping_time")
-    private Integer shippingTime;
+  @Column(name = "shipping_time")
+  private Integer shippingTime;
 
-    private Boolean active;
+  private Boolean active;
 
-    @OneToMany(
-            mappedBy = "product",
-            cascade = CascadeType.ALL,
-            orphanRemoval = true,
-            fetch = FetchType.LAZY
-    )
-    @JsonManagedReference
-    private List<Image> images = new ArrayList<>();
+  @OneToMany(
+      mappedBy = "product",
+      cascade = CascadeType.ALL,
+      orphanRemoval = true,
+      fetch = FetchType.LAZY)
+  @JsonManagedReference
+  private List<Image> images = new ArrayList<>();
 }

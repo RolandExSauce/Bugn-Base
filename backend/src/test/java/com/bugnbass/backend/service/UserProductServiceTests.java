@@ -1,9 +1,3 @@
 package com.bugnbass.backend.service;
 
-
-public class UserProductServiceTests {
-
-
-
-
-}
+public class UserProductServiceTests {}

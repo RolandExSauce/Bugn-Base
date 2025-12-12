@@ -1,4 +1,5 @@
 package com.bugnbass.backend.config;
+
 import com.bugnbass.backend.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -10,13 +11,12 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class CustUserDetailsService implements UserDetailsService {
 
-    private final UserService userService;
+  private final UserService userService;
 
-    @Override
-    public UserDetails loadUserByUsername(String email) {
-        return userService.findByEmail(email)
-                .orElseThrow(() ->
-                    new UsernameNotFoundException("User not found with email: " + email)
-                );
-    }
+  @Override
+  public UserDetails loadUserByUsername(String email) {
+    return userService
+        .findByEmail(email)
+        .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
+  }
 }
