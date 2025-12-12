@@ -1,11 +1,10 @@
 package com.bugnbass.backend.model;
 
 import jakarta.persistence.*;
-import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
-
 import java.time.LocalDateTime;
 import java.util.UUID;
+import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 @Entity
 @Table(name = "messages")
@@ -16,21 +15,20 @@ import java.util.UUID;
 @Builder
 public class Message {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "message_id")
-    private UUID id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.UUID)
+  @Column(name = "message_id")
+  private UUID id;
 
-    private String name;
+  private String name;
 
-    private String email;
+  private String email;
 
-    private String subject;
+  private String subject;
 
-    private String message;
+  private String message;
 
-    @CreationTimestamp
-    @Column(name = "created_at")
-    private LocalDateTime createdAt;
-
+  @CreationTimestamp
+  @Column(name = "created_at")
+  private LocalDateTime createdAt;
 }

@@ -5,14 +5,21 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * Controller for common endpoints accessible to all users. Provides endpoints for retrieving
+ * general application data.
+ */
 @RestController
 @RequestMapping("/api")
-// @CrossOrigin(origins = "http://localhost:3000") // fürs frontend später
 public class CommonController {
 
-    @GetMapping("/categories")
-    public ProductCategory[] getCategories() {
-        return ProductCategory.values();
-    }
-
+  /**
+   * Retrieves all available product categories.
+   *
+   * @return an array of all ProductCategory enum values
+   */
+  @GetMapping("/categories")
+  public ProductCategory[] getCategories() {
+    return ProductCategory.values();
+  }
 }
