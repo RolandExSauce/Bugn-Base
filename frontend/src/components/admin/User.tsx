@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import type { User } from "../../types/models";
-import AdminService from "../../services/admin/admin.service";
+// import AdminService from "../../services/admin/admin.order.service";
 import AdminDeleteButton from "../common/AdminDeleteButton";
 import AdminUpdateButton from "../common/AdminUpdateButton";
 import AdminSelectRowButton from "../common/AdminSelectRowButton";
@@ -10,7 +10,7 @@ import {
   NAME_REGEX,
   PHONE_REGEX,
   POSTCODE_REGEX,
-} from "../../types/regex";
+} from "../../utils/regex";
 
 interface UserProps {
   user: User;
@@ -114,7 +114,7 @@ const UserRow = ({ user, handleSelect, selectedUserId }: UserProps) => {
 
   const handleDelete = () => {
     // first confirm, do you really want to delete
-    AdminService.deleteUser(form.id);
+    // AdminService.deleteUser(form.id);
   };
 
   const handleUndoEdit = () => {

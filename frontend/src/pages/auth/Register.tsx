@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import type { RegisterDto } from "../../types/models";
-import { EMAIL_REGEX, NAME_REGEX, PASSWORD_REGEX } from "../../types/regex";
+import { EMAIL_REGEX, NAME_REGEX, PASSWORD_REGEX } from "../../utils/regex";
 import { useAuthContext } from "../../context/AuthContext";
 
 const Register = () => {

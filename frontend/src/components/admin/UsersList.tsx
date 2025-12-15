@@ -1,12 +1,8 @@
-// UsersList.tsx
 import { useState, useEffect } from "react";
 import UserRow from "../../components/admin/User";
 import type { User } from "../../types/models";
-import {
-  mockUser,
-  mockUser2,
-  mockUser3,
-} from "../../types/temp/PlaceholderData";
+import { mockUser, mockUser2, mockUser3 } from "../../api/mock";
+
 
 const UsersList = () => {
   const [users, setUsers] = useState<User[]>([]);

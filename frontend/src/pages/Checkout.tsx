@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import type { PaymentMethod, Order } from "../types/models";
 import { useNavigate } from "react-router-dom";
-import { ADDRESS_REGEX, NAME_REGEX, POSTCODE_REGEX } from "../types/regex";
+import { ADDRESS_REGEX, NAME_REGEX, POSTCODE_REGEX } from "../utils/regex";
 import { useCartContext } from "../context/CartContext";
 import { useAuthContext } from "../context/AuthContext";
 

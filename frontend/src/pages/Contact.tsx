@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { EMAIL_REGEX, NAME_REGEX, TEXT_REGEX } from "../types/regex";
+import { EMAIL_REGEX, NAME_REGEX, TEXT_REGEX } from "../utils/regex";
 
 const Contact = () => {
   const formRef = useRef<HTMLDivElement>(null);

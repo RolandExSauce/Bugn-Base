@@ -30,13 +30,15 @@ class ApiClient {
       (error) => Promise.reject(error)
     );
 
+//TODO: how to make interceptor only for authenticated endpoints ? 
+
     // Response interceptor for error handling
     this.client.interceptors.response.use(
       (response) => response,
       (error) => {
         if (error.response?.status === 401) {
           localStorage.removeItem('auth');
-          window.location.href = '/login';
+          //window.location.href = '/login';
         }
         return Promise.reject(error);
       }
@@ -58,6 +60,12 @@ class ApiClient {
     return response.data;
   }
 
+  async patch<T>(url: string, data?: any, config?: any): Promise<T> {
+    const response: AxiosResponse<T> = await this.client.patch(url, data, config);
+    return response.data;
+  }
+
+
   async delete<T>(url: string): Promise<T> {
     const response: AxiosResponse<T> = await this.client.delete(url);
     return response.data;
@@ -74,5 +82,6 @@ class ApiClient {
   }
 }
 
-const BASE_URL = import.meta.env.VITE_BASE_URL;
+export const BASE_URL = import.meta.env.VITE_BASE_URL;
+export const APP_BASE_URL_NO_PREFIX = import.meta.env.VITE_BASE_URL_NO_PREFIX;
 export const apiClient = new ApiClient(BASE_URL);

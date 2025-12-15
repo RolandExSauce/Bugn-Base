@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { Order } from "../../components/order/Order";
-import { mockOrder } from "../../types/temp/PlaceholderData";
 import type { User } from "../../types/models";
 import {
   ADDRESS_REGEX,
@@ -9,15 +8,15 @@ import {
   NAME_REGEX,
   PHONE_REGEX,
   POSTCODE_REGEX,
-} from "../../types/regex";
+} from "../../utils/regex";
 import { useAuthContext } from "../../context/AuthContext";
+import { mockOrder } from "../../api/mock";
 
 const UserProfil = () => {
   const { auth, logout } = useAuthContext();
   const [isEdited, setIsEdited] = useState(false);
 
   const formRef = useRef<HTMLFormElement>(null);
-
   const [userProfileForm, setUserProfileForm] = useState<Partial<User>>({
     firstname: "",
     lastname: "",
@@ -267,5 +266,4 @@ const UserProfil = () => {
     </div>
   );
 };
-
 export default UserProfil;

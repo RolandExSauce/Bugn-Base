@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import type { DeliveryStatus, Order } from "../../types/models";
 import AdminDeleteButton from "../common/AdminDeleteButton";
 import AdminUpdateButton from "../common/AdminUpdateButton";
-import AdminService from "../../services/admin/admin.service";
+import AdminService from "../../services/admin/admin.order.service";
 
 type FullOrderProps = {
   order: Order;

@@ -1,6 +1,6 @@
-import { mockOrder } from "../../types/temp/PlaceholderData";
 import type { Order as OrderType } from "../../types/models";
 import FullOrder from "../../components/admin/FullOrder";
+import { mockOrder } from "../../api/mock";
 
 export default function OrderList() {
   const orders: OrderType[] = Array.from({ length: 3 }, () => mockOrder);
