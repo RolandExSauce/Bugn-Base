@@ -1,4 +1,4 @@
-package com.bugnbass.backend.controller;
+package com.bugnbass.backend.controller.admin;
 import com.bugnbass.backend.dto.ProductDTO;
 import com.bugnbass.backend.model.Product;
 import com.bugnbass.backend.service.AdminProductService;
@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/admin/")
+@RequestMapping("/bugnbass/api/admin/")
 @RequiredArgsConstructor
-public class AdminController {
+public class AdminProductController {
 
     private final AdminProductService adminProductService;
 
@@ -30,7 +30,6 @@ public class AdminController {
         Product saved = adminProductService.addProduct(newProduct);
         return ResponseEntity.status(HttpStatus.CREATED).body(saved);
     }
-
 
     @DeleteMapping("/delete-product/{id}")
     public ResponseEntity<Void> deleteProduct(@PathVariable String id) {

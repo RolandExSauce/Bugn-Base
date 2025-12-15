@@ -7,7 +7,6 @@ import com.bugnbass.backend.dto.auth.UserDTO;
 import com.bugnbass.backend.model.Admin;
 import com.bugnbass.backend.model.User;
 import com.bugnbass.backend.model._interface.IBaseUser;
-import com.bugnbass.backend.repository.AdminRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -15,7 +14,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.time.Instant;
-
 
 @Service
 @RequiredArgsConstructor
@@ -43,11 +41,8 @@ public class AuthService {
         return buildResponse(newUser);
     }
 
-
     //build dto auth reponse
     private AuthResponse buildResponse(IBaseUser user) {
-        // Cast to User or Admin to access entity fields
-        String id = "";
         String firstname = "";
         String lastname = "";
         Integer phone = null;
@@ -57,7 +52,6 @@ public class AuthService {
         Instant createdAt = Instant.now();
 
         if (user instanceof User u) {
-            id = u.getId();
             firstname = u.getFirstname();
             lastname = u.getLastname();
             phone = u.getPhone();
@@ -67,13 +61,11 @@ public class AuthService {
             createdAt = u.getCreatedAt();
         }
 
-        //some fields are empty cuz admin may not have it
-        else if (user instanceof Admin a) {
-            id = a.getId().toString();
+        else if (user instanceof Admin) {
             createdAt = Instant.now();
         }
+
         UserDTO userDTO = new UserDTO(
-                id,
                 firstname,
                 lastname,
                 phone,

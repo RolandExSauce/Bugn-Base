@@ -4,25 +4,24 @@ import com.bugnbass.backend.model.Product;
 import com.bugnbass.backend.model.enums.ProductCategory;
 import com.bugnbass.backend.service.ProductService;
 import org.springframework.web.bind.annotation.*;
-import java.util.List;
+        import java.util.List;
 
 @RestController
-@RequestMapping("/api/shop/products")
-public class ProductController {
+@RequestMapping("/bugnbass/api/shop")
+public class ShopProductsController {
 
     private final ProductService userProductService;
 
-    public ProductController(ProductService userProductService) {
+    public ShopProductsController(ProductService userProductService) {
         this.userProductService = userProductService;
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/products/product/{id}")
     public Product getProduct(@PathVariable String id) {
-
         return userProductService.getProduct(id);
     }
 
-    @GetMapping
+    @GetMapping("/products")
     public List<Product> getProducts (
             @RequestParam(required = false) String id,
             @RequestParam(required = false) String name,
@@ -33,6 +32,8 @@ public class ProductController {
             @RequestParam(required = false) Integer pageNo,
             @RequestParam(required = false) Integer pageSize
     ) {
+
+        //TODO: NOT SURE IF THIS MAKES SENSE ? WE HAVE A getProduct method above ?
         if (id != null) {
             return List.of(userProductService.getProduct(id));
         }

@@ -1,9 +1,7 @@
 package com.bugnbass.backend.service;
-
-
 import com.bugnbass.backend.dto.OrderDTO;
-import com.bugnbass.backend.dto.OrderItemDTO;
 import com.bugnbass.backend.exceptions.UserNotFoundException;
+import com.bugnbass.backend.mappers.OrderMapper;
 import com.bugnbass.backend.model.Order;
 import com.bugnbass.backend.model.OrderItem;
 import com.bugnbass.backend.model.Product;
@@ -16,7 +14,6 @@ import com.bugnbass.backend.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
@@ -30,25 +27,9 @@ public class OrderService {
     private final OrderItemRepository orderItemRepo;
     private final ProductService productService;
     private final UserService userService;
+    private final OrderMapper orderMapper;
 
-    private OrderDTO mapToDTO(Order order) {
-        return new OrderDTO(
-                order.getUser().getEmail(),
-                order.getUser().getPhoneNumber(),
-                "",
-                order.getShippingAddress(),
-                order.getTotalOrderPrice().doubleValue(),
-                order.getOrderItems().stream().map(item ->
-                        new OrderItemDTO(
-                                String.valueOf(item.getProduct().getId()),
-                                item.getQuantity(),
-                                item.getPrice().doubleValue()
-                        )
-                ).toList()
-        );
-    }
-
-
+    /**********************************************************************************************************************/
     public OrderStatus createOrder(OrderDTO dto) {
 
         User user = userService.findCustomerByEmail(dto.customerEmail())
@@ -63,9 +44,7 @@ public class OrderService {
         order.setOrderNumber(generateOrderNumber());
 
         List<OrderItem> items = dto.orderItems().stream().map(itemDTO -> {
-
             Product product = productService.getProduct(itemDTO.productId());
-
             OrderItem item = new OrderItem();
             item.setOrder(order);
             item.setProduct(product);
@@ -76,77 +55,68 @@ public class OrderService {
         }).toList();
 
         order.setOrderItems(items);
-
         BigDecimal totalPrice = items.stream()
                 .map(i -> i.getPrice().multiply(BigDecimal.valueOf(i.getQuantity())))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
         order.setTotalOrderPrice(totalPrice);
-
         orderRepo.save(order);
         orderItemRepo.saveAll(items);
-
         return order.getOrderStatus();
     }
-
+    /******************************************************************************************************************/
     private String generateOrderNumber() {
         return "ORD-" + System.currentTimeMillis();
     }
-
+    /******************************************************************************************************************/
     public OrderDTO getOrderById(Long id, String requesterEmail) {
 
         Order order = orderRepo.findById(id)
                 .orElseThrow(() -> new RuntimeException("Order not found"));
 
         if (order.getUser().getEmail().equals(requesterEmail)) {
-            return mapToDTO(order);
+            return orderMapper.toDTO(order);
         }
 
         IBaseUser baseUser = userService.findByEmail(requesterEmail)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         if (baseUser.getRole() == UserRole.ROLE_ADMIN) {
-            return mapToDTO(order);
+            return orderMapper.toDTO(order);
         }
-
 
         throw new RuntimeException("Access denied");
     }
-
+    /******************************************************************************************************************/
     public List<OrderDTO> getOrdersByCustomer(String email) {
 
         User user = userService.findCustomerByEmail(email)
                 .orElseThrow(() -> new UserNotFoundException("User not found: " + email));
 
         List<Order> orders = orderRepo.findByUser(user);
-
         return orders.stream()
-                .map(this::mapToDTO)
+                .map(orderMapper::toDTO)
                 .toList();
     }
-
+    /******************************************************************************************************************/
     public List<OrderDTO> getAllOrders() {
 
         List<Order> orders = orderRepo.findAll();
-
         return orders.stream()
-                .map(this::mapToDTO)
+                .map(orderMapper::toDTO)
                 .toList();
     }
-
+    /******************************************************************************************************************/
     public OrderStatus updateOrderStatus(Long id, OrderStatus newStatus) {
-
         Order order = orderRepo.findById(id)
                 .orElseThrow(() -> new RuntimeException("Order not found"));
 
         order.setOrderStatus(newStatus);
         orderRepo.save(order);
-
         return newStatus;
     }
-
+    /******************************************************************************************************************/
     public OrderStatus cancelOrder(Long id, String email) {
-
         Order order = orderRepo.findById(id)
                 .orElseThrow(() -> new RuntimeException("Order not found"));
 
@@ -168,7 +138,7 @@ public class OrderService {
 
         return OrderStatus.CANCELED;
     }
-
+    /******************************************************************************************************************/
     public void deleteOrder(Long id) {
 
         Order order = orderRepo.findById(id)
@@ -176,7 +146,7 @@ public class OrderService {
 
         orderRepo.delete(order);
     }
-
+    /******************************************************************************************************************/
     public OrderStatus returnOrder(Long id, String email) {
 
         Order order = orderRepo.findById(id)
@@ -192,21 +162,17 @@ public class OrderService {
             throw new RuntimeException("Only delivered orders can be returned");
         }
 
-        // Optional: verhindern, dass mehrfach returnt wird
-        if (order.getOrderStatus() == OrderStatus.RETURNED) {
-            throw new RuntimeException("Order already returned");
-        }
-
         order.setOrderStatus(OrderStatus.RETURNED);
         orderRepo.save(order);
 
         return OrderStatus.RETURNED;
     }
+    /******************************************************************************************************************/
+    public OrderDTO getOrderByIdForAdmin(Long id) {
+        Order order = orderRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Order not found"));
 
-
-
-
-
-
-
+        // Admin can access any order without email validation
+        return orderMapper.toDTO(order);
+    }
 }

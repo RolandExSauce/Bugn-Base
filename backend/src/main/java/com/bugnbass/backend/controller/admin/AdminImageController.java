@@ -1,4 +1,4 @@
-package com.bugnbass.backend.controller;
+package com.bugnbass.backend.controller.admin;
 import com.bugnbass.backend.model.Image;
 import com.bugnbass.backend.service.ImageService;
 import lombok.RequiredArgsConstructor;
@@ -9,9 +9,9 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/admin/products")
+@RequestMapping("/bugnbass/api/admin/products")
 @RequiredArgsConstructor
-public class ImageController {
+public class AdminImageController {
 
     private final ImageService imageService;
 
@@ -20,7 +20,6 @@ public class ImageController {
             @PathVariable String productId,
             @RequestParam("files") List<MultipartFile> files
     ) {
-
         files.forEach(file -> imageService.addImageToProduct(file, productId));
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body("Images uploaded successfully.");
@@ -31,11 +30,8 @@ public class ImageController {
         return imageService.getProductImages(productId);
     }
 
-    @DeleteMapping("/{productId}/images/{imageId}")
-    public ResponseEntity<Void> deleteImage(
-            @PathVariable String productId,
-            @PathVariable String imageId
-    ) {
+    @DeleteMapping("/images/{imageId}")
+    public ResponseEntity<Void> deleteImage(@PathVariable String imageId) {
         imageService.deleteImage(imageId);
         return ResponseEntity.noContent().build();
     }

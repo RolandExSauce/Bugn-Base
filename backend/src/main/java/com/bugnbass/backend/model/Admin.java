@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
+
 import lombok.*;
 
 @Entity
@@ -17,8 +19,8 @@ import lombok.*;
 public class Admin implements IBaseUser {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
     @Column(nullable = false, unique = true)
     private String email;
