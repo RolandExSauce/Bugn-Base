@@ -1,4 +1,6 @@
-package com.bugnbass.backend.config;
+package com.bugnbass.backend.security;
+import com.bugnbass.backend.config.CustUserDetailsService;
+import com.bugnbass.backend.config.JwtUtil;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -13,7 +15,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import static org.springframework.security.config.Customizer.withDefaults;
-
 
 @Configuration
 @EnableWebSecurity
@@ -56,7 +57,6 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
-                //.cors(AbstractHttpConfigurer::disable)
                 .cors(withDefaults())
                 .exceptionHandling(exceptionHandling ->
                         exceptionHandling.authenticationEntryPoint(unauthorizedHandler)
@@ -70,15 +70,18 @@ public class SecurityConfig {
                                         "/bugnbass/auth/**",
                                         "/bugnbass/test/all",
                                         "/swagger-ui/**",
-                                        "/v3/api-docs/**"
+                                        "/bugnbass/api/shop/**",
+                                        "/v3/api-docs/**",
+
+                                        //should be protected:
+                                        "/bugnbass/api/admin/**",
+                                        "/bugnbass/api/orders/**"
                                 ).permitAll()
-
-                                .requestMatchers("/api/orders/**").authenticated()
-                                .requestMatchers("/bugnbass/**").authenticated()
-
+//                                .requestMatchers("/bugnbass/api/admin/**").authenticated()
+//                                .requestMatchers("/bugnbass/api/orders/**").authenticated()
+                                //.requestMatchers("/bugnbass/**").authenticated()
                                 .anyRequest().denyAll()
                 )
-
                 //disable basic auth and form login
                 .formLogin(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable);

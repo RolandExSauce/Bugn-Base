@@ -24,12 +24,7 @@ public class ImageService {
         this.productRepository = productRepository;
         this.imageRepository = imageRepository;
     }
-
-    public Image getImage(String imageId) {
-        return imageRepository.findById(UUID.fromString(imageId))
-                .orElseThrow(ImageNotFoundException::new);
-    }
-
+    /******************************************************************************************************************/
     public List<Image> getProductImages(String productId) {
         Long id = Long.valueOf(productId);
         List<Image> images = imageRepository.findAllByProduct_Id(id);
@@ -39,7 +34,7 @@ public class ImageService {
         }
         return images;
     }
-
+    /******************************************************************************************************************/
     @Transactional
     public void addImageToProduct(MultipartFile file, String productId) {
 
@@ -69,16 +64,13 @@ public class ImageService {
             throw new RuntimeException("Could not save file: " + file.getOriginalFilename());
         }
     }
-
-
+    /******************************************************************************************************************/
     @Transactional
     public void deleteImage(String imageId) {
-
         Image image = imageRepository.findById(UUID.fromString(imageId))
                 .orElseThrow(ImageNotFoundException::new);
 
         Product product = image.getProduct();
-
         try {
             String relativeUrl = image.getUrl().replaceFirst("^/", "");
             Path path = Paths.get("src/main/resources/static", relativeUrl);

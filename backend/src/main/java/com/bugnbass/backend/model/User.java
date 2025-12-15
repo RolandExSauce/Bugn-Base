@@ -1,13 +1,13 @@
 package com.bugnbass.backend.model;
 import com.bugnbass.backend.model._interface.IBaseUser;
 import com.bugnbass.backend.model.enums.UserRole;
-import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import java.time.Instant;
+import jakarta.persistence.*;
 import java.util.Collection;
+import java.time.Instant;
 import java.util.List;
+import java.util.UUID;
 import lombok.*;
 
 @Entity
@@ -20,7 +20,7 @@ public class User implements IBaseUser {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private String id;
+    private UUID id;
 
     @Column(nullable = false, unique = true)
     private String email;

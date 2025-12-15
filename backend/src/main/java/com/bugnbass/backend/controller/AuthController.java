@@ -26,8 +26,6 @@ public class AuthController {
 
     @PostMapping("/register")
     public AuthResponse regsiter(@Valid @RequestBody RegisterDTO registerDTO) {
-        System.out.println("dto: " + registerDTO);
         return authService.handleRegister(registerDTO);
-    };
-
-};
+    }
+}

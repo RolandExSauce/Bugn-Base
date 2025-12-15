@@ -2,7 +2,6 @@ package com.bugnbass.backend.dto;
 import com.bugnbass.backend.model.enums.StockStatus;
 import jakarta.validation.constraints.*;
 
-
 public record ProductDTO(
         
         @NotNull

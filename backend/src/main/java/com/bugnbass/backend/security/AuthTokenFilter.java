@@ -1,4 +1,6 @@
-package com.bugnbass.backend.config;
+package com.bugnbass.backend.security;
+import com.bugnbass.backend.config.CustUserDetailsService;
+import com.bugnbass.backend.config.JwtUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -11,14 +13,13 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 
-
 //auth token filter to intercept incoming http requests
 @Component
 @RequiredArgsConstructor
 public class AuthTokenFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
-    private final CustUserDetailsService userDetailsService; 
+    private final CustUserDetailsService userDetailsService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,

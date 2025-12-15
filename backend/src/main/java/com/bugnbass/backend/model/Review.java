@@ -1,10 +1,8 @@
 package com.bugnbass.backend.model;
-
 import jakarta.persistence.*;
-import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
-
 import java.time.LocalDateTime;
+import lombok.*;
 
 @Entity
 @Table(name = "reviews")
