@@ -49,10 +49,9 @@ public class ImageService {
                 category,
                 fileName
         );
-        Path dbPath = Paths.get("/product_images", category, fileName);
-
+        String url = "/product_images/" + category + "/" + fileName;
         Image image = new Image();
-        image.setUrl(dbPath.toString());
+        image.setUrl(url);
         image.setProduct(product);
 
         imageRepository.save(image);
@@ -81,7 +80,6 @@ public class ImageService {
 
         product.getImages().remove(image);
         image.setProduct(null);
-
         imageRepository.delete(image);
     }
 }

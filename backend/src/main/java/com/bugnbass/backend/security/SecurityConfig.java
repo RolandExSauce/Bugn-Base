@@ -72,7 +72,7 @@ public class SecurityConfig {
                                         "/swagger-ui/**",
                                         "/bugnbass/api/shop/**",
                                         "/v3/api-docs/**",
-
+                                        "/product_images/**",
                                         //should be protected:
                                         "/bugnbass/api/admin/**",
                                         "/bugnbass/api/orders/**"
