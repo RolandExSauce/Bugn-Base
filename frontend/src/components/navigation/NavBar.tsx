@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import Searchbar from "./Searchbar";
+// import Searchbar from "./Searchbar";
 import { useRef } from "react";
 import { useCartContext } from "../../context/CartContext";
 import { useAuthContext } from "../../context/AuthContext";
@@ -20,7 +20,7 @@ const NavBar = () => {
         <img width="50px" height="50px" src="/logo.png" alt="" />
         Bug'nBass
       </Link>
-      <Searchbar />
+      {/* <Searchbar /> */}
       <div ref={navbarButtonsRef} className="navbar-buttons">
         <Link className="navbar-button" to="/listing">
           <img src="/guitar.svg" alt="" />

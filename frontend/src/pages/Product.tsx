@@ -4,8 +4,8 @@ import Review from "../components/product/Review";
 import { useCartContext } from "../context/CartContext";
 import type { Product } from "../types/models";
 import { useParams } from "react-router-dom";
+import { mockProducts } from "../api/mock";
 
-import { mockProduct } from "../types/temp/PlaceholderData";
 
 export default function Product() {
   const { productId } = useParams();
@@ -17,7 +17,7 @@ export default function Product() {
 
   useEffect(() => {
     // fetch product with id productId
-    setProduct(mockProduct);
+    setProduct(mockProducts[0]);
   }, [productId]);
 
   const handleAddToCart = () => {

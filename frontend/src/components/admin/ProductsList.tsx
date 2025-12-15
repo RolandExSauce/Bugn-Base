@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import FullProduct from "../../components/admin/FullProduct";
-import { mockProduct } from "../../types/temp/PlaceholderData";
 import type { Product } from "../../types/models";
-import { NAME_REGEX, PRICE_REGEX } from "../../types/regex";
-import AdminService from "../../services/admin/admin.service";
+import { NAME_REGEX, PRICE_REGEX } from "../../utils/regex";
+import AdminService from "../../services/admin/admin.order.service";
+import { mockProducts } from "../../api/mock";
 
 export default function ProductsList() {
   const [selectedProductId, setSelectedProductId] = useState<string>("");
@@ -13,7 +13,7 @@ export default function ProductsList() {
   // later remove the dummy data and instead use below:
   const [products, setProducts] = useState(
     Array.from({ length: 10 }, (_, i) => ({
-      ...mockProduct,
+      ...mockProducts,
       id: String(i + 1),
     }))
   );
@@ -106,14 +106,14 @@ export default function ProductsList() {
     if (hasError) return;
 
     const productToAdd: Product = {
-      id: "0",
+      id: 0,
       name: newProductForm.name ?? "",
       category: newProductForm.category as Product["category"],
       description: newProductForm.description ?? "",
       price: Number(newProductForm.price),
       shippingCost: Number(newProductForm.shippingCost),
       brand: newProductForm.brand ?? "",
-      stockStatus: newProductForm.stockStatus ?? false,
+      stockStatus: newProductForm.stockStatus ?? "IN_STOCK",
       shippingTime: Number(newProductForm.shippingTime),
       active: newProductForm.active ?? false,
     };
@@ -131,12 +131,12 @@ export default function ProductsList() {
         setShowNewForm(false);
         setNewProductForm({
           name: "",
-          category: "piano",
+          category: "PIANO",
           description: "",
           price: 0,
           shippingCost: 0,
           brand: "",
-          stockStatus: true,
+          stockStatus: "LOW_STOCK",
           shippingTime: 0,
           active: true,
         });

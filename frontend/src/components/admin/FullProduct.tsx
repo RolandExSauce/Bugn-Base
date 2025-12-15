@@ -1,11 +1,11 @@
 import { useState, useEffect, useRef } from "react";
 import type { Product } from "../../types/models";
-import AdminService from "../../services/admin/admin.service";
+import AdminService from "../../services/admin/admin.order.service";
 import AdminUpdateButton from "../common/AdminUpdateButton";
 import AdminDeleteButton from "../common/AdminDeleteButton";
 import AdminSelectRowButton from "../common/AdminSelectRowButton";
 
-import { BRAND_REGEX, PRICE_REGEX } from "../../types/regex";
+import { BRAND_REGEX, PRICE_REGEX } from "../../utils/regex";
 
 interface FullProductProps {
   initialProduct: Product;

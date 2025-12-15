@@ -1,11 +1,8 @@
 import { useState, useEffect } from "react";
 import Message from "../../components/admin/Message";
 import type { MessageDto } from "../../types/models";
-import {
-  mockMessage1,
-  mockMessage2,
-  mockMessage3,
-} from "../../types/temp/PlaceholderData";
+import { mockMessage1, mockMessage2, mockMessage3 } from "../../api/mock";
+
 
 export default function MessagesList() {
   const [messages, setMessages] = useState<MessageDto[]>([]);

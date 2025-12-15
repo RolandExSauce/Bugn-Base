@@ -1,11 +1,47 @@
-export default function Searchbar() {
+import { useState, useEffect, useRef } from "react";
+
+interface SearchbarProps {
+  onSearch: (searchTerm: string) => void;
+}
+
+export default function Searchbar({ onSearch }: SearchbarProps) {
+  const [searchTerm, setSearchTerm] = useState("");
+  const timeoutRef = useRef<number | undefined>(undefined);
+
+  useEffect(() => {
+    // Clear previous timeout
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+
+    // Set new timeout
+    timeoutRef.current = window.setTimeout(() => {
+      onSearch(searchTerm);
+    }, 300);
+
+    // Cleanup function
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, [searchTerm, onSearch]);
+
+  const handleClear = () => {
+    setSearchTerm("");
+  };
+
   return (
-    <div className="searchbar flex-grow-1">
+    <div className="searchbar">
       <input
-        placeholder="Produkte durchsuchen..."
         type="text"
-        className="searchbar-input w-100 px-3"
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        placeholder="Search..."
       />
+      {searchTerm && (
+        <button onClick={handleClear}>Clear</button>
+      )}
     </div>
   );
 }
