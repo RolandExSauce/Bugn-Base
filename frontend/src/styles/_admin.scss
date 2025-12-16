@@ -91,3 +91,15 @@
     cursor: default;
   }
 }
+
+
+
+.user-row-success {
+  animation: successFlash 0.8s ease-in-out;
+}
+
+@keyframes successFlash {
+  0% { background-color: #d1e7dd; }
+  50% { background-color: #d4edda; }
+  100% { background-color: transparent; }
+}

@@ -5,8 +5,8 @@ import java.util.List;
 public record ProductFilter (
         String name,
         ProductCategory category,
-        Integer priceMin,
-        Integer priceMax,
+        Double priceMin,
+        Double priceMax,
         List<String> brand,
         Integer pageNumber,
         Integer pageSize

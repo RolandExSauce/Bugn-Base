@@ -1,46 +1,26 @@
 import { useEffect, useRef, useState } from "react";
 import FullProduct from "../../components/admin/FullProduct";
-import type { Product } from "../../types/models";
-import { NAME_REGEX, PRICE_REGEX } from "../../utils/regex";
-import AdminService from "../../services/admin/admin.order.service";
-import { mockProducts } from "../../api/mock";
+import type { Product, ProductDTO } from "../../types/models";
+import { AdminProductService } from "../../services";
 
 export default function ProductsList() {
   const [selectedProductId, setSelectedProductId] = useState<string>("");
-
   const divRef = useRef<HTMLDivElement>(null);
-
-  // later remove the dummy data and instead use below:
-  const [products, setProducts] = useState(
-    Array.from({ length: 10 }, (_, i) => ({
-      ...mockProducts,
-      id: String(i + 1),
-    }))
-  );
-
-  // const fetchProducts = async () => {
-  //   try {
-  //     const data = await AdminService.getProducts();
-  //     setProducts(data);
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   fetchProducts();
-  // }, []);
-
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
   const [showNewForm, setShowNewForm] = useState(false);
 
-  const [newProductForm, setNewProductForm] = useState<Partial<Product>>({
+  console.log("products for admin: ", products)
+
+  //or could use Partial Product type
+  const [newProductForm, setNewProductForm] = useState<ProductDTO>({
     name: "",
-    category: "piano" as Product["category"],
+    category: "GUITARS",
     description: "",
     price: 0,
     shippingCost: 0,
     brand: "",
-    stockStatus: true,
+    stockStatus: "IN_STOCK",
     shippingTime: 0,
     active: true,
   });
@@ -54,17 +34,35 @@ export default function ProductsList() {
     shippingTime: false,
   });
 
-  const handleSelectedProduct = (id: string) => {
-    if (selectedProductId === id) return;
-    setSelectedProductId(id);
+  const fetchProducts = async () => {
+    try {
+      setLoading(true);
+      const data = await AdminProductService.getProducts();
+      setProducts(data);
+    } catch (error) {
+      console.error("Error fetching products:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const handleNewChange = (key: keyof Product, value: any) => {
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
+  const handleSelectedProduct = (id: string) => {
+    if (selectedProductId === id) {
+      setSelectedProductId("");
+    } else {
+      setSelectedProductId(id);
+    }
+  };
+
+  const handleNewChange = (key: keyof ProductDTO, value: any) => {
     setNewProductForm((prev) => ({ ...prev, [key]: value }));
   };
 
-  const saveNewProduct = () => {
+  const saveNewProduct = async () => {
     const nextInvalid = {
       name: false,
       description: false,
@@ -76,67 +74,74 @@ export default function ProductsList() {
 
     let hasError = false;
 
-    if (!NAME_REGEX.test(newProductForm.name ?? "")) {
+    if (!newProductForm.name || newProductForm.name.trim().length === 0) {
       nextInvalid.name = true;
       hasError = true;
     }
 
-    if (!PRICE_REGEX.test(String((newProductForm.price ?? 0) * 100))) {
+    if (!newProductForm.price || newProductForm.price <= 0) {
       nextInvalid.price = true;
       hasError = true;
     }
 
-    if (!PRICE_REGEX.test(String((newProductForm.shippingCost ?? 0) * 100))) {
+    if (!newProductForm.shippingCost || newProductForm.shippingCost < 0) {
       nextInvalid.shippingCost = true;
       hasError = true;
     }
 
-    if (!NAME_REGEX.test(newProductForm.brand ?? "")) {
+    if (!newProductForm.brand || newProductForm.brand.trim().length === 0) {
       nextInvalid.brand = true;
       hasError = true;
     }
 
-    if (!PRICE_REGEX.test(String(newProductForm.shippingTime))) {
+    if (
+      !newProductForm.shippingTime ||
+      newProductForm.shippingTime < 1 ||
+      newProductForm.shippingTime > 5
+    ) {
       nextInvalid.shippingTime = true;
       hasError = true;
     }
 
     setNewInvalid(nextInvalid);
-
     if (hasError) return;
 
-    const productToAdd: Product = {
-      id: 0,
-      name: newProductForm.name ?? "",
-      category: newProductForm.category as Product["category"],
-      description: newProductForm.description ?? "",
-      price: Number(newProductForm.price),
-      shippingCost: Number(newProductForm.shippingCost),
-      brand: newProductForm.brand ?? "",
-      stockStatus: newProductForm.stockStatus ?? "IN_STOCK",
-      shippingTime: Number(newProductForm.shippingTime),
-      active: newProductForm.active ?? false,
-    };
-
     try {
-      // AdminService.addProduct(productToAdd)
+      // Create ProductDTO from form
+      const productDTO: ProductDTO = {
+        name: newProductForm.name,
+        category: newProductForm.category,
+        description: newProductForm.description,
+        price: newProductForm.price,
+        shippingCost: newProductForm.shippingCost,
+        brand: newProductForm.brand,
+        stockStatus: newProductForm.stockStatus,
+        shippingTime: newProductForm.shippingTime,
+        active: newProductForm.active ?? true,
+      };
 
-      // success animation
+      // Save to backend
+      const savedProduct = await AdminProductService.addProduct(productDTO);
+
+      // Update local state
+      setProducts((prev) => [...prev, savedProduct]);
+
+      // Success animation
       divRef.current?.classList.remove("success-animation");
       void divRef.current?.offsetWidth;
       divRef.current?.classList.add("success-animation");
 
-      // reset states:
+      // Reset form after delay
       setTimeout(() => {
         setShowNewForm(false);
         setNewProductForm({
           name: "",
-          category: "PIANO",
+          category: "GUITARS",
           description: "",
           price: 0,
           shippingCost: 0,
           brand: "",
-          stockStatus: "LOW_STOCK",
+          stockStatus: "IN_STOCK",
           shippingTime: 0,
           active: true,
         });
@@ -150,10 +155,31 @@ export default function ProductsList() {
         });
       }, 1000);
     } catch (error) {
-      console.log(error);
-      // todo: ipmlement error handling in the ui
+      console.error("Error adding product:", error);
+      // TODO: Show error message to user
     }
   };
+
+  const handleProductUpdated = (updatedProduct: Product) => {
+    setProducts((prev) =>
+      prev.map((p) => (p.id === updatedProduct.id ? updatedProduct : p))
+    );
+  };
+
+  const handleProductDeleted = (productId: number) => {
+    setProducts((prev) => prev.filter((p) => p.id !== productId));
+  };
+
+  if (loading) {
+    return (
+      <div className="d-flex justify-content-center align-items-center py-5">
+        <div className="spinner-border text-primary" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+        <p className="mt-3 ms-3">Lade Produkte...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="d-flex flex-column">
@@ -181,7 +207,7 @@ export default function ProductsList() {
                 onChange={(e) => handleNewChange("name", e.target.value)}
               />
               {newInvalid.name && (
-                <div className="text-danger">Name ist ungültig</div>
+                <div className="text-danger">Name ist erforderlich</div>
               )}
             </label>
 
@@ -190,16 +216,11 @@ export default function ProductsList() {
               <select
                 className="form-select"
                 value={newProductForm.category}
-                onChange={(e) =>
-                  handleNewChange(
-                    "category",
-                    e.target.value as Product["category"]
-                  )
-                }
+                onChange={(e) => handleNewChange("category", e.target.value)}
               >
-                <option value="piano">Klavier</option>
-                <option value="guitar">Gitarre</option>
-                <option value="violin">Violine</option>
+                <option value="GUITARS">Gitarre</option>
+                <option value="PIANOS">Klavier</option>
+                <option value="VIOLINS">Violine</option>
               </select>
             </label>
 
@@ -218,14 +239,18 @@ export default function ProductsList() {
             </label>
 
             <label className="form-label">
-              Preis
+              Preis (€)
               <input
                 type="number"
-                className="form-control"
-                placeholder="0"
-                value={newProductForm.price ? newProductForm.price / 100 : 1}
+                step="0.01"
+                min="0.01"
+                className={`form-control ${
+                  newInvalid.price ? "is-invalid" : ""
+                }`}
+                placeholder="0.00"
+                value={newProductForm.price}
                 onChange={(e) =>
-                  handleNewChange("price", Number(e.target.value) * 100)
+                  handleNewChange("price", parseFloat(e.target.value))
                 }
               />
               {newInvalid.price && (
@@ -234,18 +259,24 @@ export default function ProductsList() {
             </label>
 
             <label className="form-label">
-              Versandkosten
+              Versandkosten (€)
               <input
                 type="number"
-                className="form-control"
-                placeholder="0"
+                step="0.01"
+                min="0"
+                className={`form-control ${
+                  newInvalid.shippingCost ? "is-invalid" : ""
+                }`}
+                placeholder="0.00"
                 value={newProductForm.shippingCost}
                 onChange={(e) =>
-                  handleNewChange("shippingCost", Number(e.target.value))
+                  handleNewChange("shippingCost", parseInt(e.target.value))
                 }
               />
               {newInvalid.shippingCost && (
-                <div className="text-danger">Versandkosten sind ungültig</div>
+                <div className="invalid-feedback">
+                  Versandkosten müssen ≥ 0 sein
+                </div>
               )}
             </label>
 
@@ -253,13 +284,15 @@ export default function ProductsList() {
               Marke
               <input
                 type="text"
-                className="form-control"
+                className={`form-control ${
+                  newInvalid.brand ? "is-invalid" : ""
+                }`}
                 placeholder="Markenname"
                 value={newProductForm.brand}
                 onChange={(e) => handleNewChange("brand", e.target.value)}
               />
               {newInvalid.brand && (
-                <div className="text-danger">Marke ist ungültig</div>
+                <div className="invalid-feedback">Marke ist erforderlich</div>
               )}
             </label>
 
@@ -267,13 +300,12 @@ export default function ProductsList() {
               Lagerstatus
               <select
                 className="form-select"
-                value={newProductForm.stockStatus ? "in" : "out"}
-                onChange={(e) =>
-                  handleNewChange("stockStatus", e.target.value === "in")
-                }
+                value={newProductForm.stockStatus}
+                onChange={(e) => handleNewChange("stockStatus", e.target.value)}
               >
-                <option value="in">Auf Lager</option>
-                <option value="out">Nicht auf Lager</option>
+                <option value="IN_STOCK">Auf Lager</option>
+                <option value="LOW_STOCK">Geringer Lagerbestand</option>
+                <option value="OUT_OF_STOCK">Nicht auf Lager</option>
               </select>
             </label>
 
@@ -281,25 +313,31 @@ export default function ProductsList() {
               Lieferzeit (Tage)
               <input
                 type="number"
-                className="form-control"
-                placeholder="0"
+                min="1"
+                max="5"
+                className={`form-control ${
+                  newInvalid.shippingTime ? "is-invalid" : ""
+                }`}
+                placeholder="1-5"
                 value={newProductForm.shippingTime}
                 onChange={(e) =>
-                  handleNewChange("shippingTime", Number(e.target.value))
+                  handleNewChange("shippingTime", parseInt(e.target.value))
                 }
               />
               {newInvalid.shippingTime && (
-                <div className="text-danger">Lieferzeit ist ungültig</div>
+                <div className="invalid-feedback">
+                  Lieferzeit muss 1-5 Tage sein
+                </div>
               )}
             </label>
 
             <label className="form-label d-flex align-items-center column-gap-2">
-              Aktiv
               <input
                 type="checkbox"
                 checked={newProductForm.active}
                 onChange={(e) => handleNewChange("active", e.target.checked)}
               />
+              Aktiv
             </label>
           </div>
 
@@ -307,7 +345,10 @@ export default function ProductsList() {
             <button className="btn btn-success" onClick={saveNewProduct}>
               Speichern
             </button>
-            <button className="btn btn-secondary" onClick={saveNewProduct}>
+            <button
+              className="btn btn-secondary"
+              onClick={() => setShowNewForm(false)}
+            >
               Abbrechen
             </button>
           </div>
@@ -317,6 +358,7 @@ export default function ProductsList() {
       <table className="table table-bordered table-striped">
         <thead>
           <tr>
+            <th>ID</th>
             <th>Name</th>
             <th>Kategorie</th>
             <th>Beschreibung</th>
@@ -332,10 +374,12 @@ export default function ProductsList() {
         <tbody>
           {products.map((product) => (
             <FullProduct
-              handleSelect={handleSelectedProduct}
-              selectedProductId={selectedProductId}
               key={product.id}
-              initialProduct={product}
+              product={product}
+              isSelected={selectedProductId === product.id.toString()}
+              onSelect={() => handleSelectedProduct(product.id.toString())}
+              onUpdate={handleProductUpdated}
+              onDelete={handleProductDeleted}
             />
           ))}
         </tbody>

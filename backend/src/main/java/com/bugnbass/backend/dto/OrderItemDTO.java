@@ -1,13 +1,11 @@
 package com.bugnbass.backend.dto;
 
-
 public record OrderItemDTO(
         String productId,
         int quantity,
         double price
 ) {
-
- /*   public OrderItemDTO {
+    public OrderItemDTO {
         if (productId == null || productId.isBlank()) {
             throw new IllegalArgumentException("Product ID is required");
         }
@@ -30,6 +28,5 @@ public record OrderItemDTO(
 
     public double getItemTotal() {
         return quantity * price;
-    };*/
-
+    };
 };

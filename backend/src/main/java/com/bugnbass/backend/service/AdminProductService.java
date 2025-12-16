@@ -2,7 +2,6 @@ package com.bugnbass.backend.service;
 import com.bugnbass.backend.dto.ProductDTO;
 import com.bugnbass.backend.exceptions.ProductNotFoundException;
 import com.bugnbass.backend.model.Product;
-import com.bugnbass.backend.model.enums.ProductCategory;
 import com.bugnbass.backend.repository.ProductRepository;
 import com.bugnbass.backend.validator.ProductValidator;
 import jakarta.transaction.Transactional;
@@ -28,11 +27,10 @@ public class AdminProductService {
     }
 
     public Product addProduct(ProductDTO dto) {
-
         productValidator.validateProductData(dto);
         Product product = Product.builder()
                 .name(dto.name())
-                .category(ProductCategory.valueOf(dto.category().toUpperCase()))
+                .category(dto.category())
                 .description(dto.description())
                 .price(dto.price())
                 .shippingCost(dto.shippingCost())
@@ -41,22 +39,23 @@ public class AdminProductService {
                 .shippingTime(dto.shippingTime())
                 .active(dto.active())
                 .build();
-
-        return productRepository.save(product); // <-- VERY IMPORTANT
+        return productRepository.save(product);
     }
 
+    //TODO: shouldn't this actually delete the product from the DB ?  🤔
     public void deleteProduct(String id) {
         Product product = getProduct(id);
         product.setActive(false);
     }
 
     public void updateProduct(String id, ProductDTO dto) {
+        Long productId = Long.valueOf(id);
         Product product = getProduct(id);
-        productValidator.validateProductData(dto);
+        productValidator.validateProductData(dto, productId);
 
         if (dto.name() != null) product.setName(dto.name());
         if (dto.category() != null)
-            product.setCategory(ProductCategory.valueOf(dto.category().toUpperCase()));
+            product.setCategory(dto.category());
         if (dto.description() != null) product.setDescription(dto.description());
         if (dto.price() != null) product.setPrice(dto.price());
         if (dto.shippingCost() != null) product.setShippingCost(dto.shippingCost());
@@ -64,5 +63,7 @@ public class AdminProductService {
         if (dto.shippingTime() != null) product.setShippingTime(dto.shippingTime());
         if (dto.stockStatus() != null) product.setStockStatus(dto.stockStatus());
         if (dto.active() != null) product.setActive(dto.active());
+
+        productRepository.save(product);
     }
 }

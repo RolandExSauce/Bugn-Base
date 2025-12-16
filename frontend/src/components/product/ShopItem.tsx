@@ -76,5 +76,4 @@ const ShopItem = ({ product }: ShopItemProps) => {
     </div>
   );
 };
-
 export default ShopItem;

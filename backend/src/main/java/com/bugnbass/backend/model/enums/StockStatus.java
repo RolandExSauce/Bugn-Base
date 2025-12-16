@@ -5,7 +5,8 @@ import lombok.Getter;
 public enum StockStatus {
 
     IN_STOCK("In Stock"),
-    OUT_OF_STOCK("Out of Stock");
+    OUT_OF_STOCK("Out of Stock"),
+    LOW_STOCK("Low Stock");
 
     private final String label;
 
