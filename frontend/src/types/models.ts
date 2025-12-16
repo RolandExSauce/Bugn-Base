@@ -1,10 +1,92 @@
-export type ProductCategory = "PIANO" | "GUITAR" | "VIOLIN";
+// == PRODUCTS TYPES AND RELATED =========================================================================================================
+export type ProductCategory = "PIANOS" | "GUITARS" | "VIOLINS";
+export type SortType = "price-asc" | "price-desc" | "";
 export type StockStatus = "IN_STOCK" | "OUT_OF_STOCK" | "LOW_STOCK";
-export type OrderStatus = "RECEIVED" | "PROCESSING" | "SHIPPING" | "DELIVERED" | "CANCELED" | "RETURNED";
-export type PaymentMethod = "CREDIT_CARD" | "PAYPAL" | "RECEIPT";
-export type Role = "ROLE_USER" | "ROLE_ADMIN";
+export type OrderStatus = "CANCELED" | "RECEIVED" | "SHIPPING" | "DELIVERED" | "RETURNED";
 
-// Order Types
+export interface Product {
+  id: number;
+  name: string;
+  category: ProductCategory;
+  description: string;
+  price: number;
+  shippingCost: number;
+  brand: string;
+  stockStatus: StockStatus;
+  shippingTime: number;
+  active: boolean;
+  images: Image[];
+}
+
+// For adding/updating products 
+export interface ProductDTO {
+  name: string;
+  category: ProductCategory;
+  description: string;
+  price: number;
+  shippingCost: number;
+  brand: string;
+  stockStatus: StockStatus;
+  shippingTime: number;
+  active: boolean;
+}
+
+export interface ProductFilter {
+  name?: string;
+  category?: ProductCategory;
+  priceMin?: number;
+  priceMax?: number;
+  brand?: string[];
+  pageNumber?: number;
+  pageSize?: number;
+  sort?: SortType; // Frontend-only: for client-side sorting
+  stars?: number;  // Frontend-only: for client-side star filtering
+}
+
+export interface Image {
+  imageId: string; 
+  url: string;
+  product?: Product;
+  altText?: string; 
+}
+
+// == USER TYPES AND RELATED =========================================================================================================
+export type Role = "ROLE_USER" | "ROLE_ADMIN";
+export type PaymentMethod = "CREDIT_CARD" | "PAYPAL" | "RECEIPT";
+
+export interface User {
+  id: string;
+  firstname: string;
+  lastname: string;
+  phone?: string | number;
+  address?: string;
+  postcode: number;
+  email: string;
+  active: boolean;
+  createdAt: Date;
+  role: Role;
+}
+
+export interface AuthState {
+  user: User;
+  accessToken: string;
+  role: Role;
+}
+
+export interface LoginDto {
+  email: string;
+  password: string;
+}
+
+export interface RegisterDto {
+  firstname: string;
+  lastname: string;
+  email: string;
+  password: string;
+}
+
+// == ORDER TYPES AND RELATED =========================================================================================================
+// For making orders
 export interface OrderDTO {
   customerEmail: string;
   customerPhoneNumber: string;
@@ -27,8 +109,8 @@ export interface Order {
   user: User;
   totalOrderPrice: number;
   orderItems: OrderItem[];
-  orderedDate: string; // LocalDate from backend
-  deliveryDate: string; // LocalDate from backend
+  orderedDate: string; 
+  deliveryDate: string; 
   orderStatus: OrderStatus;
   shippingAddress: string;
   paymentMethod: PaymentMethod;
@@ -42,94 +124,7 @@ export interface OrderItem {
   price: number;
 }
 
-// Product Types
-export interface Product {
-  id: number; // Changed from string to number (Long in backend)
-  name: string;
-  category: ProductCategory;
-  description: string;
-  price: number;
-  shippingCost: number;
-  brand: string;
-  stockStatus: StockStatus;
-  shippingTime: number;
-  active: boolean;
-  images: Image[];
-}
-
-export interface ProductDTO {
-  name: string;
-  category: string; // String in DTO, enum in model
-  description: string;
-  price: number;
-  shippingCost: number;
-  brand: string;
-  stockStatus: StockStatus;
-  shippingTime: number;
-  active: boolean;
-}
-
-export interface FilterDto {
-  category: ProductCategory;
-  brands: string[];
-  sort: SortType;
-  stars?: number;
-}
-
-export type SortType = "price-asc" | "price-desc" | "";
-
-export interface Image {
-  imageId: string; // UUID in backend
-  url: string;
-  product?: Product; // Optional back reference
-  altText?: string; 
-}
-
-// User Types
-export interface User {
-  id: string;
-  firstname: string;
-  lastname: string;
-  phone?: string | number;
-  address?: string;
-  postcode: number;
-  email: string;
-  active: boolean;
-  createdAt: Date;
-  role: Role;
-}
-
-// Auth Types
-export interface AuthState {
-  user: User;
-  accessToken: string;
-  role: Role;
-}
-
-export interface LoginDto {
-  email: string;
-  password: string;
-}
-
-export interface RegisterDto {
-  firstname: string;
-  lastname: string;
-  email: string;
-  password: string;
-}
-
-// Filter Types
-export interface ProductFilter {
-  name?: string;
-  category?: ProductCategory;
-  priceMin?: number;
-  priceMax?: number;
-  brand?: string[];
-  pageNumber?: number; // Changed from pageNo to pageNumber
-  pageSize?: number;   // Changed from pageSize to match backend
-}
-
-// Cart Types
+// == CART TYPES AND RELATED =========================================================================================================
 export interface CartItemType {
   product: Product;
   quantity: number;
@@ -140,7 +135,7 @@ export interface Cart {
   totalPrice: number;
 }
 
-// Review Types
+// == REVIEW AND MESSAGES TYPES AND RELATED =========================================================================================================
 export interface Review {
   reviewId: string;
   product: Product;
@@ -150,7 +145,6 @@ export interface Review {
   createdAt: Date;
 }
 
-// Message Types
 export interface MessageDto {
   messageId: string;
   name: string;

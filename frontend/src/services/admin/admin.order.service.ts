@@ -1,10 +1,10 @@
 import { apiClient } from "../../api/api-client";
-import type { OrderDTO, OrderStatus } from "../../types/models";
+import type { Order, OrderDTO, OrderStatus } from "../../types/models";
 
 class AdminOrderService {
 
-  public static getAllOrders = async (): Promise<OrderDTO[]> => {
-    return apiClient.get<OrderDTO[]>("/admin/orders");
+  public static getAllOrders = async (): Promise<Order[]> => {
+    return apiClient.get<Order[]>("/admin/orders");
   };
 
   public static getOrderById = async (id: number): Promise<OrderDTO> => {

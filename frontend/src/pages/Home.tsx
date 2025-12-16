@@ -19,7 +19,6 @@ export default function HomePage() {
     try {
       setLoading(true);
       const data = await ShopService.getProducts();
-      console.log("got data: ", data)
       setProducts(data);
       setError(null);
     } catch (err) {
@@ -41,7 +40,7 @@ export default function HomePage() {
       setLoading(true);
       const data = await ShopService.getProducts({
         name: searchTerm,
-        pageSize: 12, // Show more results for search
+        pageSize: 12,
       });
       setProducts(data);
       setError(null);
@@ -63,7 +62,7 @@ export default function HomePage() {
       </Link>
 
       <Searchbar onSearch={handleSearch} />
-     
+
       {loading ? (
         <div className="mt-5">
           <div className="spinner-border text-primary" role="status">
@@ -74,7 +73,7 @@ export default function HomePage() {
       ) : error ? (
         <div className="alert alert-danger mt-4" role="alert">
           {error}
-          <button 
+          <button
             onClick={fetchProducts}
             className="btn btn-sm btn-outline-danger ms-3"
           >
@@ -91,7 +90,7 @@ export default function HomePage() {
             <ShopItem key={p.id} product={p} />
           ))}
         </div>
-      )} 
+      )}
     </div>
   );
 }

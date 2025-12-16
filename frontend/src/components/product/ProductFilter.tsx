@@ -1,5 +1,9 @@
-import { useState } from "react";
-import type { FilterDto, ProductCategory, SortType } from "../../types/models";
+import { useEffect, useState } from "react";
+import type {
+  ProductFilter,
+  ProductCategory,
+  SortType,
+} from "../../types/models";
 import { mockProducts } from "../../api/mock";
 
 // Extract unique brands from mock products for each category
@@ -10,21 +14,45 @@ const getBrandsByCategory = (category: ProductCategory): string[] => {
   return [...new Set(brands)]; // Remove duplicates
 };
 
-export default function ProductFilter({
+export default function ProductFilterComponent({
   applyFilter,
+  currentFilter,
 }: {
-  applyFilter: (filter: FilterDto) => void;
+  applyFilter: (filter: ProductFilter) => void;
+  currentFilter: ProductFilter | null;
 }) {
-  const [filter, setFilter] = useState<FilterDto>({
-    category: "GUITAR",
-    brands: [],
+  const [filter, setFilter] = useState<ProductFilter>({
+    category: "GUITARS",
+    brand: [],
     sort: "",
     stars: undefined,
   });
 
   const [availableBrands, setAvailableBrands] = useState<string[]>(
-    getBrandsByCategory("GUITAR")
+    getBrandsByCategory("GUITARS")
   );
+
+  // Update local state when parent's currentFilter changes
+  useEffect(() => {
+    if (currentFilter) {
+      setFilter(currentFilter);
+      // Also update available brands based on category
+      const newBrands = getBrandsByCategory(
+        currentFilter.category || "GUITARS"
+      );
+      setAvailableBrands(newBrands);
+    } else {
+      // Reset to defaults when parent has no filter
+      const defaultFilter: ProductFilter = {
+        category: "GUITARS",
+        brand: [],
+        sort: "",
+        stars: undefined,
+      };
+      setFilter(defaultFilter);
+      setAvailableBrands(getBrandsByCategory("GUITARS"));
+    }
+  }, [currentFilter]);
 
   const updateCategory = (category: ProductCategory) => {
     const newBrands = getBrandsByCategory(category);
@@ -34,27 +62,28 @@ export default function ProductFilter({
     setFilter((prev) => ({
       ...prev,
       category,
-      brands: prev.brands.filter((brand) => newBrands.includes(brand)),
+      brand: (prev.brand || []).filter((brand) => newBrands.includes(brand)),
     }));
   };
 
   const handleBrandChange = (brand: string) => {
-    const newBrands = filter.brands.includes(brand)
-      ? filter.brands.filter((b) => b !== brand)
-      : [...filter.brands, brand];
+    const currentBrands = filter.brand || [];
+    const newBrands = currentBrands.includes(brand)
+      ? currentBrands.filter((b) => b !== brand)
+      : [...currentBrands, brand];
 
-    setFilter((prev) => ({ ...prev, brands: newBrands }));
+    setFilter((prev) => ({ ...prev, brand: newBrands }));
   };
 
   const handleResetFilter = () => {
-    const newFilter: FilterDto = {
-      category: "GUITAR",
-      brands: [],
+    const newFilter: ProductFilter = {
+      category: "GUITARS",
+      brand: [],
       sort: "",
       stars: undefined,
     };
     setFilter(newFilter);
-    setAvailableBrands(getBrandsByCategory("GUITAR"));
+    setAvailableBrands(getBrandsByCategory("GUITARS"));
     applyFilter(newFilter);
   };
 
@@ -82,8 +111,8 @@ export default function ProductFilter({
               type="radio"
               name="category"
               value="GUITAR"
-              checked={filter.category === "GUITAR"}
-              onChange={() => updateCategory("GUITAR")}
+              checked={filter.category === "GUITARS"}
+              onChange={() => updateCategory("GUITARS")}
             />
             Gitarre
           </label>
@@ -94,8 +123,8 @@ export default function ProductFilter({
               type="radio"
               name="category"
               value="PIANO"
-              checked={filter.category === "PIANO"}
-              onChange={() => updateCategory("PIANO")}
+              checked={filter.category === "PIANOS"}
+              onChange={() => updateCategory("PIANOS")}
             />
             Klavier
           </label>
@@ -106,8 +135,8 @@ export default function ProductFilter({
               type="radio"
               name="category"
               value="VIOLIN"
-              checked={filter.category === "VIOLIN"}
-              onChange={() => updateCategory("VIOLIN")}
+              checked={filter.category === "VIOLINS"}
+              onChange={() => updateCategory("VIOLINS")}
             />
             Violine
           </label>
@@ -143,7 +172,7 @@ export default function ProductFilter({
                   name="brand"
                   value={brand}
                   onChange={() => handleBrandChange(brand)}
-                  checked={filter.brands.includes(brand)}
+                  checked={(filter.brand || []).includes(brand)}
                 />
                 {brand}
               </label>
