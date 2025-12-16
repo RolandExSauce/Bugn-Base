@@ -1,4 +1,5 @@
 package com.bugnbass.backend.dto;
+import com.bugnbass.backend.model.enums.ProductCategory;
 import com.bugnbass.backend.model.enums.StockStatus;
 import jakarta.validation.constraints.*;
 
@@ -9,7 +10,8 @@ public record ProductDTO(
         String name,
 
         @NotNull
-        String category,
+        @Pattern(regexp = "PIANOS|GUITARS|VIOLINS", message = "Invalid Product Category")
+        ProductCategory category,
 
         @Size(max = 500, message = "Die Beschreibung ist zu lang.")
         String description,
@@ -22,7 +24,7 @@ public record ProductDTO(
 
         @Size(max = 25, message = "Der Hersteller ist zu lang.")
         String brand,
-
+        @Pattern(regexp = "IN_STOCK|OUT_OF_STOCK|LOW_STOCK", message = "Invalid Product Category")
         StockStatus stockStatus,
 
         @Min(1)
