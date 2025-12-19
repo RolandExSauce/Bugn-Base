@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import FullProduct from "../../components/admin/FullProduct";
 import type { Product, ProductDTO, Image } from "../../types/models";
-import { noImgFoundPlaceholder } from "../../assets/icon.barrel";
 import { AdminProductService } from "../../services";
 
 export default function ProductsList() {
@@ -135,7 +134,7 @@ export default function ProductsList() {
   };
 
   const resolveImageUrl = (url?: string) => {
-    if (!url) return noImgFoundPlaceholder;
+    if (!url) return "/no_found_placeholder.jpg";
     if (url.includes("/media/")) {
       return `${import.meta.env.VITE_BASE_URL}${url}`;
     }

@@ -1,5 +1,3 @@
-import { BASE_URL } from "../../api/api-client";
-import { noImgFoundPlaceholder } from "../../assets/icon.barrel";
 import type { Product } from "../../types/models";
 
 interface ShopItemProps {
@@ -27,7 +25,7 @@ const ShopItem = ({ product }: ShopItemProps) => {
   const productImage =
     product.images && product.images.length > 0
       ? `${import.meta.env.VITE_BASE_URL}/media${product.images[0].url}`
-      : noImgFoundPlaceholder;
+      : "/no_found_placeholder.jpg";
 
   return (
     <div className="shop-item d-flex align-items-center flex-column p-4 row-gap-1 bg-white rounded shadow-sm">
