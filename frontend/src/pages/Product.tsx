@@ -1,46 +1,70 @@
 import { useEffect, useRef, useState } from "react";
+import { useParams } from "react-router-dom";
 import Carousel from "../components/product/Carousel";
 import Review from "../components/product/Review";
 import { useCartContext } from "../context/CartContext";
 import type { Product } from "../types/models";
-import { useParams } from "react-router-dom";
-import { mockProducts } from "../api/mock";
-
+import ShopService from "../services/shop.service"; // adjust import path
 
 export default function Product() {
   const { productId } = useParams();
-  const [product, setProduct] = useState<Product | undefined>(undefined);
+  const [product, setProduct] = useState<Product | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [quantity, setQuantity] = useState(1);
   const { addItem } = useCartContext();
-
   const buttonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
-    // fetch product with id productId
-    setProduct(mockProducts[0]);
+    const fetchProduct = async () => {
+      if (!productId) return;
+      setLoading(true);
+      setError(null);
+
+      try {
+        const data = await ShopService.getProduct(productId);
+        setProduct(data);
+      } catch (err) {
+        console.error("Error fetching product:", err);
+        setError("Produkt konnte nicht geladen werden.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProduct();
   }, [productId]);
 
   const handleAddToCart = () => {
-    if (product === undefined) return;
+    if (!product) return;
 
-    const newCartItem = {
-      product,
-      quantity,
-    };
+    addItem({ product, quantity });
 
-    addItem(newCartItem);
     buttonRef.current?.classList.remove("green-button-success");
     void buttonRef.current?.offsetWidth;
     buttonRef.current?.classList.add("green-button-success");
   };
 
-  if (product === undefined) return;
+  if (loading) {
+    return (
+      <div className="d-flex justify-content-center align-items-center py-5">
+        <div className="spinner-border text-primary" role="status" />
+        <span className="ms-3">Lade Produkt...</span>
+      </div>
+    );
+  }
+
+  if (error) {
+    return <div className="alert alert-danger mt-5">{error}</div>;
+  }
+
+  if (!product) return null;
 
   return (
     <div className="product-main mt-5 flex-column row-gap-5">
       <div className="product-main-top d-flex column-gap-5 row-gap-5 w-100 h-100">
         <div className="product-main-top-left w-md-50 w-75">
-          <Carousel imgUrls={["/g-1.jpg", "/g-2.jpg", "/g-3.jpg"]} />
+          <Carousel imgUrls={product.images?.map((img) => img.url) || []} />
         </div>
         <div className="product-main-top-right d-flex flex-column row-gap-3 w-md-50 w-75">
           <div className="product-main-top-right-name h1">{product.name}</div>
@@ -52,7 +76,7 @@ export default function Product() {
           </div>
           <div className="product-main-top-right-brand">{product.brand}</div>
           <div className="product-main-top-right-stock">
-            {product.stockStatus ? "In Stock" : "Out of Stock"}
+            {product.stockStatus === "IN_STOCK" ? "In Stock" : "Out of Stock"}
           </div>
           <div className="product-main-top-right-shipping">
             Shipping: {product.shippingTime} days, $

@@ -2,7 +2,12 @@
 export type ProductCategory = "PIANOS" | "GUITARS" | "VIOLINS";
 export type SortType = "price-asc" | "price-desc" | "";
 export type StockStatus = "IN_STOCK" | "OUT_OF_STOCK" | "LOW_STOCK";
-export type OrderStatus = "CANCELED" | "RECEIVED" | "SHIPPING" | "DELIVERED" | "RETURNED";
+export type OrderStatus =
+  | "CANCELED"
+  | "RECEIVED"
+  | "SHIPPING"
+  | "DELIVERED"
+  | "RETURNED";
 
 export interface Product {
   id: number;
@@ -18,7 +23,7 @@ export interface Product {
   images: Image[];
 }
 
-// For adding/updating products 
+// For adding/updating products
 export interface ProductDTO {
   name: string;
   category: ProductCategory;
@@ -40,19 +45,19 @@ export interface ProductFilter {
   pageNumber?: number;
   pageSize?: number;
   sort?: SortType; // Frontend-only: for client-side sorting
-  stars?: number;  // Frontend-only: for client-side star filtering
+  stars?: number; // Frontend-only: for client-side star filtering
 }
 
 export interface Image {
-  imageId: string; 
+  imageId: string;
   url: string;
   product?: Product;
-  altText?: string; 
+  altText?: string;
 }
 
 // == USER TYPES AND RELATED =========================================================================================================
 export type Role = "ROLE_USER" | "ROLE_ADMIN";
-export type PaymentMethod = "CREDIT_CARD" | "PAYPAL" | "RECEIPT";
+export type PaymentMethod = "creditcard" | "paypal" | "banktransfer";
 
 export interface User {
   id: string;
@@ -94,6 +99,7 @@ export interface OrderDTO {
   shippingAddress: string;
   totalOrderPrice: number;
   orderItems: OrderItemDTO[];
+  status?: OrderStatus;
 }
 
 export interface OrderItemDTO {
@@ -109,8 +115,8 @@ export interface Order {
   user: User;
   totalOrderPrice: number;
   orderItems: OrderItem[];
-  orderedDate: string; 
-  deliveryDate: string; 
+  orderedDate: string;
+  deliveryDate: string;
   orderStatus: OrderStatus;
   shippingAddress: string;
   paymentMethod: PaymentMethod;

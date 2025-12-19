@@ -10,6 +10,7 @@ import Checkout from "./pages/Checkout";
 import Contact from "./pages/Contact";
 import Listing from "./pages/Listing";
 import Product from "./pages/Product";
+import ProtectedRoute from "./ProtectedRoute";
 
 export default function App() {
   return (
@@ -17,12 +18,26 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<Homepage />} />
-          <Route path="/profile" element={<Profile />} />
           <Route path="/aboutus" element={<AboutUs />} />
-          <Route path="/admin" element={<AdminPanel />} />
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute>
+                <Profile />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin"
+            element={
+              <ProtectedRoute>
+                <AdminPanel />
+              </ProtectedRoute>
+            }
+          />
           <Route path="/auth/:action" element={<Auth />} />
           <Route path="/cart" element={<Cart />} />
-          <Route path="/checkout" element={<Checkout />} />
+          <Route path="/cart/checkout" element={<Checkout />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/listing" element={<Listing />} />
           <Route path="/product/:productId" element={<Product />} />

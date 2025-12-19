@@ -1,5 +1,3 @@
-import { APP_BASE_URL_NO_PREFIX } from "../../api/api-client";
-import { noImgFoundPlaceholder } from "../../assets/icon.barrel";
 import type { Product } from "../../types/models";
 
 interface ShopItemProps {
@@ -7,15 +5,10 @@ interface ShopItemProps {
 }
 
 const ShopItem = ({ product }: ShopItemProps) => {
-  console.log("product passed: ", product);
-
-  // Helper function to get stock status text and class
   const getStockStatus = () => {
     switch (product.stockStatus) {
       case "IN_STOCK":
         return { text: "Auf Lager", className: "text-success" };
-      case "LOW_STOCK":
-        return { text: "Wenige verfügbar", className: "text-warning" };
       case "OUT_OF_STOCK":
         return { text: "Nicht verfügbar", className: "text-danger" };
       default:
@@ -25,24 +18,15 @@ const ShopItem = ({ product }: ShopItemProps) => {
 
   const stockInfo = getStockStatus();
 
-  // // Get the first image or a placeholder
   const productImage =
     product.images && product.images.length > 0
-      ? `${APP_BASE_URL_NO_PREFIX}${product.images[0].url}`
-      : noImgFoundPlaceholder;
+      ? `${import.meta.env.VITE_BASE_URL}/media${product.images[0].url}`
+      : "/no_found_placeholder.jpg";
 
   return (
     <div className="shop-item d-flex align-items-center flex-column p-4 row-gap-1 bg-white rounded shadow-sm">
       <div className="shop-item-image mb-3">
-        <img
-          src={productImage}
-          alt={product.name}
-          className="img-fluid rounded"
-          style={{ maxHeight: "200px", objectFit: "cover" }}
-          onError={(e) => {
-            (e.target as HTMLImageElement).src = "/placeholder-image.jpg";
-          }}
-        />
+        <img src={productImage} alt={product.name} className="p-1" />
       </div>
 
       <div className="shop-item-name h5 text-center fw-bold mb-2">
@@ -59,7 +43,6 @@ const ShopItem = ({ product }: ShopItemProps) => {
         {stockInfo.text}
       </div>
 
-      {/* Optional: Show shipping time */}
       {product.shippingTime > 0 && (
         <div className="shop-item-shipping small text-muted mt-1">
           Lieferzeit: {product.shippingTime} Tag
@@ -67,7 +50,6 @@ const ShopItem = ({ product }: ShopItemProps) => {
         </div>
       )}
 
-      {/* Optional: Show category badge */}
       <div className="shop-item-category mt-2">
         <span className="badge bg-light text-dark border">
           {product.category}

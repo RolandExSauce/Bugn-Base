@@ -1,47 +1,51 @@
+// Searchbar.tsx
 import { useState, useEffect, useRef } from "react";
 
 interface SearchbarProps {
+  searchTerm: string;
   onSearch: (searchTerm: string) => void;
 }
 
-export default function Searchbar({ onSearch }: SearchbarProps) {
-  const [searchTerm, setSearchTerm] = useState("");
+export default function Searchbar({ searchTerm, onSearch }: SearchbarProps) {
+  const [inputValue, setInputValue] = useState(searchTerm);
   const timeoutRef = useRef<number | undefined>(undefined);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const firstMountRef = useRef(true);
 
   useEffect(() => {
-    // Clear previous timeout
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
+    if (searchTerm === "") setInputValue("");
+  }, [searchTerm]);
+
+  useEffect(() => {
+    if (firstMountRef.current) {
+      firstMountRef.current = false;
+      return;
     }
 
-    // Set new timeout
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
     timeoutRef.current = window.setTimeout(() => {
-      onSearch(searchTerm);
+      if (inputValue !== searchTerm) {
+        onSearch(inputValue);
+      }
     }, 300);
 
-    // Cleanup function
+    inputRef.current?.focus();
     return () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
     };
-  }, [searchTerm, onSearch]);
-
-  const handleClear = () => {
-    setSearchTerm("");
-  };
+  }, [inputValue, onSearch, searchTerm]);
 
   return (
     <div className="searchbar">
       <input
         type="text"
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
+        value={inputValue}
+        onChange={(e) => setInputValue(e.target.value)}
         placeholder="Search..."
+        ref={inputRef}
       />
-      {searchTerm && (
-        <button onClick={handleClear}>Clear</button>
-      )}
+      {inputValue && <button onClick={() => setInputValue("")}>Clear</button>}
     </div>
   );
 }

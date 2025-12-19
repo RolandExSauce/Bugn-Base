@@ -1,5 +1,5 @@
-import { apiClient } from "../../api/api-client";
-import type { AuthState, LoginDto, RegisterDto, Role } from "../../types/models";
+import { apiClient } from "../api/api-client";
+import type { AuthState, LoginDto, RegisterDto, Role } from "../types/models";
 import { jwtDecode } from "jwt-decode";
 
 interface TokenPayload {
@@ -50,7 +50,10 @@ class AuthService {
     setAuth: React.Dispatch<React.SetStateAction<AuthState | null>>
   ) => {
     try {
-      const data = await apiClient.post<AuthState>("/auth/register", registerForm);
+      const data = await apiClient.post<AuthState>(
+        "/auth/register",
+        registerForm
+      );
 
       const role = AuthService.decodeRole(data.accessToken) as Role;
       const newAuthState: AuthState = {

@@ -65,7 +65,11 @@ export default function Carousel({ imgUrls }: CarouselPropTypes) {
         style={{ transition: "transform 0.5s ease-out", display: "flex" }}
       >
         {imgUrls.map((url, index) => (
-          <img key={index} src={url} alt={`Slide ${index + 1}`} />
+          <img
+            key={index}
+            src={import.meta.env.VITE_BASE_URL + "/media" + url}
+            alt={`Slide ${index + 1}`}
+          />
         ))}
       </div>
       <button

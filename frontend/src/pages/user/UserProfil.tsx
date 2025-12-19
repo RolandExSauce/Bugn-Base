@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Order } from "../../components/order/Order";
-import type { User } from "../../types/models";
+import type { User, OrderDTO } from "../../types/models";
 import {
   ADDRESS_REGEX,
   EMAIL_REGEX,
@@ -10,11 +10,14 @@ import {
   POSTCODE_REGEX,
 } from "../../utils/regex";
 import { useAuthContext } from "../../context/AuthContext";
-import { mockOrder } from "../../api/mock";
+import UserOrderService from "../../services/user.order.service";
 
 const UserProfil = () => {
   const { auth, logout } = useAuthContext();
   const [isEdited, setIsEdited] = useState(false);
+  const [orders, setOrders] = useState<OrderDTO[]>([]);
+
+  const navigate = useNavigate();
 
   const formRef = useRef<HTMLFormElement>(null);
   const [userProfileForm, setUserProfileForm] = useState<Partial<User>>({
@@ -47,6 +50,11 @@ const UserProfil = () => {
       postcode: auth.user.postcode ?? undefined,
       email: auth.user.email ?? "",
     });
+
+    // Fetch real orders for the user
+    UserOrderService.getOrdersForCustomer(auth.user.email)
+      .then((data) => setOrders(data))
+      .catch((err) => console.error("Error fetching orders:", err));
   }, [auth]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -124,11 +132,6 @@ const UserProfil = () => {
       // TODO: handle error in the ui
     }
   };
-
-  // const handleLogout = () => {
-  //   AuthService.logout(setAuth);
-  //   window.location.href = "/";
-  // };
 
   return (
     <div className="d-flex flex-column container py-4">
@@ -258,9 +261,9 @@ const UserProfil = () => {
       <div className="border rounded p-3 d-flex flex-column gap-3">
         <div className="fw-bold">Meine Bestellungen:</div>
         <div id="cart-items" className="d-flex flex-column gap-2">
-          <Order order={mockOrder} />
-          <Order order={mockOrder} />
-          <Order order={mockOrder} />
+          {orders.map((order, i) => (
+            <Order key={i} order={order} />
+          ))}
         </div>
       </div>
     </div>

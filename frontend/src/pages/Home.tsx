@@ -1,16 +1,14 @@
 import { Link } from "react-router-dom";
 import ShopItem from "../components/product/ShopItem";
-import { useState, useEffect, useCallback } from "react";
-import Searchbar from "../components/navigation/Searchbar";
+import { useState, useEffect } from "react";
 import type { Product } from "../types/models";
-import ShopService from "../services/shop/shop.service";
+import ShopService from "../services/shop.service";
 
 export default function HomePage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Fetch products on component mount
   useEffect(() => {
     fetchProducts();
   }, []);
@@ -29,29 +27,6 @@ export default function HomePage() {
     }
   };
 
-  // Handle search from Searchbar
-  const handleSearch = useCallback(async (searchTerm: string) => {
-    if (!searchTerm.trim()) {
-      fetchProducts(); // Reset to initial products
-      return;
-    }
-
-    try {
-      setLoading(true);
-      const data = await ShopService.getProducts({
-        name: searchTerm,
-        pageSize: 12,
-      });
-      setProducts(data);
-      setError(null);
-    } catch (err) {
-      setError("Suche fehlgeschlagen.");
-      console.error("Search error:", err);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
   return (
     <div className="homepage-main d-flex flex-column align-items-center text-center gap-4 p-4">
       <h1>Willkommen!</h1>
@@ -60,8 +35,6 @@ export default function HomePage() {
       <Link to="/listing" className="btn btn-primary">
         Jetzt entdecken
       </Link>
-
-      <Searchbar onSearch={handleSearch} />
 
       {loading ? (
         <div className="mt-5">
@@ -87,7 +60,13 @@ export default function HomePage() {
       ) : (
         <div className="d-flex flex-wrap justify-content-center gap-4 mt-4">
           {products.map((p) => (
-            <ShopItem key={p.id} product={p} />
+            <Link
+              to={`/product/${p.id}`}
+              key={p.id}
+              className="shop-item-container flex-grow-1"
+            >
+              <ShopItem key={p.id} product={p} />
+            </Link>
           ))}
         </div>
       )}

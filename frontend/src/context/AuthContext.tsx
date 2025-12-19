@@ -1,6 +1,6 @@
 import { createContext, useContext, useState } from "react";
 import type { AuthState, LoginDto, RegisterDto } from "../types/models";
-import AuthService from "../services/auth/auth.service";
+import AuthService from "../services/auth.service";
 
 interface AuthContextType {
   auth: AuthState | null;
