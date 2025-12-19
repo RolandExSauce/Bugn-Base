@@ -2,7 +2,6 @@ import { apiClient } from "../../api/api-client";
 import type { Image } from "../../types/models";
 
 class AdminImageService {
-
   public static uploadImages = async (
     productId: string,
     files: File[]
@@ -12,7 +11,7 @@ class AdminImageService {
       formData.append("files", file);
     });
     return apiClient.postFormData<string>(
-    `/api/admin/products/${productId}/images`,
+      `/admin/products/${productId}/images`,
       formData
     );
   };
@@ -20,11 +19,11 @@ class AdminImageService {
   public static getProductImages = async (
     productId: string
   ): Promise<Image[]> => {
-    return apiClient.get<Image[]>(`/api/admin/products/${productId}/images`);
+    return apiClient.get<Image[]>(`/admin/products/${productId}/images`);
   };
 
   public static deleteImage = async (imageId: string): Promise<void> => {
-     return apiClient.delete<void>(`/api/admin/products/images/${imageId}`);
+    return apiClient.delete<void>(`/admin/products/images/${imageId}`);
   };
 }
 export default AdminImageService;

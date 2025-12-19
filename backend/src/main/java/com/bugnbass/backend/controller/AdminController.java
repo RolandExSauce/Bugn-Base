@@ -31,28 +31,6 @@ public class AdminController {
     this.orderService = orderService;
   }
 
-  @PostMapping("/file/{folder}")
-  public ResponseEntity<String> uploadImage(
-      @PathVariable String folder,
-      @RequestParam("file") MultipartFile file
-  ) {
-    String url = mediaService.uploadImage(file, folder);
-    return ResponseEntity.ok(url);
-  }
-
-  @DeleteMapping("/file/delete/{folder}/{filename:.+}")
-  public ResponseEntity<Void> deleteImage(
-      @PathVariable String folder,
-      @PathVariable String filename
-  ) {
-    mediaService.deleteImage(folder + "/" + filename);
-    return ResponseEntity.noContent().build();
-  }
-
-
-
-
-
   @GetMapping("/product/{id}")
   public Product getProduct(@PathVariable String id) {
     return adminService.getProduct(id);

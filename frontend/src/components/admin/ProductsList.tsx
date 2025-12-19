@@ -13,7 +13,6 @@ export default function ProductsList() {
 
   console.log("products for admin: ", products);
 
-  //or could use Partial Product type
   const [newProductForm, setNewProductForm] = useState<ProductDTO>({
     name: "",
     category: "GUITARS",
@@ -118,7 +117,6 @@ export default function ProductsList() {
     if (hasError) return;
 
     try {
-      // Create ProductDTO from form
       const productDTO: ProductDTO = {
         name: newProductForm.name,
         category: newProductForm.category,
@@ -131,18 +129,18 @@ export default function ProductsList() {
         active: newProductForm.active ?? true,
       };
 
-      // Save to backend
       const savedProduct = await AdminProductService.addProduct(productDTO);
 
-      // Update local state
+      if (uploadedImages.length > 0) {
+        await uploadImagesForProduct(savedProduct);
+      }
+
       setProducts((prev) => [...prev, savedProduct]);
 
-      // Success animation
       divRef.current?.classList.remove("success-animation");
       void divRef.current?.offsetWidth;
       divRef.current?.classList.add("success-animation");
 
-      // Reset form after delay
       setTimeout(() => {
         setShowNewForm(false);
         setNewProductForm({
@@ -169,6 +167,17 @@ export default function ProductsList() {
       console.error("Error adding product:", error);
       // TODO: Show error message to user
     }
+  };
+
+  const uploadImagesForProduct = async (product: Product) => {
+    for (const file of uploadedImages) {
+      try {
+        await AdminProductService.addImage(product.id, file);
+      } catch (error) {
+        console.error(`Failed to upload image ${file.name}`, error);
+      }
+    }
+    setUploadedImages([]);
   };
 
   const handleProductUpdated = (updatedProduct: Product) => {
@@ -315,7 +324,6 @@ export default function ProductsList() {
                 onChange={(e) => handleNewChange("stockStatus", e.target.value)}
               >
                 <option value="IN_STOCK">Auf Lager</option>
-                <option value="LOW_STOCK">Geringer Lagerbestand</option>
                 <option value="OUT_OF_STOCK">Nicht auf Lager</option>
               </select>
             </label>
@@ -352,7 +360,6 @@ export default function ProductsList() {
             </label>
 
             <div className="mt-3">
-              <label className="form-label fw-bold">Bilder hinzufügen</label>
               <input
                 type="file"
                 multiple
