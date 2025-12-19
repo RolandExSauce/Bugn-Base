@@ -5,8 +5,6 @@ interface ShopItemProps {
 }
 
 const ShopItem = ({ product }: ShopItemProps) => {
-  console.log("product passed: ", product);
-
   const getStockStatus = () => {
     switch (product.stockStatus) {
       case "IN_STOCK":

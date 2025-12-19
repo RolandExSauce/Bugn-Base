@@ -21,8 +21,7 @@ class ApiClient {
         const auth = localStorage.getItem("auth");
         const token = auth ? JSON.parse(auth).accessToken : null;
 
-        // Only add token for /admin or other secured paths
-        if (token && config.url?.startsWith("/admin")) {
+        if (token) {
           if (config.headers) {
             config.headers.Authorization = `Bearer ${token}`;
           }
@@ -35,7 +34,6 @@ class ApiClient {
 
     //TODO: how to make interceptor only for authenticated endpoints ?
 
-    // Response interceptor for error handling
     this.client.interceptors.response.use(
       (response) => response,
       (error) => {

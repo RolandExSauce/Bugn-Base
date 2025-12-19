@@ -1,17 +1,18 @@
 import { Link } from "react-router-dom";
 import ProductFilter from "../components/product/ProductFilter";
 import ShopItem from "../components/product/ShopItem";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import type { Product, ProductFilter as FilterType } from "../types/models"; // Renamed import
 import ShopService from "../services/shop.service";
+import Searchbar from "../components/navigation/Searchbar";
 
 export default function Listing() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [currentFilter, setCurrentFilter] = useState<FilterType | null>(null);
+  const [searchTerm, setSearchTerm] = useState(""); // lifted search term
 
-  // Fetch initial products on component mount
   useEffect(() => {
     fetchProductsWithFilter(null); // Fetch all products initially
   }, []);
@@ -21,9 +22,6 @@ export default function Listing() {
       setLoading(true);
       setCurrentFilter(filter);
 
-      // KI SAYS: Convert frontend filter to backend API format
-      //sort and stars are handled client-side
-      // should adjust api 🤔
       const apiFilter = {
         name: filter?.name,
         category: filter?.category,
@@ -35,18 +33,12 @@ export default function Listing() {
       };
 
       const data = await ShopService.getProducts(apiFilter);
-      // console.log("filtered products: ", data);
-
-      // Apply client-side sorting if backend doesn't support it
       const sortedData = [...data];
       if (filter?.sort === "price-asc") {
         sortedData.sort((a, b) => a.price - b.price);
       } else if (filter?.sort === "price-desc") {
         sortedData.sort((a, b) => b.price - a.price);
       }
-
-      // TODO: For star ratings, fetch reviews and filter
-      // This would require additional API endpoints
 
       setProducts(sortedData);
       setError(null);
@@ -58,15 +50,43 @@ export default function Listing() {
     }
   };
 
-  // This function is passed to ProductFilter and called when user clicks "Anwenden"
   const handleApplyFilter = (filter: FilterType) => {
-    console.log("Applying filter:", filter);
     fetchProductsWithFilter(filter);
   };
 
   const handleResetFilters = () => {
     fetchProductsWithFilter(null);
   };
+
+  const fetchProducts = async () => {
+    try {
+      setLoading(true);
+      const data = await ShopService.getProducts();
+      setProducts(data);
+      setError(null);
+    } catch (err) {
+      setError("Produkte konnten nicht geladen werden.");
+      console.error("Error fetching products:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSearch = useCallback(async (term: string) => {
+    setSearchTerm(term);
+
+    setLoading(true);
+    try {
+      const data = await ShopService.getProducts({ name: term, pageSize: 12 });
+      setProducts(data);
+      setError(null);
+    } catch (err) {
+      setError("Suche fehlgeschlagen.");
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   if (loading) {
     return (
@@ -96,24 +116,29 @@ export default function Listing() {
   }
 
   return (
-    <div className="listing-main d-flex mt-5 pt-4 w-100 column-gap-5">
-      <div>
-        <ProductFilter
-          applyFilter={handleApplyFilter}
-          currentFilter={currentFilter}
-        />
+    <div>
+      <div className="mt-4  d-flex w-100 justify-content-center">
+        <Searchbar searchTerm={searchTerm} onSearch={handleSearch} />
       </div>
+      <div className=" pt-4 listing-main d-flex w-100 column-gap-5">
+        <div>
+          <ProductFilter
+            applyFilter={handleApplyFilter}
+            currentFilter={currentFilter}
+          />
+        </div>
 
-      <div className="listing-products flex-grow-1 d-flex flex-wrap column-gap-4 row-gap-5">
-        {products.map((p) => (
-          <Link
-            to={`/product/${p.id}`}
-            key={p.id}
-            className="shop-item-container flex-grow-1"
-          >
-            <ShopItem product={p} />
-          </Link>
-        ))}
+        <div className="listing-products flex-grow-1 d-flex flex-wrap column-gap-4 row-gap-5">
+          {products.map((p) => (
+            <Link
+              to={`/product/${p.id}`}
+              key={p.id}
+              className="shop-item-container flex-grow-1"
+            >
+              <ShopItem product={p} />
+            </Link>
+          ))}
+        </div>
       </div>
     </div>
   );

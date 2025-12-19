@@ -82,6 +82,7 @@ public class MediaService {
 
   public void deleteImage(String relativePath) {
     try {
+      System.out.println("deleting image " + relativePath);
       Path filePath = mediaRoot.resolve(relativePath).normalize();
       Files.deleteIfExists(filePath);
     } catch (IOException e) {

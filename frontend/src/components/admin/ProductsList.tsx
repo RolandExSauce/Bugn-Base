@@ -134,7 +134,7 @@ export default function ProductsList() {
   const handleDeleteImage = async (product: Product, image: Image) => {
     if (!window.confirm("Bild wirklich löschen?")) return;
     try {
-      await AdminProductService.deleteImage(image.imageId);
+      await AdminProductService.deleteImage(image.url);
       product.images = product.images.filter(
         (i) => i.imageId !== image.imageId
       );
@@ -186,7 +186,117 @@ export default function ProductsList() {
           ref={divRef}
           className="mb-3 p-3 border rounded add-new-product-div"
         >
-          {/* Product Fields ... same as before ... */}
+          <div className="mb-3">
+            <label className="form-label">Name</label>
+            <input
+              type="text"
+              className={`form-control ${newInvalid.name ? "is-invalid" : ""}`}
+              value={newProductForm.name}
+              onChange={(e) => handleNewChange("name", e.target.value)}
+            />
+          </div>
+
+          <div className="mb-3">
+            <label className="form-label">Kategorie</label>
+            <select
+              className="form-control"
+              value={newProductForm.category}
+              onChange={(e) => handleNewChange("category", e.target.value)}
+            >
+              <option value="GUITARS">Gitarre</option>
+              <option value="PIANOS">Klavier</option>
+              <option value="VIOLINS">Violine</option>
+            </select>
+          </div>
+
+          <div className="mb-3">
+            <label className="form-label">Marke</label>
+            <input
+              type="text"
+              className={`form-control ${newInvalid.brand ? "is-invalid" : ""}`}
+              value={newProductForm.brand}
+              onChange={(e) => handleNewChange("brand", e.target.value)}
+            />
+          </div>
+
+          <div className="mb-3">
+            <label className="form-label">Beschreibung</label>
+            <textarea
+              className={`form-control ${
+                newInvalid.description ? "is-invalid" : ""
+              }`}
+              rows={3}
+              value={newProductForm.description}
+              onChange={(e) => handleNewChange("description", e.target.value)}
+            />
+          </div>
+
+          <div className="mb-3">
+            <label className="form-label">Preis (€)</label>
+            <input
+              type="number"
+              step="0.01"
+              className={`form-control ${newInvalid.price ? "is-invalid" : ""}`}
+              value={newProductForm.price}
+              onChange={(e) =>
+                handleNewChange("price", parseFloat(e.target.value))
+              }
+            />
+          </div>
+
+          <div className="mb-3">
+            <label className="form-label">Versandkosten (€)</label>
+            <input
+              type="number"
+              step="0.01"
+              className={`form-control ${
+                newInvalid.shippingCost ? "is-invalid" : ""
+              }`}
+              value={newProductForm.shippingCost}
+              onChange={(e) =>
+                handleNewChange("shippingCost", parseFloat(e.target.value))
+              }
+            />
+          </div>
+
+          <div className="mb-3">
+            <label className="form-label">Lagerbestand</label>
+            <select
+              className="form-control"
+              value={newProductForm.stockStatus}
+              onChange={(e) => handleNewChange("stockStatus", e.target.value)}
+            >
+              <option value="IN_STOCK">Auf Lager</option>
+              <option value="LOW_STOCK">Gering</option>
+              <option value="OUT_OF_STOCK">Nicht auf Lager</option>
+            </select>
+          </div>
+
+          <div className="mb-3">
+            <label className="form-label">Versandzeit (Tage)</label>
+            <input
+              type="number"
+              min={1}
+              max={5}
+              className={`form-control ${
+                newInvalid.shippingTime ? "is-invalid" : ""
+              }`}
+              value={newProductForm.shippingTime}
+              onChange={(e) =>
+                handleNewChange("shippingTime", parseInt(e.target.value))
+              }
+            />
+          </div>
+
+          <div className="form-check mb-3">
+            <input
+              type="checkbox"
+              className="form-check-input"
+              checked={newProductForm.active}
+              onChange={(e) => handleNewChange("active", e.target.checked)}
+            />
+            <label className="form-check-label">Aktiv</label>
+          </div>
           <input
             type="file"
             multiple

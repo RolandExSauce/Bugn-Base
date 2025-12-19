@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Order } from "../../components/order/Order";
 import type { User } from "../../types/models";
 import {
@@ -15,6 +15,8 @@ import { mockOrder } from "../../api/mock";
 const UserProfil = () => {
   const { auth, logout } = useAuthContext();
   const [isEdited, setIsEdited] = useState(false);
+
+  const navigate = useNavigate();
 
   const formRef = useRef<HTMLFormElement>(null);
   const [userProfileForm, setUserProfileForm] = useState<Partial<User>>({
@@ -124,11 +126,6 @@ const UserProfil = () => {
       // TODO: handle error in the ui
     }
   };
-
-  // const handleLogout = () => {
-  //   AuthService.logout(setAuth);
-  //   window.location.href = "/";
-  // };
 
   return (
     <div className="d-flex flex-column container py-4">

@@ -32,19 +32,14 @@ class AdminProductService {
     const formData = new FormData();
     formData.append("file", file);
 
-    const categoryFolder = product.category.toLowerCase();
-
-    const response = await apiClient.post<string>(
-      `/media/file/${categoryFolder}`,
-      formData,
-      { headers: { "Content-Type": "multipart/form-data" } }
-    );
-
-    return response;
+    return apiClient.post<string>(`/media/file/${product.id}`, formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
   };
 
-  public static deleteImage = async (imageId: string): Promise<void> => {
-    await apiClient.delete(`/media/file/${imageId}`);
+  public static deleteImage = async (imageUrl: string): Promise<void> => {
+    const path = imageUrl.replace("/media/", "");
+    await apiClient.delete(`/media/file/delete${path}`);
   };
 }
 export default AdminProductService;

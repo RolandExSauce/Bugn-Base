@@ -34,8 +34,8 @@ public class MediaController {
         .body(image);
   }
 
-  // @PreAuthorize("hasRole('ADMIN')")
-  @PostMapping("/file/product/{productId}")
+  @PreAuthorize("hasRole('ROLE_ADMIN')")
+  @PostMapping("/file/{productId}")
   public ResponseEntity<String> uploadProductImage(
       @PathVariable String productId,
       @RequestParam("file") MultipartFile file
@@ -48,7 +48,7 @@ public class MediaController {
     return ResponseEntity.ok(url);
   }
 
-  // @PreAuthorize("hasRole('ADMIN')")
+  @PreAuthorize("hasRole('ROLE_ADMIN')")
   @DeleteMapping("/file/delete/{folder}/{filename:.+}")
   public ResponseEntity<Void> deleteImage(
       @PathVariable String folder,
