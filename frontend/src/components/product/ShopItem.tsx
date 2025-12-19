@@ -25,7 +25,6 @@ const ShopItem = ({ product }: ShopItemProps) => {
 
   const stockInfo = getStockStatus();
 
-  // // Get the first image or a placeholder
   const productImage =
     product.images && product.images.length > 0
       ? `${APP_BASE_URL_NO_PREFIX}${product.images[0].url}`
@@ -34,11 +33,7 @@ const ShopItem = ({ product }: ShopItemProps) => {
   return (
     <div className="shop-item d-flex align-items-center flex-column p-4 row-gap-1 bg-white rounded shadow-sm">
       <div className="shop-item-image mb-3">
-        <img
-          src={productImage}
-          alt={product.name}
-          style={{ padding: "10px" }}
-        />
+        <img src={productImage} alt={product.name} className="p-1" />
       </div>
 
       <div className="shop-item-name h5 text-center fw-bold mb-2">
