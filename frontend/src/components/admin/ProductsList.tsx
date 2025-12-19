@@ -230,57 +230,68 @@ export default function ProductsList() {
             <th>ID</th>
             <th>Name</th>
             <th>Kategorie</th>
+            <th>Beschreibung</th>
             <th>Preis</th>
-            <th>Brand</th>
-            <th>Bestand</th> {/* stockStatus */}
-            <th>Versandzeit</th> {/* shippingTime */}
+            <th>Versandkosten</th>
+            <th>Marke</th>
+            <th>Lagerbestand</th>
+            <th>Versandzeit</th>
+            <th>Aktiv</th>
             <th>Aktionen</th>
           </tr>
         </thead>
         <tbody>
           {products.map((product) => (
-            <tr key={product.id}>
-              <td>{product.id}</td>
-              <td>{product.name}</td>
-              <td>{product.category}</td>
-              <td>{product.price.toFixed(2)} €</td>
-              <td>{product.brand}</td>
-              <td>{product.stockStatus}</td>
-              <td>{product.shippingTime} Tage</td>
-              <td>
-                <FullProduct
-                  product={product}
-                  isSelected={selectedProductId === product.id.toString()}
-                  onSelect={() => handleSelectedProduct(product.id.toString())}
-                  onUpdate={handleProductUpdated}
-                  onDelete={handleProductDeleted}
-                />
-                <div className="d-flex flex-wrap gap-2 mt-2">
-                  {product.images.map((img) => (
-                    <div
-                      key={img.imageId}
-                      style={{ position: "relative", width: 80, height: 80 }}
-                    >
-                      <img
-                        src={resolveImageUrl(img.url)}
-                        style={{
-                          width: "100%",
-                          height: "100%",
-                          objectFit: "cover",
-                          borderRadius: 4,
-                        }}
-                      />
-                      <button
-                        className="btn btn-sm btn-danger position-absolute top-0 end-0"
-                        onClick={() => handleDeleteImage(product, img)}
-                      >
-                        ×
-                      </button>
+            <>
+              <FullProduct
+                key={product.id}
+                product={product}
+                isSelected={selectedProductId === product.id.toString()}
+                onSelect={() => handleSelectedProduct(product.id.toString())}
+                onUpdate={handleProductUpdated}
+                onDelete={handleProductDeleted}
+              />
+              {/* Images row - show for all products */}
+              {product.images && product.images.length > 0 && (
+                <tr key={`${product.id}-images`}>
+                  <td colSpan={11}>
+                    <div className="p-2">
+                      <strong>Produktbilder:</strong>
+                      <div className="d-flex flex-wrap gap-2 mt-2">
+                        {product.images.map((img) => (
+                          <div
+                            key={img.imageId}
+                            style={{
+                              position: "relative",
+                              width: 80,
+                              height: 80,
+                            }}
+                          >
+                            <img
+                              src={resolveImageUrl(img.url)}
+                              style={{
+                                width: "100%",
+                                height: "100%",
+                                objectFit: "cover",
+                                borderRadius: 4,
+                              }}
+                              alt="Product"
+                            />
+                            <button
+                              className="btn btn-sm btn-danger position-absolute top-0 end-0"
+                              onClick={() => handleDeleteImage(product, img)}
+                              style={{ padding: "0 4px" }}
+                            >
+                              ×
+                            </button>
+                          </div>
+                        ))}
+                      </div>
                     </div>
-                  ))}
-                </div>
-              </td>
-            </tr>
+                  </td>
+                </tr>
+              )}
+            </>
           ))}
         </tbody>
       </table>
