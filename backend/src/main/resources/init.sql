@@ -149,7 +149,7 @@ INSERT INTO images (image_id, url, product_id) VALUES
 
 
 INSERT INTO users (id, email, password, phone, address, postcode, firstname, lastname, role, active, created_at) VALUES
-('11111111-1111-1111-1111-111111111111', 'maria82@example.com', 'passM@123', 123456789, '123 Elm Street, Springfield', '88097', 'Maria', 'Lopez', 'ROLE_USER', TRUE, '2025-05-20 14:12:35'),
+('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb', 'maria82@example.com', 'passM@123', 123456789, '123 Elm Street, Springfield', '88097', 'Maria', 'Lopez', 'ROLE_USER', TRUE, '2025-05-20 14:12:35'),
 ('22222222-2222-2222-2222-222222222222', 'jack.r@example.com', 'jackR_!Pass4', 123456789, '456 Oak Avenue, Centerville', '88097', 'Jack', 'Roberts', 'ROLE_USER', TRUE, '2025-05-15 09:33:21'),
 ('33333333-3333-3333-3333-333333333333', 'li.chen@example.com', 'L1Chen*Pwd', 123456789, '789 Maple Lane, Rivertown', '88097', 'Li', 'Chen', 'ROLE_USER', TRUE, '2025-05-10 17:22:40'),
 ('44444444-4444-4444-4444-444444444444', 'sophie.c@example.com', 'Soph!eC2025', 123456789, '321 Birch Rd, Hilltown', '88097', 'Sophie', 'Campbell', 'ROLE_USER', TRUE, '2025-05-21 12:05:55'),
@@ -160,7 +160,7 @@ INSERT INTO users (id, email, password, phone, address, postcode, firstname, las
 ('99999999-9999-9999-9999-999999999999', 'admin.jane@example.com', 'Adm1nJane$', 123456789, '852 Pine St, Cityville', '88097', 'Jane', 'Miller', 'ROLE_ADMIN', TRUE, '2025-05-14 15:00:00'),
 
 ('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', 'user@mail.com', '$2a$10$Xu93DE.ETSXbEGMOJeAT6eUASMcOg9YTzVQ8Rleg2EiwTaP5hHR0.','0432938573', '963 Willow Way, Capitol City', '88097', 'Peo', 'Oneal', 'ROLE_USER', TRUE, '2025-05-16 13:13:13'),
-('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb', 'admin@mail.com', '$2a$10$Xu93DE.ETSXbEGMOJeAT6eUASMcOg9YTzVQ8Rleg2EiwTaP5hHR0.','0432938573', '963 Willow Way, Capitol City', '88097', 'Admin', 'Oneal', 'ROLE_ADMIN', TRUE, '2025-05-16 13:13:13');
+('11111111-1111-1111-1111-111111111111', 'admin@mail.com', '$2a$10$Xu93DE.ETSXbEGMOJeAT6eUASMcOg9YTzVQ8Rleg2EiwTaP5hHR0.','0432938573', '963 Willow Way, Capitol City', '88097', 'Admin', 'Oneal', 'ROLE_ADMIN', TRUE, '2025-05-16 13:13:13');
 
 
 INSERT INTO orders (
@@ -178,7 +178,7 @@ INSERT INTO orders (
 
 ('ORD-2001', '22222222-2222-2222-2222-222222222222',
  1799.00, '2025-05-11', NULL, 'processing',
- '456 Oak Avenue, Centerville', 'cash'),
+ '456 Oak Avenue, Centerville', 'banktransfer'),
 
 ('ORD-3001', '33333333-3333-3333-3333-333333333333',
  2999.00, '2025-05-19', NULL, 'shipped',
@@ -198,7 +198,7 @@ INSERT INTO orders (
 
 ('ORD-7001', '77777777-7777-7777-7777-777777777777',
  1875.00, '2025-05-09', NULL, 'shipped',
- '987 Aspen Way, Brookville', 'cash'),
+ '987 Aspen Way, Brookville', 'banktransfer'),
 
 ('ORD-8001', '88888888-8888-8888-8888-888888888888',
  2490.00, '2025-05-18', NULL, 'processing',

@@ -10,21 +10,21 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/bugnbass/api/user/orders")
+@RequestMapping("/user/orders")
 @RequiredArgsConstructor
 public class UserOrderController {
 
     private final OrderService orderService;
 
     @PostMapping
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
     public ResponseEntity<OrderStatus> createOrder(@RequestBody OrderDTO dto) {
         OrderStatus status = orderService.createOrder(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(status);
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
     public ResponseEntity<OrderDTO> getOrderById(
             @PathVariable Long id,
             @RequestParam String email) {
@@ -33,13 +33,13 @@ public class UserOrderController {
     }
 
     @GetMapping("/customer/{email}")
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
     public ResponseEntity<List<OrderDTO>> getOrdersForCustomer(@PathVariable String email) {
         return ResponseEntity.ok(orderService.getOrdersByCustomer(email));
     }
 
     @PatchMapping("/{id}/cancel")
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
     public ResponseEntity<OrderStatus> cancelOrder(
             @PathVariable Long id,
             @RequestParam String email) {
@@ -48,7 +48,9 @@ public class UserOrderController {
     }
 
     @PatchMapping("/{id}/return")
-    @PreAuthorize("hasRole('USER')")
+/*
+    @PreAuthorize("hasRole('ROLE_USER')")
+*/
     public ResponseEntity<OrderStatus> returnOrder(
             @PathVariable Long id,
             @RequestParam String email) {
