@@ -43,6 +43,7 @@ public class AuthService {
 
     //build dto auth reponse
     private AuthResponse buildResponse(IBaseUser user) {
+        String id = "";
         String firstname = "";
         String lastname = "";
         Integer phone = null;
@@ -52,6 +53,7 @@ public class AuthService {
         Instant createdAt = Instant.now();
 
         if (user instanceof User u) {
+            id = u.getId().toString();
             firstname = u.getFirstname();
             lastname = u.getLastname();
             phone = u.getPhone();
@@ -66,6 +68,7 @@ public class AuthService {
         }
 
         UserDTO userDTO = new UserDTO(
+                id,
                 firstname,
                 lastname,
                 phone,

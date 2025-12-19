@@ -7,7 +7,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +32,7 @@ public class Order {
     private User user;
 
     @Column(nullable = false)
-    private BigDecimal totalOrderPrice; //store total price of order
+    private Integer totalOrderPrice; //store total price of order
 
     // Order can have multiple order items, orphanRemoval = true means if parent has no reference remove child entity
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)

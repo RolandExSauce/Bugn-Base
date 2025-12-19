@@ -57,7 +57,7 @@ export interface Image {
 
 // == USER TYPES AND RELATED =========================================================================================================
 export type Role = "ROLE_USER" | "ROLE_ADMIN";
-export type PaymentMethod = "creditcard" | "paypal" | "banktransfer";
+export type PaymentMethod = "CREDITCARD" | "PAYPAL" | "BANKTRANSFER";
 
 export interface User {
   id: string;

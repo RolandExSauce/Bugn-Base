@@ -52,7 +52,7 @@ const UserProfil = () => {
     });
 
     // Fetch real orders for the user
-    UserOrderService.getOrdersForCustomer(auth.user.email)
+    UserOrderService.getOrdersForCustomer()
       .then((data) => setOrders(data))
       .catch((err) => console.error("Error fetching orders:", err));
   }, [auth]);

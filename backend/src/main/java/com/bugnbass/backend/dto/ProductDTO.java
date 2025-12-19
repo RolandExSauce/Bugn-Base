@@ -17,7 +17,7 @@ public record ProductDTO(
         String description,
 
         @Positive(message = "Der Preis muss positiv sein")
-        Double price,
+        Integer price,
 
         @Positive(message = "Die Versandkosten müssen positiv sein")
         Integer shippingCost,

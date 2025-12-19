@@ -16,6 +16,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/admin")
+@PreAuthorize("hasRole('ROLE_ADMIN')")
 public class AdminController {
 
   private final MediaService mediaService;
@@ -36,60 +37,27 @@ public class AdminController {
   }
 
   @GetMapping("/products")
-  @PreAuthorize("hasRole('ROLE_ADMIN')")
-  public List<Product> getProducts () {
+  public List<Product> getProducts() {
     return adminService.getProducts();
   }
 
   @PostMapping("/add-product")
-  @PreAuthorize("hasRole('ROLE_ADMIN')")
   public ResponseEntity<Product> addProduct(@RequestBody ProductDTO newProduct) {
     Product saved = adminService.addProduct(newProduct);
     return ResponseEntity.status(HttpStatus.CREATED).body(saved);
   }
 
   @DeleteMapping("/delete-product/{id}")
-  @PreAuthorize("hasRole('ROLE_ADMIN')")
   public ResponseEntity<Void> deleteProduct(@PathVariable String id) {
     adminService.deleteProduct(id);
     return ResponseEntity.noContent().build();
   }
 
   @PutMapping("/update-product/{id}")
-  @PreAuthorize("hasRole('ROLE_ADMIN')")
-  public ResponseEntity<Void> updateProduct (@PathVariable String id, @RequestBody ProductDTO productDTO) {
+  public ResponseEntity<Void> updateProduct(@PathVariable String id, @RequestBody ProductDTO productDTO) {
     adminService.updateProduct(id, productDTO);
     return ResponseEntity.status(HttpStatus.OK).build();
   }
 
 
-  @GetMapping
-  @PreAuthorize("hasRole('ROLE_ADMIN')")
-  public ResponseEntity<List<OrderDTO>> getAllOrders() {
-    return ResponseEntity.ok(orderService.getAllOrders());
-  }
-
-  @GetMapping("/{id}")
-  @PreAuthorize("hasRole('ROLE_ADMIN')")
-  public ResponseEntity<OrderDTO> getOrderById(@PathVariable Long id) {
-    // Admin can get any order without email parameter
-    OrderDTO dto = orderService.getOrderByIdForAdmin(id);
-    return ResponseEntity.ok(dto);
-  }
-
-  @PatchMapping("/{id}/status")
-  @PreAuthorize("hasRole('ROLE_ADMIN')")
-  public ResponseEntity<OrderStatus> updateOrderStatus(
-      @PathVariable Long id,
-      @RequestParam OrderStatus status) {
-    OrderStatus updated = orderService.updateOrderStatus(id, status);
-    return ResponseEntity.ok(updated);
-  }
-
-  @DeleteMapping("/{id}")
-  @PreAuthorize("hasRole('ROLE_ADMIN')")
-  public ResponseEntity<Void> deleteOrder(@PathVariable Long id) {
-    orderService.deleteOrder(id);
-    return ResponseEntity.noContent().build();
-  }
 }
