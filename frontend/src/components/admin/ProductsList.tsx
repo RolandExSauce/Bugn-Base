@@ -70,7 +70,7 @@ export default function ProductsList() {
   const saveNewProduct = async () => {
     const invalids = {
       name: !newProductForm.name.trim(),
-      description: false,
+      description: !newProductForm.description.trim(),
       price: !(newProductForm.price > 0),
       shippingCost: !(newProductForm.shippingCost >= 0),
       brand: !newProductForm.brand.trim(),
@@ -80,13 +80,16 @@ export default function ProductsList() {
     };
 
     setNewInvalid(invalids);
+
     if (Object.values(invalids).some(Boolean)) return;
 
     try {
       const savedProduct = await AdminProductService.addProduct(newProductForm);
+
       if (uploadedImages.length > 0) {
         await uploadImagesForProduct(savedProduct);
       }
+
       setProducts((prev) => [...prev, savedProduct]);
       setShowNewForm(false);
       setNewProductForm({
@@ -101,6 +104,14 @@ export default function ProductsList() {
         active: true,
       });
       setUploadedImages([]);
+      setNewInvalid({
+        name: false,
+        description: false,
+        price: false,
+        shippingCost: false,
+        brand: false,
+        shippingTime: false,
+      });
     } catch (err) {
       console.error("Error adding product:", err);
     }
