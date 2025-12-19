@@ -80,17 +80,19 @@ export default function ProductsList() {
     };
 
     setNewInvalid(invalids);
-
     if (Object.values(invalids).some(Boolean)) return;
 
     try {
       const savedProduct = await AdminProductService.addProduct(newProductForm);
 
+      let productWithImages = savedProduct;
+
       if (uploadedImages.length > 0) {
-        await uploadImagesForProduct(savedProduct);
+        productWithImages = await uploadImagesForProduct(savedProduct);
       }
 
-      setProducts((prev) => [...prev, savedProduct]);
+      setProducts((prev) => [...prev, productWithImages]);
+
       setShowNewForm(false);
       setNewProductForm({
         name: "",
@@ -119,16 +121,21 @@ export default function ProductsList() {
 
   const uploadImagesForProduct = async (product: Product) => {
     setImageUploading(true);
+    const uploaded: Image[] = [];
+
     for (const file of uploadedImages) {
       try {
         const url = await AdminProductService.addImage(product, file);
-        // product.images.push({ imageId: "", url });
+        uploaded.push({ imageId: "", url }); // adjust if backend returns ID
       } catch (err) {
         console.error(`Failed to upload image ${file.name}`, err);
       }
     }
+
     setImageUploading(false);
     setUploadedImages([]);
+
+    return { ...product, images: uploaded };
   };
 
   const handleDeleteImage = async (product: Product, image: Image) => {

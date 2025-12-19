@@ -60,7 +60,13 @@ export default function HomePage() {
       ) : (
         <div className="d-flex flex-wrap justify-content-center gap-4 mt-4">
           {products.map((p) => (
-            <ShopItem key={p.id} product={p} />
+            <Link
+              to={`/product/${p.id}`}
+              key={p.id}
+              className="shop-item-container flex-grow-1"
+            >
+              <ShopItem key={p.id} product={p} />
+            </Link>
           ))}
         </div>
       )}

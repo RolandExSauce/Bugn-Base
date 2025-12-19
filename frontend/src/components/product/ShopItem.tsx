@@ -9,8 +9,6 @@ const ShopItem = ({ product }: ShopItemProps) => {
     switch (product.stockStatus) {
       case "IN_STOCK":
         return { text: "Auf Lager", className: "text-success" };
-      case "LOW_STOCK":
-        return { text: "Wenige verfügbar", className: "text-warning" };
       case "OUT_OF_STOCK":
         return { text: "Nicht verfügbar", className: "text-danger" };
       default:

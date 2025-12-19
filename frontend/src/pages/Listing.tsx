@@ -129,13 +129,13 @@ export default function Listing() {
         </div>
 
         <div className="listing-products flex-grow-1 d-flex flex-wrap column-gap-4 row-gap-5">
-          {products.map((p) => (
+          {products.map((p, i) => (
             <Link
               to={`/product/${p.id}`}
               key={p.id}
               className="shop-item-container flex-grow-1"
             >
-              <ShopItem product={p} />
+              <ShopItem key={p.id + i} product={p} />
             </Link>
           ))}
         </div>
