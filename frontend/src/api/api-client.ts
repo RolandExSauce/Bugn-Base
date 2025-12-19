@@ -19,12 +19,15 @@ class ApiClient {
     this.client.interceptors.request.use(
       (config) => {
         const auth = localStorage.getItem("auth");
-        if (auth) {
-          const token = JSON.parse(auth).accessToken;
+        const token = auth ? JSON.parse(auth).accessToken : null;
+
+        // Only add token for /admin or other secured paths
+        if (token && config.url?.startsWith("/admin")) {
           if (config.headers) {
             config.headers.Authorization = `Bearer ${token}`;
           }
         }
+
         return config;
       },
       (error) => Promise.reject(error)

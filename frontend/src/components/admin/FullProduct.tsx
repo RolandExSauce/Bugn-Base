@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import type { Product, ProductDTO } from "../../types/models";
 import { AdminProductService } from "../../services";
-import ProductImagesAdmin from "./ProductImagesAdmin";
 
 interface FullProductProps {
   product: Product;
@@ -359,12 +358,6 @@ export default function FullProduct({
               <i className="bi bi-x"></i>
             </button>
           </div>
-        </td>
-      </tr>
-
-      <tr>
-        <td colSpan={11}>
-          <ProductImagesAdmin productId={product.id.toString()} />
         </td>
       </tr>
     </>

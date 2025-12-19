@@ -11,7 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -37,23 +36,27 @@ public class AdminController {
   }
 
   @GetMapping("/products")
+  @PreAuthorize("hasRole('ROLE_ADMIN')")
   public List<Product> getProducts () {
     return adminService.getProducts();
   }
 
   @PostMapping("/add-product")
+  @PreAuthorize("hasRole('ROLE_ADMIN')")
   public ResponseEntity<Product> addProduct(@RequestBody ProductDTO newProduct) {
     Product saved = adminService.addProduct(newProduct);
     return ResponseEntity.status(HttpStatus.CREATED).body(saved);
   }
 
   @DeleteMapping("/delete-product/{id}")
+  @PreAuthorize("hasRole('ROLE_ADMIN')")
   public ResponseEntity<Void> deleteProduct(@PathVariable String id) {
     adminService.deleteProduct(id);
     return ResponseEntity.noContent().build();
   }
 
   @PutMapping("/update-product/{id}")
+  @PreAuthorize("hasRole('ROLE_ADMIN')")
   public ResponseEntity<Void> updateProduct (@PathVariable String id, @RequestBody ProductDTO productDTO) {
     adminService.updateProduct(id, productDTO);
     return ResponseEntity.status(HttpStatus.OK).build();
@@ -61,13 +64,13 @@ public class AdminController {
 
 
   @GetMapping
-  @PreAuthorize("hasRole('ADMIN')")
+  @PreAuthorize("hasRole('ROLE_ADMIN')")
   public ResponseEntity<List<OrderDTO>> getAllOrders() {
     return ResponseEntity.ok(orderService.getAllOrders());
   }
 
   @GetMapping("/{id}")
-  @PreAuthorize("hasRole('ADMIN')")
+  @PreAuthorize("hasRole('ROLE_ADMIN')")
   public ResponseEntity<OrderDTO> getOrderById(@PathVariable Long id) {
     // Admin can get any order without email parameter
     OrderDTO dto = orderService.getOrderByIdForAdmin(id);
@@ -75,7 +78,7 @@ public class AdminController {
   }
 
   @PatchMapping("/{id}/status")
-  @PreAuthorize("hasRole('ADMIN')")
+  @PreAuthorize("hasRole('ROLE_ADMIN')")
   public ResponseEntity<OrderStatus> updateOrderStatus(
       @PathVariable Long id,
       @RequestParam OrderStatus status) {
@@ -84,7 +87,7 @@ public class AdminController {
   }
 
   @DeleteMapping("/{id}")
-  @PreAuthorize("hasRole('ADMIN')")
+  @PreAuthorize("hasRole('ROLE_ADMIN')")
   public ResponseEntity<Void> deleteOrder(@PathVariable Long id) {
     orderService.deleteOrder(id);
     return ResponseEntity.noContent().build();

@@ -26,19 +26,25 @@ class AdminProductService {
   };
 
   public static addImage = async (
-    productId: number,
+    product: Product,
     file: File
   ): Promise<string> => {
     const formData = new FormData();
     formData.append("file", file);
 
+    const categoryFolder = product.category.toLowerCase();
+
     const response = await apiClient.post<string>(
-      `/media/file/product/${productId}`,
+      `/media/file/${categoryFolder}`,
       formData,
       { headers: { "Content-Type": "multipart/form-data" } }
     );
 
     return response;
+  };
+
+  public static deleteImage = async (imageId: string): Promise<void> => {
+    await apiClient.delete(`/media/file/${imageId}`);
   };
 }
 export default AdminProductService;

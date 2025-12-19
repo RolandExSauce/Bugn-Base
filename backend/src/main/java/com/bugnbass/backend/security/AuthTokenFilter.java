@@ -6,12 +6,15 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.authentication.*;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
+import java.util.List;
 
 //auth token filter to intercept incoming http requests
 @Component
@@ -25,20 +28,20 @@ public class AuthTokenFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain chain)
-            throws ServletException, IOException {
+        throws ServletException, IOException {
 
         String jwt = parseJwt(request);
 
         if (jwt != null && jwtUtil.validateJwtToken(jwt)) {
             String email = jwtUtil.getEmailFromToken(jwt);
-            var user = userDetailsService.loadUserByUsername(email);
+            var role = jwtUtil.getRoleFromToken(jwt);
+
+            List<GrantedAuthority> authorities = List.of(
+                new SimpleGrantedAuthority(role.name()) // e.g., ROLE_ADMIN
+            );
 
             UsernamePasswordAuthenticationToken auth =
-                    new UsernamePasswordAuthenticationToken(
-                             user,
-                             null,
-                             user.getAuthorities()
-                    );
+                new UsernamePasswordAuthenticationToken(email, null, authorities);
 
             auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
             SecurityContextHolder.getContext().setAuthentication(auth);
@@ -46,6 +49,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 
         chain.doFilter(request, response);
     }
+
 
     private String parseJwt(HttpServletRequest request) {
         String header = request.getHeader("Authorization");
