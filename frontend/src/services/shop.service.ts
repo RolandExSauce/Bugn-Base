@@ -1,9 +1,5 @@
-import { apiClient } from "../../api/api-client";
-import type {
-  Product,
-  ProductCategory,
-  ProductFilter,
-} from "../../types/models";
+import { apiClient } from "../api/api-client";
+import type { Product, ProductCategory, ProductFilter } from "../types/models";
 
 class ShopService {
   public static getProduct = async (id: string): Promise<Product> => {

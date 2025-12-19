@@ -1,8 +1,7 @@
-import { apiClient } from "../../api/api-client";
-import type { Order, OrderDTO, OrderStatus } from "../../types/models";
+import { apiClient } from "../api/api-client";
+import type { Order, OrderDTO, OrderStatus } from "../types/models";
 
 class AdminOrderService {
-
   public static getAllOrders = async (): Promise<Order[]> => {
     return apiClient.get<Order[]>("/admin/orders");
   };
@@ -15,11 +14,9 @@ class AdminOrderService {
     id: number,
     status: OrderStatus
   ): Promise<OrderStatus> => {
-    return apiClient.patch<OrderStatus>(
-      `/admin/orders/${id}/status`,
-      null,
-      { params: { status } }
-    );
+    return apiClient.patch<OrderStatus>(`/admin/orders/${id}/status`, null, {
+      params: { status },
+    });
   };
 
   public static deleteOrder = async (id: number): Promise<void> => {

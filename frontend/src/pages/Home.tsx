@@ -3,7 +3,7 @@ import ShopItem from "../components/product/ShopItem";
 import { useState, useEffect, useCallback } from "react";
 import Searchbar from "../components/navigation/Searchbar";
 import type { Product } from "../types/models";
-import ShopService from "../services/shop/shop.service";
+import ShopService from "../services/shop.service";
 
 export default function HomePage() {
   const [products, setProducts] = useState<Product[]>([]);

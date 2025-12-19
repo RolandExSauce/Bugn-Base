@@ -1,8 +1,7 @@
-import { apiClient } from "../../api/api-client";
-import type { OrderDTO, OrderStatus } from "../../types/models";
+import { apiClient } from "../api/api-client";
+import type { OrderDTO, OrderStatus } from "../types/models";
 
 class UserOrderService {
-
   public static createOrder = async (order: OrderDTO): Promise<OrderStatus> => {
     return apiClient.post<OrderStatus>("/user/orders", order);
   };
@@ -18,7 +17,9 @@ class UserOrderService {
   public static getOrdersForCustomer = async (
     email: string
   ): Promise<OrderDTO[]> => {
-    const res = await apiClient.get<OrderDTO[]>(`/user/orders/customer/${email}`);
+    const res = await apiClient.get<OrderDTO[]>(
+      `/user/orders/customer/${email}`
+    );
     return res;
   };
 
@@ -31,7 +32,7 @@ class UserOrderService {
       null,
       { params: { email } }
     );
-    return res; 
+    return res;
   };
 
   public static returnOrder = async (
@@ -43,8 +44,7 @@ class UserOrderService {
       null,
       { params: { email } }
     );
-    return res; 
+    return res;
   };
-
 }
 export default UserOrderService;

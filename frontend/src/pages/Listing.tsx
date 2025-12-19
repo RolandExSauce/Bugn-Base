@@ -3,7 +3,7 @@ import ProductFilter from "../components/product/ProductFilter";
 import ShopItem from "../components/product/ShopItem";
 import { useEffect, useState } from "react";
 import type { Product, ProductFilter as FilterType } from "../types/models"; // Renamed import
-import ShopService from "../services/shop/shop.service";
+import ShopService from "../services/shop.service";
 
 export default function Listing() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -23,7 +23,7 @@ export default function Listing() {
 
       // KI SAYS: Convert frontend filter to backend API format
       //sort and stars are handled client-side
-      // should adjust api 🤔 
+      // should adjust api 🤔
       const apiFilter = {
         name: filter?.name,
         category: filter?.category,

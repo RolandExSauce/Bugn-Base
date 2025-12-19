@@ -231,6 +231,9 @@ export default function ProductsList() {
             <th>Name</th>
             <th>Kategorie</th>
             <th>Preis</th>
+            <th>Brand</th>
+            <th>Bestand</th> {/* stockStatus */}
+            <th>Versandzeit</th> {/* shippingTime */}
             <th>Aktionen</th>
           </tr>
         </thead>
@@ -240,7 +243,10 @@ export default function ProductsList() {
               <td>{product.id}</td>
               <td>{product.name}</td>
               <td>{product.category}</td>
-              <td>{product.price}</td>
+              <td>{product.price.toFixed(2)} €</td>
+              <td>{product.brand}</td>
+              <td>{product.stockStatus}</td>
+              <td>{product.shippingTime} Tage</td>
               <td>
                 <FullProduct
                   product={product}
@@ -249,7 +255,6 @@ export default function ProductsList() {
                   onUpdate={handleProductUpdated}
                   onDelete={handleProductDeleted}
                 />
-                {/* Images UI */}
                 <div className="d-flex flex-wrap gap-2 mt-2">
                   {product.images.map((img) => (
                     <div
