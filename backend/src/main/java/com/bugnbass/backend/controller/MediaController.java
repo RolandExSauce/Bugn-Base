@@ -1,6 +1,7 @@
 package com.bugnbass.backend.controller;
 
 import com.bugnbass.backend.service.MediaService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -16,15 +17,13 @@ public class MediaController {
     this.mediaService = mediaService;
   }
 
-  @GetMapping("/{folder}/{filename:.+}")
-  public ResponseEntity<Resource> getImage(
-      @PathVariable String folder,
-      @PathVariable String filename
-  ) {
-    Resource image = mediaService.getImage(folder + "/" + filename);
-
+  @GetMapping("/**")
+  public ResponseEntity<Resource> getImage(HttpServletRequest request) {
+    String path = request.getRequestURI().replaceFirst(".*/media/", "");
+    Resource image = mediaService.getImage(path);
     return ResponseEntity.ok()
         .contentType(MediaType.APPLICATION_OCTET_STREAM)
         .body(image);
   }
+
 }

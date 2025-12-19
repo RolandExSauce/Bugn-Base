@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { AdminImageService } from "../../services";
 import type { Image } from "../../types/models";
-import { APP_BASE_URL_NO_PREFIX } from "../../api/api-client";
 import { noImgFoundPlaceholder } from "../../assets/icon.barrel";
 
 interface Props {
@@ -31,29 +30,29 @@ export default function ProductImagesAdmin({ productId }: Props) {
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (!event.target.files || event.target.files.length === 0) return;
-    
+
     const files = Array.from(event.target.files);
     setSelectedFiles(files);
-    
+
     // Clear the input so the same file can be selected again
     if (fileInputRef.current) {
-      fileInputRef.current.value = '';
+      fileInputRef.current.value = "";
     }
   };
 
   const handleUpload = async () => {
     if (selectedFiles.length === 0) return;
-    
+
     setUploading(true);
     try {
       await AdminImageService.uploadImages(productId, selectedFiles);
-      
+
       // Wait a moment for the backend to process and write files
-      await new Promise(resolve => setTimeout(resolve, 500));
-      
+      await new Promise((resolve) => setTimeout(resolve, 500));
+
       // Refresh images
       await fetchImages();
-      
+
       // Clear selected files
       setSelectedFiles([]);
     } catch (error) {
@@ -70,7 +69,7 @@ export default function ProductImagesAdmin({ productId }: Props) {
 
   const handleDelete = async (imageId: string) => {
     if (!window.confirm("Bild wirklich löschen?")) return;
-    
+
     try {
       await AdminImageService.deleteImage(imageId);
       setImages((prev) => prev.filter((i) => i.imageId !== imageId));
@@ -82,7 +81,7 @@ export default function ProductImagesAdmin({ productId }: Props) {
 
   const resolveImageUrl = (url?: string) => {
     if (!url) return noImgFoundPlaceholder;
-    return `${APP_BASE_URL_NO_PREFIX}${url}`;
+    return `${import.meta.env.VITE_BASE_URL}${url}`;
   };
 
   return (
@@ -104,7 +103,9 @@ export default function ProductImagesAdmin({ productId }: Props) {
       {/* Selected Files Preview & Upload Controls */}
       {selectedFiles.length > 0 && (
         <div className="mb-3 p-3 border rounded bg-white">
-          <h6 className="mb-2">Ausgewählte Dateien ({selectedFiles.length}):</h6>
+          <h6 className="mb-2">
+            Ausgewählte Dateien ({selectedFiles.length}):
+          </h6>
           <ul className="mb-3">
             {selectedFiles.map((file, index) => (
               <li key={index} className="text-muted small">
@@ -112,7 +113,7 @@ export default function ProductImagesAdmin({ productId }: Props) {
               </li>
             ))}
           </ul>
-          
+
           <div className="d-flex gap-2">
             <button
               onClick={handleUpload}

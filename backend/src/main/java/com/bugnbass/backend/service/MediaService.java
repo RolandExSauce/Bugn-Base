@@ -1,5 +1,6 @@
 package com.bugnbass.backend.service;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
@@ -13,7 +14,11 @@ import java.util.Objects;
 @Service
 public class MediaService {
 
-  private static final Path MEDIA_ROOT = Paths.get("media");
+  private final Path mediaRoot;
+
+  public MediaService(@Value("${media.root}") String mediaRootPath) {
+    this.mediaRoot = Paths.get(mediaRootPath).normalize();
+  }
 
   public String uploadImage(MultipartFile file, String subDir) {
     try {
@@ -29,7 +34,7 @@ public class MediaService {
       String safeBase = originalName.replaceAll("[^A-Za-z0-9_-]", "");
       String fileName = System.currentTimeMillis() + "_" + safeBase + extension;
 
-      Path targetDir = MEDIA_ROOT.resolve(subDir);
+      Path targetDir = mediaRoot.resolve(subDir);
       Files.createDirectories(targetDir);
 
       Path targetFile = targetDir.resolve(fileName);
@@ -44,7 +49,7 @@ public class MediaService {
 
   public Resource getImage(String relativePath) {
     try {
-      Path filePath = MEDIA_ROOT.resolve(relativePath).normalize();
+      Path filePath = mediaRoot.resolve(relativePath).normalize();
       Resource resource = new UrlResource(filePath.toUri());
 
       if (!resource.exists() || !resource.isReadable()) {
@@ -60,7 +65,7 @@ public class MediaService {
 
   public void deleteImage(String relativePath) {
     try {
-      Path filePath = MEDIA_ROOT.resolve(relativePath).normalize();
+      Path filePath = mediaRoot.resolve(relativePath).normalize();
       Files.deleteIfExists(filePath);
     } catch (IOException e) {
       throw new RuntimeException("Failed to delete image", e);

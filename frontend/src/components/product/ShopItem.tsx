@@ -1,4 +1,4 @@
-import { APP_BASE_URL_NO_PREFIX } from "../../api/api-client";
+import { BASE_URL } from "../../api/api-client";
 import { noImgFoundPlaceholder } from "../../assets/icon.barrel";
 import type { Product } from "../../types/models";
 
@@ -9,7 +9,6 @@ interface ShopItemProps {
 const ShopItem = ({ product }: ShopItemProps) => {
   console.log("product passed: ", product);
 
-  // Helper function to get stock status text and class
   const getStockStatus = () => {
     switch (product.stockStatus) {
       case "IN_STOCK":
@@ -27,7 +26,7 @@ const ShopItem = ({ product }: ShopItemProps) => {
 
   const productImage =
     product.images && product.images.length > 0
-      ? `${APP_BASE_URL_NO_PREFIX}${product.images[0].url}`
+      ? `${import.meta.env.VITE_BASE_URL}/media${product.images[0].url}`
       : noImgFoundPlaceholder;
 
   return (
@@ -50,7 +49,6 @@ const ShopItem = ({ product }: ShopItemProps) => {
         {stockInfo.text}
       </div>
 
-      {/* Optional: Show shipping time */}
       {product.shippingTime > 0 && (
         <div className="shop-item-shipping small text-muted mt-1">
           Lieferzeit: {product.shippingTime} Tag
@@ -58,7 +56,6 @@ const ShopItem = ({ product }: ShopItemProps) => {
         </div>
       )}
 
-      {/* Optional: Show category badge */}
       <div className="shop-item-category mt-2">
         <span className="badge bg-light text-dark border">
           {product.category}

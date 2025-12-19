@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
         import java.util.List;
 
 @RestController
-@RequestMapping("/bugnbass/api/shop")
+@RequestMapping("/products")
 public class ShopProductsController {
 
     private final ProductService userProductService;
@@ -17,12 +17,12 @@ public class ShopProductsController {
         this.userProductService = userProductService;
     }
 
-    @GetMapping("/products/product/{id}")
+    @GetMapping("/{id}")
     public Product getProduct(@PathVariable String id) {
         return userProductService.getProduct(id);
     }
 
-    @GetMapping("/products")
+    @GetMapping()
     public List<ProductResponseDTO> getProducts (
             //@RequestParam(required = false) String id,
             @RequestParam(required = false) String name,

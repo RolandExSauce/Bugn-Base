@@ -52,44 +52,40 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     };
 
-    //security filter chain
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .csrf(AbstractHttpConfigurer::disable)
-                .cors(withDefaults())
-                .exceptionHandling(exceptionHandling ->
-                        exceptionHandling.authenticationEntryPoint(unauthorizedHandler)
-                )
-                .sessionManagement(sessionManagement ->
-                        sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                )
-                .authorizeHttpRequests(authorizeRequests ->
-                        authorizeRequests
-                                .requestMatchers(
-                                        "/bugnbass/auth/**",
-                                        "/bugnbass/test/all",
-                                        "/swagger-ui/**",
-                                        "/bugnbass/api/shop/**",
-                                        "/v3/api-docs/**",
-                                        "/product_images/**",
-                                        //should be protected:
-                                        "/bugnbass/api/admin/**",
-                                        "/bugnbass/api/orders/**"
-                                ).permitAll()
-//                                .requestMatchers("/bugnbass/api/admin/**").authenticated()
-//                                .requestMatchers("/bugnbass/api/orders/**").authenticated()
-                                //.requestMatchers("/bugnbass/**").authenticated()
-                                .anyRequest().denyAll()
-                )
-                //disable basic auth and form login
-                .formLogin(AbstractHttpConfigurer::disable)
-                .httpBasic(AbstractHttpConfigurer::disable);
 
-        // Add the JWT Token filter before the usernamePasswordAuthenticationFilter
-        http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+        http
+            .csrf(AbstractHttpConfigurer::disable)
+            .cors(withDefaults())
+            .exceptionHandling(ex ->
+                ex.authenticationEntryPoint(unauthorizedHandler)
+            )
+            .sessionManagement(sm ->
+                sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            )
+            .authorizeHttpRequests(auth -> auth
+                // public API
+                .requestMatchers(
+                    "/auth/**",
+                    "/shop/**",
+                    "/media/**",
+                    "/swagger-ui/**",
+                    "/v3/api-docs/**"
+                ).permitAll()
+                 .requestMatchers("/admin/**").authenticated()
+                .anyRequest().permitAll()
+            )
+            .formLogin(AbstractHttpConfigurer::disable)
+            .httpBasic(AbstractHttpConfigurer::disable);
+
+        http.addFilterBefore(
+            authenticationJwtTokenFilter(),
+            UsernamePasswordAuthenticationFilter.class
+        );
+
         return http.build();
-    };
+    }
 };
 
 

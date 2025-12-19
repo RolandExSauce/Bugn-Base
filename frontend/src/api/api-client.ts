@@ -1,4 +1,4 @@
-import axios, { type AxiosInstance, type AxiosResponse } from 'axios';
+import axios, { type AxiosInstance, type AxiosResponse } from "axios";
 
 class ApiClient {
   private client: AxiosInstance;
@@ -7,7 +7,7 @@ class ApiClient {
     this.client = axios.create({
       baseURL,
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
     });
 
@@ -18,7 +18,7 @@ class ApiClient {
     // Request interceptor to add auth token
     this.client.interceptors.request.use(
       (config) => {
-        const auth = localStorage.getItem('auth');
+        const auth = localStorage.getItem("auth");
         if (auth) {
           const token = JSON.parse(auth).accessToken;
           if (config.headers) {
@@ -30,14 +30,14 @@ class ApiClient {
       (error) => Promise.reject(error)
     );
 
-//TODO: how to make interceptor only for authenticated endpoints ? 
+    //TODO: how to make interceptor only for authenticated endpoints ?
 
     // Response interceptor for error handling
     this.client.interceptors.response.use(
       (response) => response,
       (error) => {
         if (error.response?.status === 401) {
-          localStorage.removeItem('auth');
+          localStorage.removeItem("auth");
           //window.location.href = '/login';
         }
         return Promise.reject(error);
@@ -51,7 +51,11 @@ class ApiClient {
   }
 
   async post<T>(url: string, data?: any, config?: any): Promise<T> {
-    const response: AxiosResponse<T> = await this.client.post(url, data, config);
+    const response: AxiosResponse<T> = await this.client.post(
+      url,
+      data,
+      config
+    );
     return response.data;
   }
 
@@ -61,10 +65,13 @@ class ApiClient {
   }
 
   async patch<T>(url: string, data?: any, config?: any): Promise<T> {
-    const response: AxiosResponse<T> = await this.client.patch(url, data, config);
+    const response: AxiosResponse<T> = await this.client.patch(
+      url,
+      data,
+      config
+    );
     return response.data;
   }
-
 
   async delete<T>(url: string): Promise<T> {
     const response: AxiosResponse<T> = await this.client.delete(url);
@@ -75,7 +82,7 @@ class ApiClient {
   async postFormData<T>(url: string, formData: FormData): Promise<T> {
     const response: AxiosResponse<T> = await this.client.post(url, formData, {
       headers: {
-        'Content-Type': 'multipart/form-data',
+        "Content-Type": "multipart/form-data",
       },
     });
     return response.data;
@@ -83,5 +90,4 @@ class ApiClient {
 }
 
 export const BASE_URL = import.meta.env.VITE_BASE_URL;
-export const APP_BASE_URL_NO_PREFIX = import.meta.env.VITE_BASE_URL_NO_PREFIX;
 export const apiClient = new ApiClient(BASE_URL);

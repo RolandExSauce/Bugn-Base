@@ -9,8 +9,9 @@ export default function ProductsList() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [showNewForm, setShowNewForm] = useState(false);
+  const [uploadedImages, setUploadedImages] = useState<File[]>([]);
 
-  console.log("products for admin: ", products)
+  console.log("products for admin: ", products);
 
   //or could use Partial Product type
   const [newProductForm, setNewProductForm] = useState<ProductDTO>({
@@ -44,6 +45,16 @@ export default function ProductsList() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files) return;
+    const filesArray = Array.from(e.target.files);
+    setUploadedImages((prev) => [...prev, ...filesArray]);
+  };
+
+  const removeImage = (index: number) => {
+    setUploadedImages((prev) => prev.filter((_, i) => i !== index));
   };
 
   useEffect(() => {
@@ -339,6 +350,64 @@ export default function ProductsList() {
               />
               Aktiv
             </label>
+
+            <div className="mt-3">
+              <label className="form-label fw-bold">Bilder hinzufügen</label>
+              <input
+                type="file"
+                multiple
+                accept="image/*"
+                onChange={handleImageChange}
+                style={{ display: "none" }}
+                id="product-images-input"
+              />
+              <button
+                type="button"
+                className="btn btn-primary mb-2"
+                onClick={() =>
+                  document.getElementById("product-images-input")?.click()
+                }
+              >
+                Bilder auswählen
+              </button>
+
+              <div className="d-flex flex-wrap gap-2">
+                {uploadedImages.map((file, index) => {
+                  const url = URL.createObjectURL(file);
+                  return (
+                    <div
+                      key={index}
+                      className="position-relative"
+                      style={{
+                        width: 100,
+                        height: 100,
+                        border: "1px solid #ccc",
+                        borderRadius: 4,
+                        overflow: "hidden",
+                      }}
+                    >
+                      <img
+                        src={url}
+                        alt={file.name}
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          objectFit: "cover",
+                        }}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => removeImage(index)}
+                        className="btn btn-sm btn-danger position-absolute"
+                        style={{ top: 2, right: 2, padding: "0 4px" }}
+                      >
+                        ×
+                      </button>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
           </div>
 
           <div className="d-flex column-gap-2 mt-3">
