@@ -17,7 +17,8 @@ public class OrderMapper {
                 order.getTotalOrderPrice().doubleValue(),
                 order.getOrderItems().stream()
                         .map(this::toItemDTO)
-                        .toList()
+                        .toList(),
+            order.getOrderStatus().toString()
         );
     }
 

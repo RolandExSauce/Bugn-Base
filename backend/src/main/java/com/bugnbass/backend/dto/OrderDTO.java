@@ -7,7 +7,8 @@ public record OrderDTO(
         String shippingStateAndDistrict,
         String shippingAddress,
         Double totalOrderPrice,
-        List<OrderItemDTO> orderItems
+        List<OrderItemDTO> orderItems,
+        String status
 ) {
     public OrderDTO {
         if (customerEmail == null || customerEmail.isBlank()) {
