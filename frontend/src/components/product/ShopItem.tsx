@@ -37,11 +37,7 @@ const ShopItem = ({ product }: ShopItemProps) => {
         <img
           src={productImage}
           alt={product.name}
-          className="img-fluid rounded"
-          style={{ maxHeight: "200px", objectFit: "cover" }}
-          onError={(e) => {
-            (e.target as HTMLImageElement).src = "/placeholder-image.jpg";
-          }}
+          style={{ padding: "10px" }}
         />
       </div>
 

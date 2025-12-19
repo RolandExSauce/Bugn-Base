@@ -55,3 +55,5 @@ bin/
 # .env
 # .env.local
 # .env.*.local
+
+/frontend/node
