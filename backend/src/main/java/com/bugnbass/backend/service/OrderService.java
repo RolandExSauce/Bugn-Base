@@ -1,4 +1,5 @@
 package com.bugnbass.backend.service;
+
 import com.bugnbass.backend.dto.OrderDTO;
 import com.bugnbass.backend.exceptions.UserNotFoundException;
 import com.bugnbass.backend.mappers.OrderMapper;
@@ -6,15 +7,15 @@ import com.bugnbass.backend.model.Order;
 import com.bugnbass.backend.model.OrderItem;
 import com.bugnbass.backend.model.Product;
 import com.bugnbass.backend.model.User;
-import com.bugnbass.backend.model._interface.IBaseUser;
 import com.bugnbass.backend.model.enums.OrderStatus;
 import com.bugnbass.backend.model.enums.UserRole;
 import com.bugnbass.backend.repository.OrderItemRepository;
 import com.bugnbass.backend.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import java.math.BigDecimal;
+
 import java.time.LocalDate;
 import java.util.List;
 
@@ -29,11 +30,9 @@ public class OrderService {
     private final UserService userService;
     private final OrderMapper orderMapper;
 
-    /**********************************************************************************************************************/
     public OrderStatus createOrder(OrderDTO dto) {
 
-        User user = userService.findCustomerByEmail(dto.customerEmail())
-                .orElseThrow(() -> new UserNotFoundException("User not found: " + dto.customerEmail()));
+        User user = getAuthenticatedUser();
 
         Order order = new Order();
         order.setUser(user);
@@ -42,6 +41,9 @@ public class OrderService {
         order.setDeliveryDate(LocalDate.now().plusWeeks(2));
         order.setShippingAddress(dto.shippingAddress());
         order.setOrderNumber(generateOrderNumber());
+        order.setDeliveryPostcode(dto.deliveryPostcode());
+        order.setDeliveryFullname(dto.deliveryFullname());
+        order.setPaymentMethod(dto.paymentMethod());
 
         List<OrderItem> items = dto.orderItems().stream().map(itemDTO -> {
             Product product = productService.getProduct(itemDTO.productId());
@@ -49,78 +51,53 @@ public class OrderService {
             item.setOrder(order);
             item.setProduct(product);
             item.setQuantity(itemDTO.quantity());
-            item.setPrice(BigDecimal.valueOf(product.getPrice()));
-
+            item.setPrice(product.getPrice());
             return item;
         }).toList();
 
         order.setOrderItems(items);
-        BigDecimal totalPrice = items.stream()
-                .map(i -> i.getPrice().multiply(BigDecimal.valueOf(i.getQuantity())))
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        int totalPrice = items.stream()
+            .mapToInt(i -> i.getPrice() * i.getQuantity())
+            .sum();
 
         order.setTotalOrderPrice(totalPrice);
         orderRepo.save(order);
         orderItemRepo.saveAll(items);
         return order.getOrderStatus();
     }
-    /******************************************************************************************************************/
+
     private String generateOrderNumber() {
         return "ORD-" + System.currentTimeMillis();
     }
-    /******************************************************************************************************************/
-    public OrderDTO getOrderById(Long id, String requesterEmail) {
 
+    public OrderDTO getOrderById(Long id) {
         Order order = orderRepo.findById(id)
-                .orElseThrow(() -> new RuntimeException("Order not found"));
+            .orElseThrow(() -> new RuntimeException("Order not found"));
 
-        if (order.getUser().getEmail().equals(requesterEmail)) {
-            return orderMapper.toDTO(order);
+        User user = getAuthenticatedUserOrAdmin();
+
+        if (!order.getUser().equals(user) && user.getRole() != UserRole.ROLE_ADMIN) {
+            throw new RuntimeException("Access denied");
         }
 
-        IBaseUser baseUser = userService.findByEmail(requesterEmail)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-
-        if (baseUser.getRole() == UserRole.ROLE_ADMIN) {
-            return orderMapper.toDTO(order);
-        }
-
-        throw new RuntimeException("Access denied");
+        return orderMapper.toDTO(order);
     }
-    /******************************************************************************************************************/
-    public List<OrderDTO> getOrdersByCustomer(String email) {
 
-        User user = userService.findCustomerByEmail(email)
-                .orElseThrow(() -> new UserNotFoundException("User not found: " + email));
-
+    public List<OrderDTO> getOrdersByCustomer() {
+        User user = getAuthenticatedUser();
         List<Order> orders = orderRepo.findByUser(user);
-        return orders.stream()
-                .map(orderMapper::toDTO)
-                .toList();
+        return orders.stream().map(orderMapper::toDTO).toList();
     }
-    /******************************************************************************************************************/
-    public List<OrderDTO> getAllOrders() {
 
-        List<Order> orders = orderRepo.findAll();
-        return orders.stream()
-                .map(orderMapper::toDTO)
-                .toList();
-    }
-    /******************************************************************************************************************/
-    public OrderStatus updateOrderStatus(Long id, OrderStatus newStatus) {
+    public OrderStatus cancelOrder(Long id) {
+
         Order order = orderRepo.findById(id)
-                .orElseThrow(() -> new RuntimeException("Order not found"));
+            .orElseThrow(() -> new RuntimeException("Order not found"));
 
-        order.setOrderStatus(newStatus);
-        orderRepo.save(order);
-        return newStatus;
-    }
-    /******************************************************************************************************************/
-    public OrderStatus cancelOrder(Long id, String email) {
-        Order order = orderRepo.findById(id)
-                .orElseThrow(() -> new RuntimeException("Order not found"));
+        User user = getAuthenticatedUserOrAdmin();
 
-        if (!order.getUser().getEmail().equals(email)) {
+        if (!order.getUser().equals(user) && user.getRole() != UserRole.ROLE_ADMIN) {
             throw new RuntimeException("You can only cancel your own orders");
         }
 
@@ -129,50 +106,66 @@ public class OrderService {
         }
 
         if (order.getOrderStatus() == OrderStatus.SHIPPING ||
-                order.getOrderStatus() == OrderStatus.DELIVERED) {
+            order.getOrderStatus() == OrderStatus.DELIVERED) {
             throw new RuntimeException("Delivered or shipped orders cannot be canceled");
         }
 
         order.setOrderStatus(OrderStatus.CANCELED);
         orderRepo.save(order);
-
         return OrderStatus.CANCELED;
     }
-    /******************************************************************************************************************/
-    public void deleteOrder(Long id) {
 
+    public OrderStatus returnOrder(Long id) {
         Order order = orderRepo.findById(id)
-                .orElseThrow(() -> new RuntimeException("Order not found"));
+            .orElseThrow(() -> new RuntimeException("Order not found"));
 
-        orderRepo.delete(order);
-    }
-    /******************************************************************************************************************/
-    public OrderStatus returnOrder(Long id, String email) {
+        User user = getAuthenticatedUserOrAdmin();
 
-        Order order = orderRepo.findById(id)
-                .orElseThrow(() -> new RuntimeException("Order not found"));
-
-        // User darf nur eigene Order zurückgeben
-        if (!order.getUser().getEmail().equals(email)) {
+        if (!order.getUser().equals(user) && user.getRole() != UserRole.ROLE_ADMIN) {
             throw new RuntimeException("You can only return your own orders");
         }
 
-        // Order muss vorher geliefert worden sein
         if (order.getOrderStatus() != OrderStatus.DELIVERED) {
             throw new RuntimeException("Only delivered orders can be returned");
         }
 
         order.setOrderStatus(OrderStatus.RETURNED);
         orderRepo.save(order);
-
         return OrderStatus.RETURNED;
     }
-    /******************************************************************************************************************/
-    public OrderDTO getOrderByIdForAdmin(Long id) {
-        Order order = orderRepo.findById(id)
-                .orElseThrow(() -> new RuntimeException("Order not found"));
 
-        // Admin can access any order without email validation
+    private User getAuthenticatedUser() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        return userService.findCustomerByEmail(email)
+            .orElseThrow(() -> new UserNotFoundException("User not found: " + email));
+    }
+
+    public List<OrderDTO> getAllOrders() {
+        return orderRepo.findAll()
+            .stream()
+            .map(orderMapper::toDTO)
+            .toList();
+    }
+
+    // update is currently only for status but can be extended later
+    public OrderDTO updateOrder(OrderDTO orderDTO) {
+        Order order = orderRepo.findById(orderDTO.id())
+            .orElseThrow(() -> new RuntimeException("Order not found"));
+
+        order.setOrderStatus(orderDTO.orderStatus());
+        orderRepo.save(order);
         return orderMapper.toDTO(order);
+    }
+
+    public void deleteOrder(Long id) {
+        Order order = orderRepo.findById(id)
+            .orElseThrow(() -> new RuntimeException("Order not found"));
+
+        orderRepo.delete(order);
+    }
+
+
+    private User getAuthenticatedUserOrAdmin() {
+        return getAuthenticatedUser(); // Admins are already checked in controller
     }
 }

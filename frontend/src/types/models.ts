@@ -57,7 +57,7 @@ export interface Image {
 
 // == USER TYPES AND RELATED =========================================================================================================
 export type Role = "ROLE_USER" | "ROLE_ADMIN";
-export type PaymentMethod = "creditcard" | "paypal" | "banktransfer";
+export type PaymentMethod = "CREDITCARD" | "PAYPAL" | "BANKTRANSFER";
 
 export interface User {
   id: string;
@@ -90,24 +90,6 @@ export interface RegisterDto {
   password: string;
 }
 
-// == ORDER TYPES AND RELATED =========================================================================================================
-// For making orders
-export interface OrderDTO {
-  customerEmail: string;
-  customerPhoneNumber: string;
-  shippingStateAndDistrict: string;
-  shippingAddress: string;
-  totalOrderPrice: number;
-  orderItems: OrderItemDTO[];
-  status?: OrderStatus;
-}
-
-export interface OrderItemDTO {
-  productId: string;
-  quantity: number;
-  price: number;
-}
-
 // Backend Order Model (for responses)
 export interface Order {
   id: number;
@@ -120,12 +102,12 @@ export interface Order {
   orderStatus: OrderStatus;
   shippingAddress: string;
   paymentMethod: PaymentMethod;
+  deliveryFullname: string;
+  deliveryPostcode: number;
 }
 
 export interface OrderItem {
-  id: number;
-  order: Order;
-  product: Product;
+  productId: number;
   quantity: number;
   price: number;
 }

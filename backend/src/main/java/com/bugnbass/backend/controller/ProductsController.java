@@ -9,16 +9,16 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/products")
-public class ShopProductsController {
+public class ProductsController {
 
     private final ProductService userProductService;
 
-    public ShopProductsController(ProductService userProductService) {
+    public ProductsController(ProductService userProductService) {
         this.userProductService = userProductService;
     }
 
     @GetMapping("/{id}")
-    public Product getProduct(@PathVariable String id) {
+    public Product getProduct(@PathVariable Long id) {
         return userProductService.getProduct(id);
     }
 
@@ -27,8 +27,8 @@ public class ShopProductsController {
             //@RequestParam(required = false) String id,
             @RequestParam(required = false) String name,
             @RequestParam(required = false) ProductCategory category,
-            @RequestParam(required = false) Double priceMin,
-            @RequestParam(required = false) Double priceMax,
+            @RequestParam(required = false) Integer priceMin,
+            @RequestParam(required = false) Integer priceMax,
             @RequestParam(required = false) List<String> brand,
             @RequestParam(required = false) Integer pageNo,
             @RequestParam(required = false) Integer pageSize

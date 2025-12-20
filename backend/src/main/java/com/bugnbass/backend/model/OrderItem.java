@@ -28,5 +28,5 @@ public class OrderItem {
     //Number of units of the product that customer has ordered and the price
     @Column(nullable = false)
     private int quantity;
-    private BigDecimal price;
+    private Integer price;
 };

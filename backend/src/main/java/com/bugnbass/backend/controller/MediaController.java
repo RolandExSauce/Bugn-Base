@@ -37,7 +37,7 @@ public class MediaController {
   @PreAuthorize("hasRole('ROLE_ADMIN')")
   @PostMapping("/file/{productId}")
   public ResponseEntity<String> uploadProductImage(
-      @PathVariable String productId,
+      @PathVariable Long productId,
       @RequestParam("file") MultipartFile file
   ) {
     Product product = productService.getProduct(productId);

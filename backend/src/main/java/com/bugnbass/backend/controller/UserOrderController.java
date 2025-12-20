@@ -1,4 +1,5 @@
 package com.bugnbass.backend.controller;
+
 import com.bugnbass.backend.dto.OrderDTO;
 import com.bugnbass.backend.model.enums.OrderStatus;
 import com.bugnbass.backend.service.OrderService;
@@ -7,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @RestController
@@ -25,36 +27,29 @@ public class UserOrderController {
 
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
-    public ResponseEntity<OrderDTO> getOrderById(
-            @PathVariable Long id,
-            @RequestParam String email) {
-        OrderDTO dto = orderService.getOrderById(id, email);
+    public ResponseEntity<OrderDTO> getOrderById(@PathVariable Long id) {
+        OrderDTO dto = orderService.getOrderById(id);
         return ResponseEntity.ok(dto);
     }
 
-    @GetMapping("/customer/{email}")
+    @GetMapping("/customer")
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
-    public ResponseEntity<List<OrderDTO>> getOrdersForCustomer(@PathVariable String email) {
-        return ResponseEntity.ok(orderService.getOrdersByCustomer(email));
+    public ResponseEntity<List<OrderDTO>> getOrdersForCustomer() {
+        List<OrderDTO> orders = orderService.getOrdersByCustomer();
+        return ResponseEntity.ok(orders);
     }
 
-    @PatchMapping("/{id}/cancel")
+    @PatchMapping("/cancel/{id}")
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
-    public ResponseEntity<OrderStatus> cancelOrder(
-            @PathVariable Long id,
-            @RequestParam String email) {
-        OrderStatus status = orderService.cancelOrder(id, email);
+    public ResponseEntity<OrderStatus> cancelOrder(@PathVariable Long id) {
+        OrderStatus status = orderService.cancelOrder(id);
         return ResponseEntity.ok(status);
     }
 
     @PatchMapping("/{id}/return")
-/*
-    @PreAuthorize("hasRole('ROLE_USER')")
-*/
-    public ResponseEntity<OrderStatus> returnOrder(
-            @PathVariable Long id,
-            @RequestParam String email) {
-        OrderStatus status = orderService.returnOrder(id, email);
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
+    public ResponseEntity<OrderStatus> returnOrder(@PathVariable Long id) {
+        OrderStatus status = orderService.returnOrder(id);
         return ResponseEntity.ok(status);
     }
 }

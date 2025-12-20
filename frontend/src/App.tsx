@@ -37,7 +37,7 @@ export default function App() {
           />
           <Route path="/auth/:action" element={<Auth />} />
           <Route path="/cart" element={<Cart />} />
-          <Route path="/cart/checkout" element={<Checkout />} />
+          <Route path="/checkout" element={<Checkout />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/listing" element={<Listing />} />
           <Route path="/product/:productId" element={<Product />} />

@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from "react";
-import type { PaymentMethod, Order } from "../types/models";
+import type { PaymentMethod, OrderItem, Order } from "../types/models";
 import { useNavigate } from "react-router-dom";
 import { ADDRESS_REGEX, NAME_REGEX, POSTCODE_REGEX } from "../utils/regex";
 import { useCartContext } from "../context/CartContext";
 import { useAuthContext } from "../context/AuthContext";
+import UserOrderService from "../services/user.order.service";
 
 export default function Checkout() {
   const { auth } = useAuthContext();
@@ -23,13 +24,13 @@ export default function Checkout() {
     deliveryPostcode: false,
   });
   const [paymentMethod, setPaymentMethod] =
-    useState<PaymentMethod>("creditcard");
+    useState<PaymentMethod>("CREDITCARD");
 
   const handleChange = (key: keyof typeof formData, value: string | number) => {
     setFormData((prev) => ({ ...prev, [key]: value }));
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!auth || !cart || cart.length === 0) return;
 
     const nextInvalid = {
@@ -39,29 +40,30 @@ export default function Checkout() {
     };
     setFormInvalid(nextInvalid);
 
-    const hasError = Object.values(nextInvalid).some(Boolean);
-    if (hasError) return;
+    if (Object.values(nextInvalid).some(Boolean)) return;
 
-    // try
+    const orderItems = cart.map<OrderItem>((item) => ({
+      productId: item.product.id,
+      quantity: item.quantity,
+      price: item.product.price,
+    }));
 
     const newOrder: Partial<Order> = {
-      user: auth?.user,
-      items: cart,
-      deliveryAddress: formData.deliveryAddress,
-      deliveryPostcode: formData.deliveryPostcode,
+      shippingAddress: formData.deliveryAddress,
       deliveryFullname: formData.deliveryFullname,
+      deliveryPostcode: formData.deliveryPostcode,
       paymentMethod,
+      orderItems,
     };
 
     try {
-      // UserService.placeOrder(newOrder);
+      await UserOrderService.createOrder(newOrder);
 
-      // success animation in the background
+      // success animation
       divRef.current?.classList.remove("order-success");
       void divRef.current?.offsetWidth;
       divRef.current?.classList.add("order-success");
 
-      // reset states:
       setIsOrderPlaced(true);
       clearCart();
       setFormData({
@@ -70,8 +72,7 @@ export default function Checkout() {
         deliveryPostcode: 0,
       });
     } catch (err) {
-      console.log(err);
-      // todo: handle error in the ui
+      console.error(err);
     }
   };
 
@@ -82,7 +83,7 @@ export default function Checkout() {
     }
   }, [isOrderPlaced, navigate]);
 
-  if (!auth) return;
+  if (!auth) return null;
 
   if (isOrderPlaced) {
     return (
@@ -99,6 +100,7 @@ export default function Checkout() {
   return (
     <div ref={divRef} className="container mt-4">
       <div className="d-flex flex-column flex-md-row gap-4">
+        {/* Delivery form */}
         <div className="flex-fill border rounded p-3">
           <h5 className="mb-3">Lieferadresse</h5>
           <div className="mb-3">
@@ -141,18 +143,18 @@ export default function Checkout() {
           </div>
         </div>
 
+        {/* Payment & order summary */}
         <div className="flex-fill d-flex flex-column gap-4">
           <div className="border rounded p-3">
             <h5 className="mb-3">Zahlungsmethode</h5>
-
             <div className="form-check d-flex align-items-center gap-2">
               <input
                 className="form-check-input"
                 type="radio"
                 name="payment"
                 id="creditcard"
-                checked={paymentMethod === "creditcard"}
-                onChange={() => setPaymentMethod("creditcard")}
+                checked={paymentMethod === "CREDITCARD"}
+                onChange={() => setPaymentMethod("CREDITCARD")}
               />
               <label
                 className="form-check-label d-flex align-items-center gap-2"
@@ -162,15 +164,14 @@ export default function Checkout() {
                 Kreditkarte
               </label>
             </div>
-
             <div className="form-check d-flex align-items-center gap-2 mt-2">
               <input
                 className="form-check-input"
                 type="radio"
                 name="payment"
                 id="paypal"
-                checked={paymentMethod === "paypal"}
-                onChange={() => setPaymentMethod("paypal")}
+                checked={paymentMethod === "PAYPAL"}
+                onChange={() => setPaymentMethod("PAYPAL")}
               />
               <label
                 className="form-check-label d-flex align-items-center gap-2"
@@ -180,22 +181,21 @@ export default function Checkout() {
                 PayPal
               </label>
             </div>
-
             <div className="form-check d-flex align-items-center gap-2 mt-2">
               <input
                 className="form-check-input"
                 type="radio"
                 name="payment"
                 id="receipt"
-                checked={paymentMethod === "receipt"}
-                onChange={() => setPaymentMethod("receipt")}
+                checked={paymentMethod === "BANKTRANSFER"}
+                onChange={() => setPaymentMethod("BANKTRANSFER")}
               />
               <label
                 className="form-check-label d-flex align-items-center gap-2"
                 htmlFor="receipt"
               >
                 <img src="/rechnung.svg" alt="Rechnung" />
-                Rechnung
+                Überweisung
               </label>
             </div>
           </div>

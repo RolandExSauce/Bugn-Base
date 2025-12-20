@@ -9,7 +9,7 @@ public record ProductResponseDTO(
         String name,
         ProductCategory category,
         String description,
-        Double price,
+        Integer price,
         int shippingCost,
         String brand,
         StockStatus stockStatus,

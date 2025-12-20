@@ -27,7 +27,7 @@ public class Product {
 
     private String description;
 
-    private Double price;
+    private Integer price;
 
     @Column(name = "shipping_cost")
     private int shippingCost;

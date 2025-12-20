@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import type { OrderStatus, Order } from "../../types/models";
+import type { OrderStatus, Order, OrderItem } from "../../types/models";
 import { AdminOrderService } from "../../services";
 
 type FullOrderProps = {
@@ -37,29 +37,22 @@ export default function FullOrder({
 
     setIsSaving(true);
     try {
-      // Use the actual order ID, not hardcoded "2"
-      const updatedStatus = await AdminOrderService.updateOrderStatus(
-        order.id,
-        updateOrderStatus
-      );
-
-      // Update parent with the new status
-      const updatedOrder = {
+      const updatedOrder: Order = {
         ...order,
-        orderStatus: updatedStatus,
+        orderStatus: updateOrderStatus,
       };
+
+      const savedOrder = await AdminOrderService.updateOrder(updatedOrder);
 
       // Success animation
       trRef.current?.classList.remove("user-row-success");
       void trRef.current?.offsetWidth;
       trRef.current?.classList.add("user-row-success");
 
-      // Update parent state
-      onUpdate(updatedOrder);
+      onUpdate(savedOrder);
       setIsEdited(false);
     } catch (error) {
       console.error("Error updating order status:", error);
-      // TODO: Show error message
     } finally {
       setIsSaving(false);
     }
@@ -119,7 +112,6 @@ export default function FullOrder({
           disabled={isSaving}
         >
           <option value="RECEIVED">Eingegangen</option>
-          <option value="PROCESSING">In Bearbeitung</option>
           <option value="SHIPPING">Wird versendet</option>
           <option value="DELIVERED">Geliefert</option>
           <option value="CANCELED">Storniert</option>
@@ -129,43 +121,37 @@ export default function FullOrder({
       <td>{order.paymentMethod}</td>
       <td>
         <div className="d-flex flex-column gap-2">
-          {order.orderItems.map((item, index) => (
-            <div key={index}>
-              {item.quantity} × {item.product?.name || "Produkt"} (€
-              {item.price.toFixed(2)})
-            </div>
+          {order.orderItems.map((item: OrderItem, index) => (
+            <div key={index}>{item.productId}</div>
           ))}
         </div>
       </td>
       <td>
         <div className="d-flex gap-2">
           <button
-            className="btn btn-sm btn-success"
+            title="Bestellung speichern"
+            className="btn btn-sm btn-outline-primary d-flex align-items-center gap-1"
             onClick={handleSave}
-            disabled={!isEdited || isSaving}
-            title="Status speichern"
           >
-            {isSaving ? (
-              <span
-                className="spinner-border spinner-border-sm"
-                role="status"
-              ></span>
-            ) : (
-              <i className="bi bi-check"></i>
-            )}
+            <img
+              src="/save.svg"
+              alt="Bearbeiten"
+              style={{ width: 14, height: 14 }}
+            />
           </button>
           <button
-            className="btn btn-sm btn-outline-danger"
-            onClick={handleDelete}
             title="Bestellung löschen"
+            className="btn btn-sm btn-outline-danger d-flex align-items-center gap-1"
+            onClick={handleDelete}
           >
-            <i className="bi bi-trash"></i>
+            <img
+              src="/delete.svg"
+              alt="Löschen"
+              style={{ width: 14, height: 14 }}
+            />
           </button>
         </div>
       </td>
     </tr>
   );
 }
-
-
-

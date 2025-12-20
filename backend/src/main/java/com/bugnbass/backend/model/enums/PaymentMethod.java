@@ -4,9 +4,9 @@ import lombok.Getter;
 @Getter
 public enum PaymentMethod {
 
-    CREDIT_CARD("creditcard"),
-    PAYPAL("paypal"),
-    BANK_TRANSFER("banktransfer");
+    CREDITCARD("CREDITCARD"),
+    PAYPAL("PAYPAL"),
+    BANKTRANSFER("BANKTRANSFER");
 
     private final String label;
 

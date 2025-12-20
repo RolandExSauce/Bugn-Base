@@ -14,7 +14,9 @@ const CartItem = ({
     <div className="d-flex align-items-center justify-content-between border rounded p-3 mb-3 flex-md-row flex-column">
       <div className="d-flex align-items-center column-gap-3">
         <img
-          src="/g-1.jpg"
+          src={`${import.meta.env.VITE_BASE_URL}/media${
+            item.product.images[0].url
+          }`}
           alt="Product 1"
           width="50"
           height="50"

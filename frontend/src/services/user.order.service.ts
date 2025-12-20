@@ -1,50 +1,32 @@
 import { apiClient } from "../api/api-client";
-import type { OrderDTO, OrderStatus } from "../types/models";
+import type { Order, OrderStatus } from "../types/models";
 
 class UserOrderService {
-  public static createOrder = async (order: OrderDTO): Promise<OrderStatus> => {
+  public static createOrder = async (
+    order: Partial<Order>
+  ): Promise<OrderStatus> => {
     return apiClient.post<OrderStatus>("/user/orders", order);
   };
 
-  public static getOrderById = async (
-    id: number,
-    email: string
-  ): Promise<OrderDTO> => {
-    const res = await apiClient.get<OrderDTO>(`/user/orders/${id}`, { email });
+  public static getOrderById = async (id: number): Promise<Order> => {
+    const res = await apiClient.get<Order>(`/user/orders/${id}`);
     return res;
   };
 
-  public static getOrdersForCustomer = async (
-    email: string
-  ): Promise<OrderDTO[]> => {
-    const res = await apiClient.get<OrderDTO[]>(
-      `/user/orders/customer/${email}`
-    );
+  public static getOrdersForCustomer = async (): Promise<Order[]> => {
+    const res = await apiClient.get<Order[]>(`/user/orders/customer`);
     return res;
   };
 
-  public static cancelOrder = async (
-    id: number,
-    email: string
-  ): Promise<OrderStatus> => {
-    const res = await apiClient.patch<OrderStatus>(
-      `/user/orders/${id}/cancel`,
-      null,
-      { params: { email } }
-    );
+  public static cancelOrder = async (id: number): Promise<OrderStatus> => {
+    const res = await apiClient.patch<OrderStatus>(`/user/orders/cancel/${id}`);
     return res;
   };
 
-  public static returnOrder = async (
-    id: number,
-    email: string
-  ): Promise<OrderStatus> => {
-    const res = apiClient.patch<OrderStatus>(
-      `/user/orders/${id}/return`,
-      null,
-      { params: { email } }
-    );
+  public static returnOrder = async (id: number): Promise<OrderStatus> => {
+    const res = await apiClient.patch<OrderStatus>(`/user/orders/${id}/return`);
     return res;
   };
 }
+
 export default UserOrderService;

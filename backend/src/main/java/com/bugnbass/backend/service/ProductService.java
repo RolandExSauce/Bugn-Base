@@ -16,7 +16,7 @@ public class ProductService {
         this.productRepository = productRepository;
     }
 
-    public Product getProduct(String id) {
+    public Product getProduct(Long id) {
         return productRepository.findByIdAndActiveTrue(Long.valueOf(id))
                 .orElseThrow(ProductNotFoundException::new);
     }
