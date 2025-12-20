@@ -3,6 +3,7 @@ package com.bugnbass.backend.controller;
 import com.bugnbass.backend.dto.OrderDTO;
 import com.bugnbass.backend.model.enums.OrderStatus;
 import com.bugnbass.backend.service.OrderService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -25,14 +26,13 @@ public class AdminOrderController {
     return ResponseEntity.ok(orderService.getAllOrders());
   }
 
-  @PatchMapping("/{id}/status")
-  public ResponseEntity<OrderStatus> updateOrderStatus(
-      @PathVariable Long id,
-      @RequestParam OrderStatus status) {
-    return ResponseEntity.ok(orderService.updateOrderStatus(id, status));
+  @PatchMapping("/update")
+  public ResponseEntity<OrderDTO> updateOrder(
+      @RequestBody OrderDTO dto) {
+    return ResponseEntity.ok(orderService.updateOrder(dto));
   }
 
-  @DeleteMapping("/{id}")
+  @DeleteMapping("/delete/{id}")
   public ResponseEntity<Void> deleteOrder(@PathVariable Long id) {
     orderService.deleteOrder(id);
     return ResponseEntity.noContent().build();

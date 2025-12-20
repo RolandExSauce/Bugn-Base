@@ -32,38 +32,27 @@ export default function FullOrder({
     setIsEdited(status !== order.orderStatus);
   };
 
-  useEffect(() => {
-    console.log(order);
-  }, []);
-
   const handleSave = async () => {
     if (!isEdited || isSaving) return;
 
     setIsSaving(true);
     try {
-      // Use the actual order ID, not hardcoded "2"
-      const updatedStatus = await AdminOrderService.updateOrderStatus(
-        order.id,
-        updateOrderStatus
-      );
-
-      // Update parent with the new status
-      const updatedOrder = {
+      const updatedOrder: Order = {
         ...order,
-        orderStatus: updatedStatus,
+        orderStatus: updateOrderStatus,
       };
+
+      const savedOrder = await AdminOrderService.updateOrder(updatedOrder);
 
       // Success animation
       trRef.current?.classList.remove("user-row-success");
       void trRef.current?.offsetWidth;
       trRef.current?.classList.add("user-row-success");
 
-      // Update parent state
-      onUpdate(updatedOrder);
+      onUpdate(savedOrder);
       setIsEdited(false);
     } catch (error) {
       console.error("Error updating order status:", error);
-      // TODO: Show error message
     } finally {
       setIsSaving(false);
     }
@@ -123,7 +112,6 @@ export default function FullOrder({
           disabled={isSaving}
         >
           <option value="RECEIVED">Eingegangen</option>
-          <option value="PROCESSING">In Bearbeitung</option>
           <option value="SHIPPING">Wird versendet</option>
           <option value="DELIVERED">Geliefert</option>
           <option value="CANCELED">Storniert</option>
@@ -141,6 +129,7 @@ export default function FullOrder({
       <td>
         <div className="d-flex gap-2">
           <button
+            title="Bestellung speichern"
             className="btn btn-sm btn-outline-primary d-flex align-items-center gap-1"
             onClick={handleSave}
           >
@@ -151,6 +140,7 @@ export default function FullOrder({
             />
           </button>
           <button
+            title="Bestellung löschen"
             className="btn btn-sm btn-outline-danger d-flex align-items-center gap-1"
             onClick={handleDelete}
           >

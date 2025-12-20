@@ -147,13 +147,14 @@ public class OrderService {
             .toList();
     }
 
-    public OrderStatus updateOrderStatus(Long id, OrderStatus status) {
-        Order order = orderRepo.findById(id)
+    // update is currently only for status but can be extended later
+    public OrderDTO updateOrder(OrderDTO orderDTO) {
+        Order order = orderRepo.findById(orderDTO.id())
             .orElseThrow(() -> new RuntimeException("Order not found"));
 
-        order.setOrderStatus(status);
+        order.setOrderStatus(orderDTO.orderStatus());
         orderRepo.save(order);
-        return status;
+        return orderMapper.toDTO(order);
     }
 
     public void deleteOrder(Long id) {

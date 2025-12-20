@@ -63,7 +63,7 @@ export default function FullProduct({
       isValid = false;
     }
 
-    if (!product.shippingCost || product.shippingCost < 0) {
+    if (product.shippingCost < 0) {
       newInvalidInput.shippingCost = true;
       isValid = false;
     }
@@ -73,11 +73,7 @@ export default function FullProduct({
       isValid = false;
     }
 
-    if (
-      !product.shippingTime ||
-      product.shippingTime < 1 ||
-      product.shippingTime > 5
-    ) {
+    if (product.shippingTime > 5) {
       newInvalidInput.shippingTime = true;
       isValid = false;
     }
@@ -108,14 +104,16 @@ export default function FullProduct({
         productDTO
       );
 
+      // BROKEN. but also not so necessary
       // Success animation
       trRef.current?.classList.remove("user-row-success");
       void trRef.current?.offsetWidth;
       trRef.current?.classList.add("user-row-success");
 
-      onUpdate(product);
       setIsEdited(false);
-      setTimeout(() => onSelect(), 800);
+      setTimeout(() => {
+        onSelect();
+      }, 800);
     } catch (error) {
       console.error("Error updating product:", error);
     } finally {
@@ -180,6 +178,7 @@ export default function FullProduct({
         <td>
           <div className="d-flex gap-2">
             <button
+              title="Produkt bearbeiten"
               className="btn btn-sm btn-outline-primary d-flex align-items-center gap-1"
               onClick={onSelect}
             >
@@ -190,6 +189,7 @@ export default function FullProduct({
               />
             </button>
             <button
+              title="Produkt löschen"
               className="btn btn-sm btn-outline-danger d-flex align-items-center gap-1"
               onClick={handleDelete}
             >
@@ -291,7 +291,6 @@ export default function FullProduct({
           className="form-control form-control-sm"
         >
           <option value="IN_STOCK">Auf Lager</option>
-          <option value="LOW_STOCK">Geringer Lagerbestand</option>
           <option value="OUT_OF_STOCK">Nicht auf Lager</option>
         </select>
       </td>

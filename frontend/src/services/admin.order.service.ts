@@ -10,17 +10,12 @@ class AdminOrderService {
     return apiClient.get<Order>(`/admin/orders/${id}`);
   };
 
-  public static updateOrderStatus = async (
-    id: number,
-    status: OrderStatus
-  ): Promise<OrderStatus> => {
-    return apiClient.patch<OrderStatus>(`/admin/orders/${id}/status`, null, {
-      params: { status },
-    });
+  public static updateOrder = async (order: Order): Promise<Order> => {
+    return apiClient.patch<Order>(`/admin/orders/update`, order);
   };
 
   public static deleteOrder = async (id: number): Promise<void> => {
-    return apiClient.delete<void>(`/admin/orders/${id}`);
+    return apiClient.delete<void>(`/admin/orders/delete/${id}`);
   };
 }
 export default AdminOrderService;
