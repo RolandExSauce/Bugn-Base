@@ -39,7 +39,7 @@ public class UserOrderController {
         return ResponseEntity.ok(orders);
     }
 
-    @PatchMapping("/{id}/cancel")
+    @PatchMapping("/cancel/{id}")
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
     public ResponseEntity<OrderStatus> cancelOrder(@PathVariable Long id) {
         OrderStatus status = orderService.cancelOrder(id);

@@ -19,7 +19,7 @@ class UserOrderService {
   };
 
   public static cancelOrder = async (id: number): Promise<OrderStatus> => {
-    const res = await apiClient.patch<OrderStatus>(`/user/orders/${id}/cancel`);
+    const res = await apiClient.patch<OrderStatus>(`/user/orders/cancel/${id}`);
     return res;
   };
 

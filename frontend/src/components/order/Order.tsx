@@ -1,8 +1,19 @@
 import { useState } from "react";
 import type { Order } from "../../types/models";
+import { UserOrderService } from "../../services";
 
 export function Order({ order }: { order: Order }) {
   const [showDetails, setShowDetails] = useState(false);
+
+  const handleCancelOrder = async () => {
+    try {
+      UserOrderService.cancelOrder(order.id);
+      // TODO: success feedback
+    } catch {
+      console.log("error canceling the item");
+      // todo: handle error
+    }
+  };
 
   return (
     <div className="border rounded p-3 mb-3">
@@ -32,7 +43,10 @@ export function Order({ order }: { order: Order }) {
       {showDetails && (
         <div className="d-flex flex-column row-gap-3 mt-3">
           <div>
-            <button className="cart-remove-item-button bg-danger text-white px-4 py-2">
+            <button
+              onClick={handleCancelOrder}
+              className="cart-remove-item-button bg-danger text-white px-4 py-2"
+            >
               Retournieren
             </button>
           </div>

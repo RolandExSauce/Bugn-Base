@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import type { OrderStatus, Order } from "../../types/models";
+import type { OrderStatus, Order, OrderItem } from "../../types/models";
 import { AdminOrderService } from "../../services";
 
 type FullOrderProps = {
@@ -31,6 +31,10 @@ export default function FullOrder({
     setUpdateOrderStatus(status);
     setIsEdited(status !== order.orderStatus);
   };
+
+  useEffect(() => {
+    console.log(order);
+  }, []);
 
   const handleSave = async () => {
     if (!isEdited || isSaving) return;
@@ -129,43 +133,35 @@ export default function FullOrder({
       <td>{order.paymentMethod}</td>
       <td>
         <div className="d-flex flex-column gap-2">
-          {order.orderItems.map((item, index) => (
-            <div key={index}>
-              {item.quantity} × {item.product?.name || "Produkt"} (€
-              {item.price.toFixed(2)})
-            </div>
+          {order.orderItems.map((item: OrderItem, index) => (
+            <div key={index}>{item.productId}</div>
           ))}
         </div>
       </td>
       <td>
         <div className="d-flex gap-2">
           <button
-            className="btn btn-sm btn-success"
+            className="btn btn-sm btn-outline-primary d-flex align-items-center gap-1"
             onClick={handleSave}
-            disabled={!isEdited || isSaving}
-            title="Status speichern"
           >
-            {isSaving ? (
-              <span
-                className="spinner-border spinner-border-sm"
-                role="status"
-              ></span>
-            ) : (
-              <i className="bi bi-check"></i>
-            )}
+            <img
+              src="/save.svg"
+              alt="Bearbeiten"
+              style={{ width: 14, height: 14 }}
+            />
           </button>
           <button
-            className="btn btn-sm btn-outline-danger"
+            className="btn btn-sm btn-outline-danger d-flex align-items-center gap-1"
             onClick={handleDelete}
-            title="Bestellung löschen"
           >
-            <i className="bi bi-trash"></i>
+            <img
+              src="/delete.svg"
+              alt="Löschen"
+              style={{ width: 14, height: 14 }}
+            />
           </button>
         </div>
       </td>
     </tr>
   );
 }
-
-
-

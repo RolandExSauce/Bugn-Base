@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/admin/order")
+@RequestMapping("/admin/orders")
 @PreAuthorize("hasRole('ROLE_ADMIN')")
 public class AdminOrderController {
 
@@ -20,19 +20,19 @@ public class AdminOrderController {
     this.orderService = orderService;
   }
 
-  @GetMapping("/orders")
+  @GetMapping()
   public ResponseEntity<List<OrderDTO>> getAllOrders() {
     return ResponseEntity.ok(orderService.getAllOrders());
   }
 
-  @PatchMapping("/orders/{id}/status")
+  @PatchMapping("/{id}/status")
   public ResponseEntity<OrderStatus> updateOrderStatus(
       @PathVariable Long id,
       @RequestParam OrderStatus status) {
     return ResponseEntity.ok(orderService.updateOrderStatus(id, status));
   }
 
-  @DeleteMapping("/orders/{id}")
+  @DeleteMapping("/{id}")
   public ResponseEntity<Void> deleteOrder(@PathVariable Long id) {
     orderService.deleteOrder(id);
     return ResponseEntity.noContent().build();
