@@ -22,7 +22,9 @@ public class OrderMapper {
             order.getDeliveryDate(),
             order.getOrderStatus(),
             order.getShippingAddress(),
-            order.getPaymentMethod()
+            order.getPaymentMethod(),
+            order.getDeliveryFullname(),
+            order.getDeliveryPostcode()
         );
     }
 

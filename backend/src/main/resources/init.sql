@@ -57,7 +57,9 @@ CREATE TABLE orders (
    delivery_date DATE,
    order_status VARCHAR(50) NOT NULL,
    shipping_address VARCHAR(255) NOT NULL,
-   payment_method VARCHAR(50)
+   payment_method VARCHAR(50),
+    delivery_fullname VARCHAR(255),
+    delivery_postcode INTEGER
 );
 
 CREATE TABLE order_items (
@@ -166,51 +168,51 @@ INSERT INTO users (id, email, password, phone, address, postcode, firstname, las
 INSERT INTO orders (
     order_number, user_id, total_order_price,
     ordered_date, delivery_date,
-    order_status, shipping_address, payment_method
+    order_status, shipping_address, payment_method, delivery_fullname, delivery_postcode
 ) VALUES
       ('ORD-1001', '11111111-1111-1111-1111-111111111111',
        2499, '2025-05-21', NULL, 'RECEIVED',
-       '123 Elm Street, Springfield', 'PAYPAL'),
+       '123 Elm Street, Springfield', 'PAYPAL', null, 1120),
 
       ('ORD-1002', '11111111-1111-1111-1111-111111111111',
        3899, '2025-05-10', '2025-05-15', 'SHIPPING',
-       '123 Elm Street, Springfield', 'CREDITCARD'),
+       '123 Elm Street, Springfield', 'CREDITCARD', null, 1120),
 
       ('ORD-2001', '22222222-2222-2222-2222-222222222222',
        1799, '2025-05-11', NULL, 'RECEIVED',
-       '456 Oak Avenue, Centerville', 'BANKTRANSFER'),
+       '456 Oak Avenue, Centerville', 'BANKTRANSFER', null, 1120),
 
       ('ORD-3001', '33333333-3333-3333-3333-333333333333',
        2999, '2025-05-19', NULL, 'SHIPPING',
-       '789 Maple Lane, Rivertown', 'PAYPAL'),
+       '789 Maple Lane, Rivertown', 'PAYPAL', null, 1120),
 
       ('ORD-4001', '44444444-4444-4444-4444-444444444444',
        4590, '2025-05-14', NULL, 'RECEIVED',
-       '321 Birch Rd, Hilltown', 'CREDITCARD'),
+       '321 Birch Rd, Hilltown', 'CREDITCARD', null, 1120),
 
       ('ORD-5001', '55555555-5555-5555-5555-555555555555',
        1349, '2025-05-27', NULL, 'CANCELED',
-       '654 Cedar Street, Lakeside', 'PAYPAL'),
+       '654 Cedar Street, Lakeside', 'PAYPAL', null, 1120),
 
       ('ORD-6001', '66666666-6666-6666-6666-666666666666',
        2990, '2025-05-23', '2025-05-26', 'SHIPPING',
-       '213 Spruce Blvd, Newfield', 'PAYPAL'),
+       '213 Spruce Blvd, Newfield', 'PAYPAL', null, 1120),
 
       ('ORD-7001', '77777777-7777-7777-7777-777777777777',
        1875, '2025-05-09', NULL, 'SHIPPING',
-       '987 Aspen Way, Brookville', 'BANKTRANSFER'),
+       '987 Aspen Way, Brookville', 'BANKTRANSFER', null, 1120),
 
       ('ORD-8001', '88888888-8888-8888-8888-888888888888',
        2490, '2025-05-18', NULL, 'RECEIVED',
-       '147 Redwood Dr, Milltown', 'PAYPAL'),
+       '147 Redwood Dr, Milltown', 'PAYPAL', null, 1120),
 
       ('ORD-9001', '99999999-9999-9999-9999-999999999999',
        3250, '2025-05-12', '2025-05-17', 'SHIPPING',
-       '852 Pine St, Cityville', 'CREDITCARD'),
+       '852 Pine St, Cityville', 'CREDITCARD', null, 1120),
 
       ('ORD-10001', 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa',
        1599, '2025-05-28', NULL, 'RECEIVED',
-       '963 Willow Way, Capitol City', 'PAYPAL');
+       '963 Willow Way, Capitol City', 'PAYPAL', null, 1120);
 
 
 INSERT INTO reviews (review_id, product_id, user_id, rating, comment, created_at) VALUES

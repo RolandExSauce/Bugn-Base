@@ -41,6 +41,9 @@ public class OrderService {
         order.setDeliveryDate(LocalDate.now().plusWeeks(2));
         order.setShippingAddress(dto.shippingAddress());
         order.setOrderNumber(generateOrderNumber());
+        order.setDeliveryPostcode(dto.deliveryPostcode());
+        order.setDeliveryFullname(dto.deliveryFullname());
+        order.setPaymentMethod(dto.paymentMethod());
 
         List<OrderItem> items = dto.orderItems().stream().map(itemDTO -> {
             Product product = productService.getProduct(itemDTO.productId());

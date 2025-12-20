@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Order } from "../../components/order/Order";
-import type { User, OrderDTO } from "../../types/models";
+import type { Order as OrderDTO, User } from "../../types/models";
 import {
   ADDRESS_REGEX,
   EMAIL_REGEX,

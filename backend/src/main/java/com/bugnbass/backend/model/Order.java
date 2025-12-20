@@ -55,5 +55,11 @@ public class Order {
 
     @Enumerated(EnumType.STRING)
     private PaymentMethod paymentMethod;
+
+    @Column(name = "delivery_fullname")
+    private String deliveryFullname;
+
+    @Column(name = "delivery_postcode")
+    private Integer deliveryPostcode;
 };
 

@@ -1,18 +1,20 @@
 import { apiClient } from "../api/api-client";
-import type { OrderDTO, OrderStatus } from "../types/models";
+import type { Order, OrderStatus } from "../types/models";
 
 class UserOrderService {
-  public static createOrder = async (order: OrderDTO): Promise<OrderStatus> => {
+  public static createOrder = async (
+    order: Partial<Order>
+  ): Promise<OrderStatus> => {
     return apiClient.post<OrderStatus>("/user/orders", order);
   };
 
-  public static getOrderById = async (id: number): Promise<OrderDTO> => {
-    const res = await apiClient.get<OrderDTO>(`/user/orders/${id}`);
+  public static getOrderById = async (id: number): Promise<Order> => {
+    const res = await apiClient.get<Order>(`/user/orders/${id}`);
     return res;
   };
 
-  public static getOrdersForCustomer = async (): Promise<OrderDTO[]> => {
-    const res = await apiClient.get<OrderDTO[]>(`/user/orders/customer`);
+  public static getOrdersForCustomer = async (): Promise<Order[]> => {
+    const res = await apiClient.get<Order[]>(`/user/orders/customer`);
     return res;
   };
 

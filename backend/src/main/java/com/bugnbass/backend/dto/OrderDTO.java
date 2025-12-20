@@ -15,6 +15,8 @@ public record OrderDTO(
     LocalDate deliveryDate,
     OrderStatus orderStatus,
     String shippingAddress,
-    PaymentMethod paymentMethod
+    PaymentMethod paymentMethod,
+    String deliveryFullname,
+    Integer deliveryPostcode
 ) {
 }
