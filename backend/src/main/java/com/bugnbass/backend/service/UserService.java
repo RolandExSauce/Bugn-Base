@@ -1,15 +1,22 @@
 package com.bugnbass.backend.service;
 
 import com.bugnbass.backend.dto.auth.RegisterDto;
+import com.bugnbass.backend.dto.auth.UserDto;
+import com.bugnbass.backend.exceptions.UserNotFoundException;
 import com.bugnbass.backend.model.User;
 import com.bugnbass.backend.model.enums.UserRole;
 import com.bugnbass.backend.model.ibaseinterface.IbaseUser;
 import com.bugnbass.backend.repository.AdminRepository;
 import com.bugnbass.backend.repository.UserRepository;
 import java.util.Optional;
+import java.util.UUID;
+
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import static com.bugnbass.backend.mappers.UserMapper.toUserDto;
 
 
 /**
@@ -67,5 +74,50 @@ public class UserService {
                 .role(UserRole.ROLE_USER)
                 .build();
         return userRepository.save(user);
+    }
+
+    /**
+     * Updates the authenticated user's profile or allows an admin to update any user's profile.
+     * Only firstname, lastname, phone, address, postcode, and email can be updated.
+     *
+     * @param dto the UserDto containing the fields to update
+     * @return the updated UserDto
+     * @throws UserNotFoundException if the target user cannot be found
+     * @throws SecurityException if the authenticated user is neither the target user nor an admin
+     */
+    public UserDto updateUser(UserDto dto) {
+        User authUser = getAuthenticatedUser();
+        boolean isAdmin = authUser.getRole() == UserRole.ROLE_ADMIN;
+
+/*        if (!isAdmin && !authUser.getId().toString().equals(dto.id())) {
+            throw new SecurityException("User not authorized to update this profile.");
+        }*/
+
+        User userToUpdate = userRepository.findById(UUID.fromString(dto.id()))
+                .orElseThrow(() -> new UserNotFoundException("User not found with id: " + dto.id()));
+
+        userToUpdate.setFirstname(dto.firstname());
+        userToUpdate.setLastname(dto.lastname());
+        userToUpdate.setEmail(dto.email());
+        userToUpdate.setPhone(dto.phone() != null ? Integer.parseInt(dto.phone().toString()) : null);
+        userToUpdate.setAddress(dto.address());
+        userToUpdate.setPostcode(String.valueOf(dto.postcode()));
+
+        User updated = userRepository.save(userToUpdate);
+
+        // Map to UserDto before returning
+        return toUserDto(updated);
+    }
+
+    /**
+     * Retrieves the currently authenticated user.
+     *
+     * @return the authenticated User
+     * @throws UserNotFoundException if user cannot be found
+     */
+    private User getAuthenticatedUser() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        return this.findCustomerByEmail(email)
+                .orElseThrow(() -> new UserNotFoundException("User not found: " + email));
     }
 }

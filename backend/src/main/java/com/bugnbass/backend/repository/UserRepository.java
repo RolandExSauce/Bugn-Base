@@ -2,6 +2,8 @@ package com.bugnbass.backend.repository;
 
 import com.bugnbass.backend.model.User;
 import java.util.Optional;
+import java.util.UUID;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -10,6 +12,8 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface UserRepository extends JpaRepository<User, String> {
+
+    Optional<User> findById(UUID uuid);
 
     /**
      * Finds a user by their email address.
