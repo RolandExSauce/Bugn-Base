@@ -1,6 +1,6 @@
 package com.bugnbass.backend.service;
 
-import com.bugnbass.backend.dto.OrderDTO;
+import com.bugnbass.backend.dto.OrderDto;
 import com.bugnbass.backend.exceptions.UserNotFoundException;
 import com.bugnbass.backend.mappers.OrderMapper;
 import com.bugnbass.backend.model.Order;
@@ -11,27 +11,54 @@ import com.bugnbass.backend.model.enums.OrderStatus;
 import com.bugnbass.backend.model.enums.UserRole;
 import com.bugnbass.backend.repository.OrderItemRepository;
 import com.bugnbass.backend.repository.OrderRepository;
+import java.time.LocalDate;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
-import java.util.List;
 
+/**
+ * Service for managing orders, including creation, retrieval, update, cancellation, and deletion.
+ */
 @Service
 @RequiredArgsConstructor
 @Transactional
 public class OrderService {
 
+    /**
+     * Repository for CRUD operations on Order entities.
+     */
     private final OrderRepository orderRepo;
+
+    /**
+     * Repository for CRUD operations on OrderItem entities.
+     */
     private final OrderItemRepository orderItemRepo;
+
+    /**
+     * Service for product-related operations.
+     */
     private final ProductService productService;
+
+    /**
+     * Service for user-related operations.
+     */
     private final UserService userService;
+
+    /**
+     * Mapper to convert between Order entities and OrderDTOs.
+     */
     private final OrderMapper orderMapper;
 
-    public OrderStatus createOrder(OrderDTO dto) {
-
+    /**
+     * Creates a new order for the authenticated user.
+     *
+     * @param dto the OrderDTO containing order details
+     * @return the status of the created order
+     */
+    public OrderStatus createOrder(OrderDto dto) {
         User user = getAuthenticatedUser();
 
         Order order = new Order();
@@ -58,8 +85,8 @@ public class OrderService {
         order.setOrderItems(items);
 
         int totalPrice = items.stream()
-            .mapToInt(i -> i.getPrice() * i.getQuantity())
-            .sum();
+                .mapToInt(i -> i.getPrice() * i.getQuantity())
+                .sum();
 
         order.setTotalOrderPrice(totalPrice);
         orderRepo.save(order);
@@ -67,13 +94,24 @@ public class OrderService {
         return order.getOrderStatus();
     }
 
+    /**
+     * Generates a unique order number based on current time.
+     *
+     * @return the generated order number
+     */
     private String generateOrderNumber() {
         return "ORD-" + System.currentTimeMillis();
     }
 
-    public OrderDTO getOrderById(Long id) {
+    /**
+     * Retrieves an order by its ID, ensuring the authenticated user or admin has access.
+     *
+     * @param id the order ID
+     * @return the OrderDTO representing the order
+     */
+    public OrderDto getOrderById(Long id) {
         Order order = orderRepo.findById(id)
-            .orElseThrow(() -> new RuntimeException("Order not found"));
+                .orElseThrow(() -> new RuntimeException("Order not found"));
 
         User user = getAuthenticatedUserOrAdmin();
 
@@ -81,19 +119,29 @@ public class OrderService {
             throw new RuntimeException("Access denied");
         }
 
-        return orderMapper.toDTO(order);
+        return orderMapper.toDto(order);
     }
 
-    public List<OrderDTO> getOrdersByCustomer() {
+    /**
+     * Retrieves orders for the authenticated customer.
+     *
+     * @return a list of OrderDTOs for the user
+     */
+    public List<OrderDto> getOrdersByCustomer() {
         User user = getAuthenticatedUser();
         List<Order> orders = orderRepo.findByUser(user);
-        return orders.stream().map(orderMapper::toDTO).toList();
+        return orders.stream().map(orderMapper::toDto).toList();
     }
 
+    /**
+     * Cancels an order by its ID.
+     *
+     * @param id the order ID
+     * @return the updated OrderStatus (CANCELED)
+     */
     public OrderStatus cancelOrder(Long id) {
-
         Order order = orderRepo.findById(id)
-            .orElseThrow(() -> new RuntimeException("Order not found"));
+                .orElseThrow(() -> new RuntimeException("Order not found"));
 
         User user = getAuthenticatedUserOrAdmin();
 
@@ -105,8 +153,8 @@ public class OrderService {
             throw new RuntimeException("Order is already canceled");
         }
 
-        if (order.getOrderStatus() == OrderStatus.SHIPPING ||
-            order.getOrderStatus() == OrderStatus.DELIVERED) {
+        if (order.getOrderStatus() == OrderStatus.SHIPPING
+            || order.getOrderStatus() == OrderStatus.DELIVERED) {
             throw new RuntimeException("Delivered or shipped orders cannot be canceled");
         }
 
@@ -115,9 +163,15 @@ public class OrderService {
         return OrderStatus.CANCELED;
     }
 
+    /**
+     * Marks a delivered order as returned.
+     *
+     * @param id the order ID
+     * @return the updated OrderStatus (RETURNED)
+     */
     public OrderStatus returnOrder(Long id) {
         Order order = orderRepo.findById(id)
-            .orElseThrow(() -> new RuntimeException("Order not found"));
+                .orElseThrow(() -> new RuntimeException("Order not found"));
 
         User user = getAuthenticatedUserOrAdmin();
 
@@ -134,37 +188,63 @@ public class OrderService {
         return OrderStatus.RETURNED;
     }
 
+    /**
+     * Retrieves the currently authenticated user.
+     *
+     * @return the authenticated User
+     * @throws UserNotFoundException if user cannot be found
+     */
     private User getAuthenticatedUser() {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         return userService.findCustomerByEmail(email)
-            .orElseThrow(() -> new UserNotFoundException("User not found: " + email));
+                .orElseThrow(() -> new UserNotFoundException("User not found: " + email));
     }
 
-    public List<OrderDTO> getAllOrders() {
+    /**
+     * Retrieves all orders in the system.
+     *
+     * @return a list of OrderDTOs for all orders
+     */
+    public List<OrderDto> getAllOrders() {
         return orderRepo.findAll()
-            .stream()
-            .map(orderMapper::toDTO)
-            .toList();
+                .stream()
+                .map(orderMapper::toDto)
+                .toList();
     }
 
-    // update is currently only for status but can be extended later
-    public OrderDTO updateOrder(OrderDTO orderDTO) {
-        Order order = orderRepo.findById(orderDTO.id())
-            .orElseThrow(() -> new RuntimeException("Order not found"));
+    /**
+     * Updates an order. Currently, only the order status can be updated.
+     *
+     * @param orderDto the OrderDTO containing updated information
+     * @return the updated OrderDTO
+     */
+    public OrderDto updateOrder(OrderDto orderDto) {
+        Order order = orderRepo.findById(orderDto.id())
+                .orElseThrow(() -> new RuntimeException("Order not found"));
 
-        order.setOrderStatus(orderDTO.orderStatus());
+        order.setOrderStatus(orderDto.orderStatus());
         orderRepo.save(order);
-        return orderMapper.toDTO(order);
+        return orderMapper.toDto(order);
     }
 
+    /**
+     * Deletes an order by its ID.
+     *
+     * @param id the order ID
+     */
     public void deleteOrder(Long id) {
         Order order = orderRepo.findById(id)
-            .orElseThrow(() -> new RuntimeException("Order not found"));
+                .orElseThrow(() -> new RuntimeException("Order not found"));
 
         orderRepo.delete(order);
     }
 
-
+    /**
+     * Retrieves the authenticated user or admin.
+     * Admin check is handled in the controller layer.
+     *
+     * @return the authenticated User
+     */
     private User getAuthenticatedUserOrAdmin() {
         return getAuthenticatedUser(); // Admins are already checked in controller
     }

@@ -1,6 +1,12 @@
 package com.bugnbass.backend.model.enums;
 
+/**
+ * Enum representing user roles in the system.
+ */
 public enum UserRole {
-    ROLE_USER,
-    ROLE_ADMIN
-};
+  /** Standard user with limited privileges. */
+  ROLE_USER,
+
+  /** Administrator with full privileges. */
+  ROLE_ADMIN
+}

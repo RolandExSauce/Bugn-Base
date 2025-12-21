@@ -1,4 +1,7 @@
 package com.bugnbass.backend.security;
+
+import static org.springframework.security.config.Customizer.withDefaults;
+
 import com.bugnbass.backend.config.CustUserDetailsService;
 import com.bugnbass.backend.config.JwtUtil;
 import org.springframework.context.annotation.Bean;
@@ -14,8 +17,12 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import static org.springframework.security.config.Customizer.withDefaults;
 
+
+/**
+ * Spring Security configuration class.
+ * Configures JWT authentication, password encoding, CORS, session management, and URL access rules.
+ */
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
@@ -25,67 +32,85 @@ public class SecurityConfig {
     private final CustUserDetailsService custUserDetailsService;
     private final AuthEntryPoint unauthorizedHandler;
 
+    /**
+     * Constructs the SecurityConfig with required dependencies.
+     *
+     * @param custUserDetailsService the custom user details service for loading user information
+     * @param unauthorizedHandler    handler for unauthorized access attempts
+     * @param jwtUtils               utility class for generating and validating JWT tokens
+     */
     public SecurityConfig(
-        CustUserDetailsService custUserDetailsService,
-        AuthEntryPoint unauthorizedHandler,
-        JwtUtil jwtUtils
+            CustUserDetailsService custUserDetailsService,
+            AuthEntryPoint unauthorizedHandler,
+            JwtUtil jwtUtils
     ) {
         this.custUserDetailsService = custUserDetailsService;
         this.unauthorizedHandler = unauthorizedHandler;
         this.jwtUtils = jwtUtils;
-    };
+    }
 
+    /**
+     * JWT authentication filter bean.
+     */
     @Bean
     public AuthTokenFilter authenticationJwtTokenFilter() {
         return new AuthTokenFilter(jwtUtils, custUserDetailsService);
-    };
+    }
 
+    /**
+     * Authentication manager bean using the application's user details service.
+     */
     @Bean
     public AuthenticationManager authenticationManager(
             AuthenticationConfiguration authenticationConfiguration
     ) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
-    };
+    }
 
+    /**
+     * Password encoder bean using BCrypt hashing.
+     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
-    };
+    }
 
+    /**
+     * Configures HTTP security including JWT, CORS, session management, and URL authorization.
+     */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http
-            .csrf(AbstractHttpConfigurer::disable)
-            .cors(withDefaults())
-            .exceptionHandling(ex ->
-                ex.authenticationEntryPoint(unauthorizedHandler)
-            )
-            .sessionManagement(sm ->
-                sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-            )
-            .authorizeHttpRequests(auth -> auth
-                // public API
-                .requestMatchers(
-                    "/auth/**",
-                    "/shop/**",
-                    "/media/**",
-                    "/swagger-ui/**",
-                    "/v3/api-docs/**"
-                ).permitAll()
-                 .requestMatchers("/admin/**").authenticated()
-                .anyRequest().permitAll()
-            )
-            .formLogin(AbstractHttpConfigurer::disable)
-            .httpBasic(AbstractHttpConfigurer::disable);
+                .csrf(AbstractHttpConfigurer::disable)
+                .cors(withDefaults())
+                .exceptionHandling(ex ->
+                        ex.authenticationEntryPoint(unauthorizedHandler)
+                )
+                .sessionManagement(sm ->
+                        sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                )
+                .authorizeHttpRequests(auth -> auth
+                        // public API endpoints
+                        .requestMatchers(
+                                "/auth/**",
+                                "/shop/**",
+                                "/media/**",
+                                "/swagger-ui/**",
+                                "/v3/api-docs/**"
+                        ).permitAll()
+                        // admin endpoints require authentication
+                        .requestMatchers("/admin/**").authenticated()
+                        .anyRequest().permitAll()
+                )
+                .formLogin(AbstractHttpConfigurer::disable)
+                .httpBasic(AbstractHttpConfigurer::disable);
 
         http.addFilterBefore(
-            authenticationJwtTokenFilter(),
-            UsernamePasswordAuthenticationFilter.class
+                authenticationJwtTokenFilter(),
+                UsernamePasswordAuthenticationFilter.class
         );
 
         return http.build();
     }
-};
-
-
+}

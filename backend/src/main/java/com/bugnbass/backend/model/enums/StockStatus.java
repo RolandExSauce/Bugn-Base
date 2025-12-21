@@ -1,21 +1,30 @@
 package com.bugnbass.backend.model.enums;
+
 import lombok.Getter;
 
+/**
+ * Enum representing the stock status of a product.
+ */
 @Getter
 public enum StockStatus {
 
-    IN_STOCK("In Stock"),
-    OUT_OF_STOCK("Out of Stock"),
-    LOW_STOCK("Low Stock");
+  /** Product is available in stock. */
+  IN_STOCK("In Stock"),
 
-    private final String label;
+  /** Product is currently out of stock. */
+  OUT_OF_STOCK("Out of Stock"),
 
-    StockStatus(String label) {
-        this.label = label;
-    }
+  /** Product stock is low and may run out soon. */
+  LOW_STOCK("Low Stock");
 
-    @Override
-    public String toString() {
-        return label;
-    }
+  private final String label;
+
+  StockStatus(String label) {
+    this.label = label;
+  }
+
+  @Override
+  public String toString() {
+    return label;
+  }
 }

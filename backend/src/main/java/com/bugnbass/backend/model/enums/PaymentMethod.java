@@ -1,21 +1,27 @@
 package com.bugnbass.backend.model.enums;
-import lombok.Getter;
 
-@Getter
+/**
+ * Enum representing available payment methods for orders.
+ */
 public enum PaymentMethod {
 
-    CREDITCARD("CREDITCARD"),
-    PAYPAL("PAYPAL"),
-    BANKTRANSFER("BANKTRANSFER");
+  /** Payment via credit card. */
+  CREDITCARD("CREDITCARD"),
 
-    private final String label;
+  /** Payment via PayPal. */
+  PAYPAL("PAYPAL"),
 
-    PaymentMethod(String label) {
-        this.label = label;
-    }
+  /** Payment via bank transfer. */
+  BANKTRANSFER("BANKTRANSFER");
 
-    @Override
-    public String toString() {
-        return label;
-    }
+  private final String label;
+
+  PaymentMethod(String label) {
+    this.label = label;
+  }
+
+  @Override
+  public String toString() {
+    return label;
+  }
 }

@@ -1,22 +1,26 @@
 package com.bugnbass.backend.security;
+
 import com.bugnbass.backend.config.CustUserDetailsService;
 import com.bugnbass.backend.config.JwtUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.authentication.*;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-import java.io.IOException;
-import java.util.List;
 
-//auth token filter to intercept incoming http requests
+/**
+ * JWT Authentication filter that validates JWT tokens
+ * and sets authentication in the security context.
+ */
 @Component
 @RequiredArgsConstructor
 public class AuthTokenFilter extends OncePerRequestFilter {
@@ -28,7 +32,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain chain)
-        throws ServletException, IOException {
+            throws ServletException, IOException {
 
         String jwt = parseJwt(request);
 
@@ -37,11 +41,11 @@ public class AuthTokenFilter extends OncePerRequestFilter {
             var role = jwtUtil.getRoleFromToken(jwt);
 
             List<GrantedAuthority> authorities = List.of(
-                new SimpleGrantedAuthority(role.name()) // e.g., ROLE_ADMIN
+                    new SimpleGrantedAuthority(role.name()) // e.g., ROLE_ADMIN
             );
 
             UsernamePasswordAuthenticationToken auth =
-                new UsernamePasswordAuthenticationToken(email, null, authorities);
+                    new UsernamePasswordAuthenticationToken(email, null, authorities);
 
             auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
             SecurityContextHolder.getContext().setAuthentication(auth);
@@ -50,7 +54,12 @@ public class AuthTokenFilter extends OncePerRequestFilter {
         chain.doFilter(request, response);
     }
 
-
+    /**
+     * Extracts JWT token from Authorization header (Bearer token).
+     *
+     * @param request HTTP request
+     * @return JWT string or null if not present
+     */
     private String parseJwt(HttpServletRequest request) {
         String header = request.getHeader("Authorization");
 
