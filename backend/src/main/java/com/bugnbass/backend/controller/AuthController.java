@@ -11,15 +11,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * REST controller for authentication operations such as login and registration.
+ * REST controller for authentication operations.
+ * Provides endpoints for user login and registration.
+ *
+ * <p>All endpoints return an {@link AuthResponse} containing authentication
+ * details such as JWT tokens.</p>
  */
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/bugnbass/api/auth")
 public class AuthController {
 
-    /**
-     * Service handling authentication logic.
-     */
+    /** Service handling authentication logic. */
     private final AuthService authService;
 
     /**
@@ -32,9 +34,9 @@ public class AuthController {
     }
 
     /**
-     * Authenticates a user with login credentials.
+     * Authenticates a user with the provided login credentials.
      *
-     * @param loginDto the login data transfer object containing username and password
+     * @param loginDto the login data transfer object containing username/email and password
      * @return AuthResponse containing authentication details such as JWT token
      */
     @PostMapping("/login")
@@ -43,7 +45,7 @@ public class AuthController {
     }
 
     /**
-     * Registers a new user.
+     * Registers a new user with the provided registration details.
      *
      * @param registerDto the registration data transfer object containing user details
      * @return AuthResponse containing authentication details such as JWT token

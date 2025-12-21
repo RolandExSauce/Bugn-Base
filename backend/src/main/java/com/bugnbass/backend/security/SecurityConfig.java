@@ -93,14 +93,14 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         // public API endpoints
                         .requestMatchers(
-                                "/auth/**",
-                                "/shop/**",
-                                "/media/**",
-                                "/swagger-ui/**",
-                                "/v3/api-docs/**"
+                                "/bugnbass/api/auth/**",
+                                "/bugnbass/api/shop/**",
+                                "/bugnbass/api/media/**",
+                                "/bugnbass/api/swagger-ui/**",
+                                "/bugnbass/api/v3/api-docs/**"
                         ).permitAll()
                         // admin endpoints require authentication
-                        .requestMatchers("/admin/**").authenticated()
+                        .requestMatchers("/bugnbass/api/admin/**").authenticated()
                         .anyRequest().permitAll()
                 )
                 .formLogin(AbstractHttpConfigurer::disable)

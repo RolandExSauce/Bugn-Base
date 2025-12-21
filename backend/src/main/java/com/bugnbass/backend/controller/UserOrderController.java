@@ -16,13 +16,16 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-
 /**
- * REST controller for user-related order operations.
- * Allows users to create orders, view their own orders, cancel, and return orders.
+ * REST controller for user-specific order operations.
+ * Provides endpoints for creating orders, retrieving individual orders,
+ * listing all orders of the authenticated user, and updating order status
+ * such as canceling or returning an order.
+ *
+ * <p>All endpoints require the user to be authenticated with either ROLE_USER or ROLE_ADMIN.</p>
  */
 @RestController
-@RequestMapping("/user/orders")
+@RequestMapping("/bugnbass/api/user/orders")
 @RequiredArgsConstructor
 public class UserOrderController {
 
@@ -32,8 +35,8 @@ public class UserOrderController {
     /**
      * Creates a new order for the authenticated user.
      *
-     * @param dto the order details
-     * @return HTTP 201 Created with the status of the new order
+     * @param dto the order details provided by the user
+     * @return ResponseEntity containing the created order's status and HTTP 201
      */
     @PostMapping
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
@@ -43,22 +46,22 @@ public class UserOrderController {
     }
 
     /**
-     * Retrieves an order by its ID.
+     * Retrieves a specific order by its ID for the authenticated user.
      *
-     * @param id the order ID
-     * @return the order details if accessible by the user
+     * @param id the ID of the order to retrieve
+     * @return ResponseEntity containing the order details and HTTP 200
      */
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
-    public ResponseEntity<OrderDto> getOrderById(@PathVariable Long id) {
+    public ResponseEntity<OrderDto> getOrderById(@PathVariable(name = "id") Long id) {
         OrderDto dto = orderService.getOrderById(id);
         return ResponseEntity.ok(dto);
     }
 
     /**
-     * Retrieves all orders for the authenticated user.
+     * Retrieves all orders associated with the authenticated user.
      *
-     * @return list of the user's orders
+     * @return ResponseEntity containing a list of OrderDto objects and HTTP 200
      */
     @GetMapping("/customer")
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
@@ -68,14 +71,14 @@ public class UserOrderController {
     }
 
     /**
-     * Cancels an order belonging to the authenticated user.
+     * Cancels an order for the authenticated user.
      *
-     * @param id the order ID
-     * @return the new status of the order
+     * @param id the ID of the order to cancel
+     * @return ResponseEntity containing the updated order status and HTTP 200
      */
     @PatchMapping("/cancel/{id}")
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
-    public ResponseEntity<OrderStatus> cancelOrder(@PathVariable Long id) {
+    public ResponseEntity<OrderStatus> cancelOrder(@PathVariable(name = "id") Long id) {
         OrderStatus status = orderService.cancelOrder(id);
         return ResponseEntity.ok(status);
     }
@@ -83,12 +86,12 @@ public class UserOrderController {
     /**
      * Marks a delivered order as returned for the authenticated user.
      *
-     * @param id the order ID
-     * @return the new status of the order
+     * @param id the ID of the order to return
+     * @return ResponseEntity containing the updated order status and HTTP 200
      */
     @PatchMapping("/{id}/return")
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
-    public ResponseEntity<OrderStatus> returnOrder(@PathVariable Long id) {
+    public ResponseEntity<OrderStatus> returnOrder(@PathVariable(name = "id") Long id) {
         OrderStatus status = orderService.returnOrder(id);
         return ResponseEntity.ok(status);
     }

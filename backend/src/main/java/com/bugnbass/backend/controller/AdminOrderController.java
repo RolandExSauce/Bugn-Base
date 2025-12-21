@@ -13,19 +13,18 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-
 /**
  * REST controller for managing orders in the admin context.
- * Accessible only by users with ROLE_ADMIN authority.
+ *
+ * <p>Provides endpoints for admins to retrieve, update, and delete orders.
+ * All endpoints are secured and accessible only to users with ROLE_ADMIN authority.</p>
  */
 @RestController
-@RequestMapping("/admin/orders")
+@RequestMapping("/bugnbass/api/admin/orders")
 @PreAuthorize("hasRole('ROLE_ADMIN')")
 public class AdminOrderController {
 
-    /**
-     * Service handling order-related operations.
-     */
+    /** Service handling order-related business logic. */
     private final OrderService orderService;
 
     /**
@@ -40,7 +39,7 @@ public class AdminOrderController {
     /**
      * Retrieves all orders.
      *
-     * @return ResponseEntity containing a list of OrderDTO objects and HTTP status 200
+     * @return ResponseEntity containing a list of {@link OrderDto} objects and HTTP status 200
      */
     @GetMapping()
     public ResponseEntity<List<OrderDto>> getAllOrders() {
@@ -48,10 +47,10 @@ public class AdminOrderController {
     }
 
     /**
-     * Updates an existing order.
+     * Updates an existing order with new information.
      *
-     * @param dto the order data transfer object containing updated information
-     * @return ResponseEntity containing the updated OrderDTO and HTTP status 200
+     * @param dto the {@link OrderDto} containing updated order details
+     * @return ResponseEntity containing the updated {@link OrderDto} and HTTP status 200
      */
     @PatchMapping("/update")
     public ResponseEntity<OrderDto> updateOrder(@RequestBody OrderDto dto) {
@@ -61,11 +60,11 @@ public class AdminOrderController {
     /**
      * Deletes an order by its ID.
      *
-     * @param id the order ID
-     * @return ResponseEntity with HTTP status 204 (No Content)
+     * @param id the ID of the order to delete
+     * @return ResponseEntity with HTTP status 204 (No Content) upon successful deletion
      */
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Void> deleteOrder(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteOrder(@PathVariable(name = "id") Long id) {
         orderService.deleteOrder(id);
         return ResponseEntity.noContent().build();
     }

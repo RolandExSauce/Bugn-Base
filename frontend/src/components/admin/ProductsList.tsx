@@ -274,7 +274,6 @@ export default function ProductsList() {
               onChange={(e) => handleNewChange("stockStatus", e.target.value)}
             >
               <option value="IN_STOCK">Auf Lager</option>
-              <option value="LOW_STOCK">Gering</option>
               <option value="OUT_OF_STOCK">Nicht auf Lager</option>
             </select>
           </div>

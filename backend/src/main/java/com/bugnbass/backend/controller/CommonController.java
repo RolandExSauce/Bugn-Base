@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
  * REST controller for common, publicly accessible shop-related endpoints.
  */
 @RestController
-@RequestMapping("/bugnbass/api/shop")
+@RequestMapping("/bugnbass/api/bugnbass/api/shop")
 public class CommonController {
 
     /**

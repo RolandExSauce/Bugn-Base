@@ -18,21 +18,19 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
- * REST controller for handling media-related operations such as image upload,
- * retrieval, and deletion.
+ * REST controller for media-related operations.
+ * Provides endpoints for retrieving, uploading, and deleting media files such as product images.
+ *
+ * <p>Upload and deletion operations are restricted to users with ROLE_ADMIN authority.</p>
  */
 @RestController
-@RequestMapping("/media")
+@RequestMapping("/bugnbass/api/media")
 public class MediaController {
 
-    /**
-     * Service handling media operations.
-     */
+    /** Service handling media operations such as storage and retrieval. */
     private final MediaService mediaService;
 
-    /**
-     * Service handling product-related operations.
-     */
+    /** Service handling product-related operations. */
     private final ProductService productService;
 
     /**
@@ -41,18 +39,16 @@ public class MediaController {
      * @param mediaService   the MediaService instance
      * @param productService the ProductService instance
      */
-    public MediaController(
-            MediaService mediaService,
-            ProductService productService) {
+    public MediaController(MediaService mediaService, ProductService productService) {
         this.mediaService = mediaService;
         this.productService = productService;
     }
 
     /**
-     * Retrieves an image resource based on the request URI.
+     * Retrieves a media file based on the request URI.
      *
-     * @param request the HttpServletRequest containing the image path
-     * @return ResponseEntity containing the image as a Resource and content type
+     * @param request the HttpServletRequest containing the media path
+     * @return ResponseEntity containing the media as a Resource and content type
      */
     @GetMapping("/**")
     public ResponseEntity<Resource> getImage(HttpServletRequest request) {
@@ -65,7 +61,7 @@ public class MediaController {
 
     /**
      * Uploads an image file for a specific product.
-     * Accessible only by users with ROLE_ADMIN.
+     * Requires ROLE_ADMIN authority.
      *
      * @param productId the ID of the product
      * @param file      the image file to upload
@@ -74,7 +70,7 @@ public class MediaController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/file/{productId}")
     public ResponseEntity<String> uploadProductImage(
-            @PathVariable Long productId,
+            @PathVariable(name = "productId") Long productId,
             @RequestParam("file") MultipartFile file
     ) {
         Product product = productService.getProduct(productId);
@@ -86,18 +82,18 @@ public class MediaController {
     }
 
     /**
-     * Deletes an image from the storage.
-     * Accessible only by users with ROLE_ADMIN.
+     * Deletes an image file from the storage.
+     * Requires ROLE_ADMIN authority.
      *
      * @param folder   the folder containing the image
      * @param filename the name of the image file
-     * @return ResponseEntity with HTTP status 204 (No Content)
+     * @return ResponseEntity with HTTP 204 (No Content) status
      */
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("/file/delete/{folder}/{filename:.+}")
     public ResponseEntity<Void> deleteImage(
-            @PathVariable String folder,
-            @PathVariable String filename
+            @PathVariable(name = "folder") String folder,
+            @PathVariable(name = "filename") String filename
     ) {
         mediaService.deleteImage(folder + "/" + filename);
         return ResponseEntity.noContent().build();

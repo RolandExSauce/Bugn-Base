@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
  * Provides endpoints to retrieve individual products or lists of products with optional filtering.
  */
 @RestController
-@RequestMapping("/products")
+@RequestMapping("/bugnbass/api/products")
 public class UserProductsController {
 
     /**
@@ -42,7 +42,7 @@ public class UserProductsController {
      * @return the Product object
      */
     @GetMapping("/{id}")
-    public Product getProduct(@PathVariable Long id) {
+    public Product getProduct(@PathVariable(name = "id") Long id) {
         return userProductService.getProduct(id);
     }
 
@@ -61,13 +61,13 @@ public class UserProductsController {
      */
     @GetMapping()
     public List<ProductResponseDto> getProducts(
-            @RequestParam(required = false) String name,
-            @RequestParam(required = false) ProductCategory category,
-            @RequestParam(required = false) Integer priceMin,
-            @RequestParam(required = false) Integer priceMax,
-            @RequestParam(required = false) List<String> brand,
-            @RequestParam(required = false) Integer pageNo,
-            @RequestParam(required = false) Integer pageSize
+            @RequestParam(name = "name", required = false) String name,
+            @RequestParam(name = "category", required = false) ProductCategory category,
+            @RequestParam(name = "priceMin", required = false) Integer priceMin,
+            @RequestParam(name = "priceMax", required = false) Integer priceMax,
+            @RequestParam(name = "brand", required = false) List<String> brand,
+            @RequestParam(name = "pageNo", required = false) Integer pageNo,
+            @RequestParam(name = "pageSize", required = false) Integer pageSize
     ) {
         ProductFilter productFilters = new ProductFilter(
                 name,

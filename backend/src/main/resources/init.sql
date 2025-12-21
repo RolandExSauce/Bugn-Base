@@ -210,53 +210,89 @@ VALUES ('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb', 'maria82@example.com', 'passM@12
         '$2a$10$Xu93DE.ETSXbEGMOJeAT6eUASMcOg9YTzVQ8Rleg2EiwTaP5hHR0.', '0432938573', '963 Willow Way, Capitol City',
         '88097', 'Admin', 'Oneal', 'ROLE_ADMIN', TRUE, '2025-05-16 13:13:13');
 
-
-INSERT INTO orders (order_number, user_id, total_order_price,
+INSERT INTO orders (id, order_number, user_id, total_order_price,
                     ordered_date, delivery_date,
                     order_status, shipping_address, payment_method, delivery_fullname, delivery_postcode)
-VALUES ('ORD-1001', '11111111-1111-1111-1111-111111111111',
-        2499, '2025-05-21', NULL, 'RECEIVED',
-        '123 Elm Street, Springfield', 'PAYPAL', null, 1120),
+VALUES
+    (99, 'ORD-1001', '11111111-1111-1111-1111-111111111111',
+     350000 + 2*999900 + 139900, '2025-05-21', NULL, 'RECEIVED',
+     '123 Elm Street, Springfield', 'PAYPAL', null, 1120),
 
-       ('ORD-1002', '11111111-1111-1111-1111-111111111111',
-        3899, '2025-05-10', '2025-05-15', 'SHIPPING',
-        '123 Elm Street, Springfield', 'CREDITCARD', null, 1120),
+    (100, 'ORD-1002', '11111111-1111-1111-1111-111111111111',
+     99900 + 49900, '2025-05-10', '2025-05-15', 'SHIPPING',
+     '123 Elm Street, Springfield', 'CREDITCARD', null, 1120),
 
-       ('ORD-2001', '22222222-2222-2222-2222-222222222222',
-        1799, '2025-05-11', NULL, 'RECEIVED',
-        '456 Oak Avenue, Centerville', 'BANKTRANSFER', null, 1120),
+    (101, 'ORD-2001', '22222222-2222-2222-2222-222222222222',
+     2*220000 + 40000, '2025-05-11', NULL, 'RECEIVED',
+     '456 Oak Avenue, Centerville', 'BANKTRANSFER', null, 1120),
 
-       ('ORD-3001', '33333333-3333-3333-3333-333333333333',
-        2999, '2025-05-19', NULL, 'SHIPPING',
-        '789 Maple Lane, Rivertown', 'PAYPAL', null, 1120),
+    (102, 'ORD-3001', '33333333-3333-3333-3333-333333333333',
+     5000000, '2025-05-19', NULL, 'SHIPPING',
+     '789 Maple Lane, Rivertown', 'PAYPAL', null, 1120),
 
-       ('ORD-4001', '44444444-4444-4444-4444-444444444444',
-        4590, '2025-05-14', NULL, 'RECEIVED',
-        '321 Birch Rd, Hilltown', 'CREDITCARD', null, 1120),
+    (103, 'ORD-4001', '44444444-4444-4444-4444-444444444444',
+     39900 + 5559900 + 1200000, '2025-05-14', NULL, 'RECEIVED',
+     '321 Birch Rd, Hilltown', 'CREDITCARD', null, 1120),
 
-       ('ORD-5001', '55555555-5555-5555-5555-555555555555',
-        1349, '2025-05-27', NULL, 'CANCELED',
-        '654 Cedar Street, Lakeside', 'PAYPAL', null, 1120),
+    (104, 'ORD-5001', '55555555-5555-5555-5555-555555555555',
+     300000 + 2*550000, '2025-05-27', NULL, 'CANCELED',
+     '654 Cedar Street, Lakeside', 'PAYPAL', null, 1120),
 
-       ('ORD-6001', '66666666-6666-6666-6666-666666666666',
-        2990, '2025-05-23', '2025-05-26', 'SHIPPING',
-        '213 Spruce Blvd, Newfield', 'PAYPAL', null, 1120),
+    (105, 'ORD-6001', '66666666-6666-6666-6666-666666666666',
+     49900 + 99900, '2025-05-23', '2025-05-26', 'SHIPPING',
+     '213 Spruce Blvd, Newfield', 'PAYPAL', null, 1120),
 
-       ('ORD-7001', '77777777-7777-7777-7777-777777777777',
-        1875, '2025-05-09', NULL, 'SHIPPING',
-        '987 Aspen Way, Brookville', 'BANKTRANSFER', null, 1120),
+    (106, 'ORD-7001', '77777777-7777-7777-7777-777777777777',
+     87500 + 149900, '2025-05-09', NULL, 'SHIPPING',
+     '987 Aspen Way, Brookville', 'BANKTRANSFER', null, 1120),
 
-       ('ORD-8001', '88888888-8888-8888-8888-888888888888',
-        2490, '2025-05-18', NULL, 'RECEIVED',
-        '147 Redwood Dr, Milltown', 'PAYPAL', null, 1120),
+    (107, 'ORD-8001', '88888888-8888-8888-8888-888888888888',
+     2*79900, '2025-05-18', NULL, 'RECEIVED',
+     '147 Redwood Dr, Milltown', 'PAYPAL', null, 1120),
 
-       ('ORD-9001', '99999999-9999-9999-9999-999999999999',
-        3250, '2025-05-12', '2025-05-17', 'SHIPPING',
-        '852 Pine St, Cityville', 'CREDITCARD', null, 1120),
+    (108, 'ORD-9001', '99999999-9999-9999-9999-999999999999',
+     65900 + 132000, '2025-05-12', '2025-05-17', 'SHIPPING',
+     '852 Pine St, Cityville', 'CREDITCARD', null, 1120),
 
-       ('ORD-10001', 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa',
-        1599, '2025-05-28', NULL, 'RECEIVED',
-        '963 Willow Way, Capitol City', 'PAYPAL', null, 1120);
+    (109, 'ORD-10001', 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa',
+     350000 + 220000 + 999900, '2025-05-28', NULL, 'RECEIVED',
+     '963 Willow Way, Capitol City', 'PAYPAL', null, 1120),
+
+    (110, 'ORD-11001', 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb',
+     99900 + 39900, '2025-05-29', NULL, 'RECEIVED',
+     '123 Elm Street, Springfield', 'PAYPAL', null, 1120),
+
+    (111, 'ORD-11002', '22222222-2222-2222-2222-222222222222',
+     5000000, '2025-05-30', NULL, 'SHIPPING',
+     '456 Oak Avenue, Centerville', 'CREDITCARD', null, 1120),
+
+    (112, 'ORD-11003', '33333333-3333-3333-3333-333333333333',
+     2*49900 + 5559900, '2025-05-31', NULL, 'RECEIVED',
+     '789 Maple Lane, Rivertown', 'BANKTRANSFER', null, 1120),
+
+    (113, 'ORD-11004', '44444444-4444-4444-4444-444444444444',
+     300000 + 139900, '2025-06-01', NULL, 'SHIPPING',
+     '321 Birch Rd, Hilltown', 'PAYPAL', null, 1120),
+
+    (114, 'ORD-11005', '55555555-5555-5555-5555-555555555555',
+     550000 + 40000, '2025-06-02', NULL, 'RECEIVED',
+     '654 Cedar Street, Lakeside', 'PAYPAL', null, 1120),
+
+    (115, 'ORD-11006', '66666666-6666-6666-6666-666666666666',
+     49900 + 1200000, '2025-06-03', NULL, 'SHIPPING',
+     '213 Spruce Blvd, Newfield', 'CREDITCARD', null, 1120),
+
+    (116, 'ORD-11007', '77777777-7777-7777-7777-777777777777',
+     2*99900, '2025-06-04', NULL, 'RECEIVED',
+     '987 Aspen Way, Brookville', 'PAYPAL', null, 1120),
+
+    (117, 'ORD-11008', '88888888-8888-8888-8888-888888888888',
+     87500 + 149900, '2025-06-05', NULL, 'SHIPPING',
+     '147 Redwood Dr, Milltown', 'BANKTRANSFER', null, 1120),
+
+    (118, 'ORD-11009', '99999999-9999-9999-9999-999999999999',
+     79900 + 65900, '2025-06-06', NULL, 'RECEIVED',
+     '852 Pine St, Cityville', 'PAYPAL', null, 1120);
 
 
 INSERT INTO reviews (review_id, product_id, user_id, rating, comment, created_at)
@@ -297,3 +333,83 @@ VALUES ('00000000-0000-0000-0000-000000000001', 'Alice Steiner', 'alice.steiner@
         NULL, 'Thanks for your help earlier! Great customer service.', '2025-05-17 14:50:00'),
        ('00000000-0000-0000-0000-000000000010', 'Tobias König', 'tobias.koenig@example.com',
         'Gift Packaging', 'Do you offer gift wrapping for piano purchases?', '2025-05-18 11:35:00');
+
+INSERT INTO order_items (order_id, product_id, quantity, price) VALUES
+-- Order 99
+(99, 1, 1, 350000),
+(99, 5, 2, 999900),
+(99, 10, 1, 139900),
+
+-- Order 100
+(100, 2, 1, 99900),
+(100, 7, 1, 49900),
+
+-- Order 101
+(101, 3, 2, 220000),
+(101, 12, 1, 40000),
+
+-- Order 102
+(102, 4, 1, 5000000),
+
+-- Order 103
+(103, 6, 1, 39900),
+(103, 8, 1, 5559900),
+(103, 14, 1, 1200000),
+
+-- Order 104
+(104, 9, 1, 300000),
+(104, 11, 2, 550000),
+
+-- Order 105
+(105, 13, 1, 49900),
+(105, 15, 1, 99900),
+
+-- Order 106
+(106, 16, 1, 87500),
+(106, 17, 1, 149900),
+
+-- Order 107
+(107, 18, 2, 79900),
+
+-- Order 108
+(108, 19, 1, 65900),
+(108, 20, 1, 132000),
+
+-- Order 109
+(109, 1, 1, 350000),
+(109, 3, 1, 220000),
+(109, 5, 1, 999900),
+
+-- Order 110
+(110, 2, 1, 99900),
+(110, 6, 1, 39900),
+
+-- Order 111
+(111, 4, 1, 5000000),
+
+-- Order 112
+(112, 7, 2, 49900),
+(112, 8, 1, 5559900),
+
+-- Order 113
+(113, 9, 1, 300000),
+(113, 10, 1, 139900),
+
+-- Order 114
+(114, 11, 1, 550000),
+(114, 12, 1, 40000),
+
+-- Order 115
+(115, 13, 1, 49900),
+(115, 14, 1, 1200000),
+
+-- Order 116
+(116, 15, 2, 99900),
+
+-- Order 117
+(117, 16, 1, 87500),
+(117, 17, 1, 149900),
+
+-- Order 118
+(118, 18, 1, 79900),
+(118, 19, 1, 65900);

@@ -34,6 +34,13 @@ public class AuthTokenFilter extends OncePerRequestFilter {
                                     FilterChain chain)
             throws ServletException, IOException {
 
+        String path = request.getRequestURI();
+
+        if (!path.startsWith("/bugnbass/api/")) {
+            chain.doFilter(request, response);
+            return;
+        }
+
         String jwt = parseJwt(request);
 
         if (jwt != null && jwtUtil.validateJwtToken(jwt)) {
@@ -41,7 +48,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
             var role = jwtUtil.getRoleFromToken(jwt);
 
             List<GrantedAuthority> authorities = List.of(
-                    new SimpleGrantedAuthority(role.name()) // e.g., ROLE_ADMIN
+                    new SimpleGrantedAuthority(role.name())
             );
 
             UsernamePasswordAuthenticationToken auth =
@@ -57,7 +64,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
     /**
      * Extracts JWT token from Authorization header (Bearer token).
      *
-     * @param request HTTP request
+     * @param request HTTP request.
      * @return JWT string or null if not present
      */
     private String parseJwt(HttpServletRequest request) {

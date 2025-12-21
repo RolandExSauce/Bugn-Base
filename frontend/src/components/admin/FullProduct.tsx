@@ -161,8 +161,6 @@ export default function FullProduct({
           >
             {product.stockStatus === "IN_STOCK"
               ? "Auf Lager"
-              : product.stockStatus === "LOW_STOCK"
-              ? "Gering"
               : "Nicht auf Lager"}
           </span>
         </td>

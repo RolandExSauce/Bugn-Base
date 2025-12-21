@@ -19,32 +19,27 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * REST controller for admin-specific operations.
- * Only accessible by users with ROLE_ADMIN authority.
- * Provides endpoints for managing products.
+ * REST controller for admin-specific operations related to products.
+ *
+ * <p>Provides endpoints for retrieving, adding, updating, and deleting products.
+ * All endpoints are secured and accessible only to users with ROLE_ADMIN authority.</p>
  */
 @RestController
-@RequestMapping("/admin")
+@RequestMapping("/bugnbass/api/admin")
 @PreAuthorize("hasRole('ROLE_ADMIN')")
 public class AdminController {
 
-    /**
-     * Service handling media-related operations.
-     */
+    /** Service handling media operations. */
     private final MediaService mediaService;
 
-    /**
-     * Service handling admin-related operations.
-     */
+    /** Service handling admin-related operations. */
     private final AdminService adminService;
 
-    /**
-     * Service handling order-related operations.
-     */
+    /** Service handling order-related operations. */
     private final OrderService orderService;
 
     /**
-     * Constructs the AdminController with required services.
+     * Constructs the AdminController with the required services.
      *
      * @param mediaService the MediaService instance
      * @param adminService the AdminService instance
@@ -61,18 +56,18 @@ public class AdminController {
     /**
      * Retrieves a single product by its ID.
      *
-     * @param id the product ID
-     * @return the Product object
+     * @param id the ID of the product
+     * @return the {@link Product} object
      */
     @GetMapping("/product/{id}")
-    public Product getProduct(@PathVariable String id) {
+    public Product getProduct(@PathVariable(name = "id") String id) {
         return adminService.getProduct(id);
     }
 
     /**
      * Retrieves all products.
      *
-     * @return a list of Product objects
+     * @return a list of {@link Product} objects
      */
     @GetMapping("/products")
     public List<Product> getProducts() {
@@ -82,8 +77,8 @@ public class AdminController {
     /**
      * Adds a new product.
      *
-     * @param newProduct the product data transfer object
-     * @return ResponseEntity containing the created Product and HTTP status 201
+     * @param newProduct the {@link ProductDto} containing product data
+     * @return ResponseEntity containing the created {@link Product} and HTTP status 201
      */
     @PostMapping("/add-product")
     public ResponseEntity<Product> addProduct(@RequestBody ProductDto newProduct) {
@@ -94,11 +89,11 @@ public class AdminController {
     /**
      * Deletes a product by its ID.
      *
-     * @param id the product ID
+     * @param id the ID of the product to delete
      * @return ResponseEntity with HTTP status 204 (No Content)
      */
     @DeleteMapping("/delete-product/{id}")
-    public ResponseEntity<Void> deleteProduct(@PathVariable String id) {
+    public ResponseEntity<Void> deleteProduct(@PathVariable(name = "id") String id) {
         adminService.deleteProduct(id);
         return ResponseEntity.noContent().build();
     }
@@ -106,13 +101,13 @@ public class AdminController {
     /**
      * Updates an existing product by its ID.
      *
-     * @param id         the product ID
-     * @param productDto the updated product data
+     * @param id the ID of the product to update
+     * @param productDto the {@link ProductDto} containing updated product data
      * @return ResponseEntity with HTTP status 200 (OK)
      */
     @PutMapping("/update-product/{id}")
     public ResponseEntity<Void> updateProduct(
-            @PathVariable String id,
+            @PathVariable(name = "id") String id,
             @RequestBody ProductDto productDto) {
         adminService.updateProduct(id, productDto);
         return ResponseEntity.status(HttpStatus.OK).build();
