@@ -11,6 +11,7 @@ import {
 } from "../../utils/regex";
 import { useAuthContext } from "../../context/AuthContext";
 import UserOrderService from "../../services/user.order.service";
+import UserProfileService from "../../services/user.profile.service";
 
 const UserProfil = () => {
   const { auth, logout } = useAuthContext();
@@ -65,9 +66,8 @@ const UserProfil = () => {
     });
   };
 
-  const handleSaveUserDetails = (e: React.FormEvent) => {
+  const handleSaveUserDetails = async (e: React.FormEvent) => {
     e.preventDefault();
-
     const newInvalidInput = {
       firstname: false,
       lastname: false,
@@ -120,13 +120,15 @@ const UserProfil = () => {
     if (hasError) return;
 
     try {
-      // TODO: Call API to save updated profile
-
+      const updatedUser: User = await UserProfileService.updateUserProfile({
+        id: auth!.user.id,
+        ...userProfileForm,
+      });
       formRef.current?.classList.remove("success-animation");
       void formRef.current?.offsetWidth;
       formRef.current?.classList.add("success-animation");
       setIsEdited(false);
-      // TODO: here also update the user info in the auth context and localstorage
+      auth!.user = updatedUser;
     } catch (error) {
       console.log(error);
       // TODO: handle error in the ui
