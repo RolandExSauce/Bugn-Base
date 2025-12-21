@@ -1,5 +1,7 @@
 package com.bugnbass.backend.service;
 
+import static com.bugnbass.backend.mappers.UserMapper.toUserDto;
+
 import com.bugnbass.backend.dto.auth.RegisterDto;
 import com.bugnbass.backend.dto.auth.UserDto;
 import com.bugnbass.backend.exceptions.UserNotFoundException;
@@ -10,13 +12,10 @@ import com.bugnbass.backend.repository.AdminRepository;
 import com.bugnbass.backend.repository.UserRepository;
 import java.util.Optional;
 import java.util.UUID;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import static com.bugnbass.backend.mappers.UserMapper.toUserDto;
 
 
 /**
@@ -94,12 +93,14 @@ public class UserService {
         }*/
 
         User userToUpdate = userRepository.findById(UUID.fromString(dto.id()))
-                .orElseThrow(() -> new UserNotFoundException("User not found with id: " + dto.id()));
+                .orElseThrow(() ->
+                        new UserNotFoundException("User not found with id: " + dto.id()));
 
         userToUpdate.setFirstname(dto.firstname());
         userToUpdate.setLastname(dto.lastname());
         userToUpdate.setEmail(dto.email());
-        userToUpdate.setPhone(dto.phone() != null ? Integer.parseInt(dto.phone().toString()) : null);
+        userToUpdate.setPhone(dto.phone() != null
+                ? Integer.parseInt(dto.phone().toString()) : null);
         userToUpdate.setAddress(dto.address());
         userToUpdate.setPostcode(String.valueOf(dto.postcode()));
 
