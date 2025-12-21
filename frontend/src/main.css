@@ -340,7 +340,7 @@ th {
 }
 
 .shop-item {
-  border: 1px solid gray;
+  border: 1px solid rgb(220, 127, 27);
   border-radius: 5px;
   flex-grow: 1;
   transition: 0.1s;
@@ -651,6 +651,21 @@ th {
   cursor: default;
 }
 
+.user-row-success {
+  animation: successFlash 0.8s ease-in-out;
+}
+
+@keyframes successFlash {
+  0% {
+    background-color: #d1e7dd;
+  }
+  50% {
+    background-color: #d4edda;
+  }
+  100% {
+    background-color: transparent;
+  }
+}
 :root {
   --bs-primary: #4caf50;
   --bs-primary-text: rgb(220, 127, 27);
@@ -670,8 +685,6 @@ th {
   font-size: 5rem;
 }
 .homepage-main a {
-  background-color: rgb(220, 127, 27) !important;
-  border: 1px solid rgb(220, 127, 27);
   font-size: 2rem;
   transition: 0.1s;
 }

@@ -4,7 +4,7 @@ import type { CartItemType } from "../types/models";
 interface CartContextType {
   cart: CartItemType[];
   addItem: (item: CartItemType) => void;
-  removeItem: (itemId: string) => void;
+  removeItem: (itemId: number) => void;
   updateItem: (item: CartItemType) => void;
   clearCart: () => void;
 }
@@ -43,7 +43,7 @@ export const CartContextProvider = ({
     }
   };
 
-  const removeItem = (itemId: string) => {
+  const removeItem = (itemId: number) => {
     setCart([...cart!.filter((i) => i.product.id !== itemId)]);
   };
 
