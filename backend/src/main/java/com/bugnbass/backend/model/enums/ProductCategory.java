@@ -1,7 +1,15 @@
 package com.bugnbass.backend.model.enums;
 
+/**
+ * Enum representing product categories in the shop.
+ */
 public enum ProductCategory {
-    PIANOS,
-    GUITARS,
-    VIOLINS
+  /** Category for pianos. */
+  PIANOS,
+
+  /** Category for guitars. */
+  GUITARS,
+
+  /** Category for violins. */
+  VIOLINS
 }
