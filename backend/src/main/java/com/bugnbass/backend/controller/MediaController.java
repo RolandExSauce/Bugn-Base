@@ -67,7 +67,7 @@ public class MediaController {
      * @param file      the image file to upload
      * @return ResponseEntity containing the URL of the uploaded image
      */
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/file/{productId}")
     public ResponseEntity<String> uploadProductImage(
             @PathVariable(name = "productId") Long productId,
@@ -89,7 +89,7 @@ public class MediaController {
      * @param filename the name of the image file
      * @return ResponseEntity with HTTP 204 (No Content) status
      */
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/file/delete/{folder}/{filename:.+}")
     public ResponseEntity<Void> deleteImage(
             @PathVariable(name = "folder") String folder,

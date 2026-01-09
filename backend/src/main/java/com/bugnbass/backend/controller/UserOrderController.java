@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/bugnbass/api/user/orders")
+@PreAuthorize("hasAnyRole('USER', 'ADMIN')")
 @RequiredArgsConstructor
 public class UserOrderController {
 
@@ -39,7 +40,6 @@ public class UserOrderController {
      * @return ResponseEntity containing the created order's status and HTTP 201
      */
     @PostMapping
-    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
     public ResponseEntity<OrderStatus> createOrder(@RequestBody OrderDto dto) {
         OrderStatus status = orderService.createOrder(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(status);
@@ -52,7 +52,6 @@ public class UserOrderController {
      * @return ResponseEntity containing the order details and HTTP 200
      */
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
     public ResponseEntity<OrderDto> getOrderById(@PathVariable(name = "id") Long id) {
         OrderDto dto = orderService.getOrderById(id);
         return ResponseEntity.ok(dto);
@@ -64,7 +63,6 @@ public class UserOrderController {
      * @return ResponseEntity containing a list of OrderDto objects and HTTP 200
      */
     @GetMapping("/customer")
-    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
     public ResponseEntity<List<OrderDto>> getOrdersForCustomer() {
         List<OrderDto> orders = orderService.getOrdersByCustomer();
         return ResponseEntity.ok(orders);
@@ -77,7 +75,6 @@ public class UserOrderController {
      * @return ResponseEntity containing the updated order status and HTTP 200
      */
     @PatchMapping("/cancel/{id}")
-    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
     public ResponseEntity<OrderStatus> cancelOrder(@PathVariable(name = "id") Long id) {
         OrderStatus status = orderService.cancelOrder(id);
         return ResponseEntity.ok(status);
@@ -90,7 +87,6 @@ public class UserOrderController {
      * @return ResponseEntity containing the updated order status and HTTP 200
      */
     @PatchMapping("/{id}/return")
-    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
     public ResponseEntity<OrderStatus> returnOrder(@PathVariable(name = "id") Long id) {
         OrderStatus status = orderService.returnOrder(id);
         return ResponseEntity.ok(status);

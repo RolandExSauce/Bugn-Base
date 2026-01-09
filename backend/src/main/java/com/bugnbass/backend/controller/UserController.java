@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/bugnbass/api/user/profile")
-@PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
+@PreAuthorize("hasAnyRole('USER', 'ADMIN')")
 public class UserController {
 
     /** Service handling user-related business logic. */
