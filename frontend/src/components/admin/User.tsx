@@ -287,32 +287,32 @@ const UserRow = ({
         </td>
 
         <td>
-          <AdminUpdateButton
-            disabled={!isEdited || isSaving}
-            action={handleSave}
-          />
+        <div className="d-flex gap-2">
           <button
-            className="admin-user-action-button"
-            onClick={handleUndoEdit}
-            disabled={isSaving}
+            className="btn btn-sm btn-success d-flex align-items-center gap-1"
+            onClick={handleSave}
+            disabled={!isEdited || isSaving}
+            title="Speichern"
           >
             <img
-              width="25px"
-              height="25px"
-              src="/undo.svg"
-              alt="Undo user edit button icon"
+              src="/save.svg"
+              alt="Speichern"
+              style={{ width: 16, height: 16 }}
             />
           </button>
-
           <button
-            className="admin-user-action-button"
-            onClick={handleDelete}
-            disabled={isDeleting || isSaving}
-            title="Löschen/Deaktivieren"
+            className="btn btn-sm btn-secondary d-flex align-items-center gap-1"
+            onClick={handleUndoEdit}
+            title="Abbrechen"
           >
-            {isDeleting ? "..." : "✕"}
+            <img
+              src="/undo.svg"
+              alt="Abbrechen"
+              style={{ width: 16, height: 16 }}
+            />
           </button>
-        </td>
+        </div>
+      </td>
       </tr>
     );
   }
@@ -337,9 +337,34 @@ const UserRow = ({
         </select>
       </td>
       <td>
-        <AdminSelectRowButton action={() => handleSelect(form.id)} />
-        <AdminDeleteButton action={handleDelete} />
+        <div className="d-flex gap-2">
+          <button
+            title="User bearbeiten"
+            className="btn btn-sm btn-outline-primary d-flex align-items-center gap-1"
+            onClick={() => handleSelect(form.id)}
+          >
+            <img
+              src="/update.svg"
+              alt="Bearbeiten"
+              style={{ width: 14, height: 14 }}
+            />
+          </button>
+
+          <button
+            title="User löschen/deaktivieren"
+            className="btn btn-sm btn-outline-danger d-flex align-items-center gap-1"
+            onClick={handleDelete}
+            disabled={isDeleting}
+          >
+            <img
+              src="/delete.svg"
+              alt="Löschen"
+              style={{ width: 14, height: 14 }}
+            />
+          </button>
+        </div>
       </td>
+
     </tr>
   );
 };
