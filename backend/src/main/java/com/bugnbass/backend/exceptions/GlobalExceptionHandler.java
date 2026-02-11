@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 /**
  * Global exception handler for the application.
- * <p>
- * Maps application- and security-related exceptions to appropriate HTTP
+ *
+ * <p>Maps application- and security-related exceptions to appropriate HTTP
  * status codes so that the frontend can distinguish between
  * authentication errors (401), authorization errors (403),
  * and internal server errors (500).
@@ -69,8 +69,8 @@ public class GlobalExceptionHandler {
   /**
    * Handles authorization failures caused by method-level security
    * (e.g. {@code @PreAuthorize}).
-   * <p>
-   * This exception indicates that the user is authenticated
+   *
+   * <p>This exception indicates that the user is authenticated
    * but does not have sufficient permissions.
    * </p>
    *
