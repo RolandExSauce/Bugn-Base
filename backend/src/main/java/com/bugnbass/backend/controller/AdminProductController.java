@@ -1,11 +1,15 @@
 package com.bugnbass.backend.controller;
 
+import com.bugnbass.backend.dto.AdminUpdateUserDto;
 import com.bugnbass.backend.dto.ProductDto;
 import com.bugnbass.backend.model.Product;
+import com.bugnbass.backend.model.User;
 import com.bugnbass.backend.service.AdminService;
 import com.bugnbass.backend.service.MediaService;
 import com.bugnbass.backend.service.OrderService;
 import java.util.List;
+
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -27,7 +31,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/bugnbass/api/admin")
 @PreAuthorize("hasRole('ADMIN')")
-public class AdminController {
+public class AdminProductController {
 
     /** Service handling media operations. */
     private final MediaService mediaService;
@@ -45,9 +49,9 @@ public class AdminController {
      * @param adminService the AdminService instance
      * @param orderService the OrderService instance
      */
-    public AdminController(MediaService mediaService,
-                           AdminService adminService,
-                           OrderService orderService) {
+    public AdminProductController(MediaService mediaService,
+                                  AdminService adminService,
+                                  OrderService orderService) {
         this.mediaService = mediaService;
         this.adminService = adminService;
         this.orderService = orderService;
@@ -112,4 +116,7 @@ public class AdminController {
         adminService.updateProduct(id, productDto);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
+
+
+
 }
