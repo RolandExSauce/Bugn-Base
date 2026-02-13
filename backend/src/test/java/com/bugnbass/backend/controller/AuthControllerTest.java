@@ -7,6 +7,7 @@ import com.bugnbass.backend.security.AuthTokenFilter;
 import com.bugnbass.backend.service.AuthService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -16,7 +17,7 @@ import org.springframework.context.annotation.FilterType;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.mockito.ArgumentMatchers.any;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -28,74 +29,77 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
                 classes = AuthTokenFilter.class
         )
 )
-@AutoConfigureMockMvc(addFilters = false) // kein Security/CSRF Stress
+@AutoConfigureMockMvc(addFilters = false)
 class AuthControllerTest {
 
-    @Autowired
-    MockMvc mockMvc;
+    @Autowired MockMvc mockMvc;
+    @Autowired ObjectMapper objectMapper;
 
-    @Autowired
-    ObjectMapper objectMapper;
-
-    @MockBean
-    AuthService authService;
+    @MockBean AuthService authService;
 
     // -------- LOGIN --------
 
     @Test
-    void login_validBody_returns200_andCallsService() throws Exception {
-
+    void login_validBody_returns200_andPassesDtoToService() throws Exception {
         LoginDto loginDto = new LoginDto("max@test.com", "secret");
 
-        when(authService.handleLogin(any()))
+        when(authService.handleLogin(any(LoginDto.class)))
                 .thenReturn(mock(AuthResponse.class));
 
         mockMvc.perform(post("/bugnbass/api/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(loginDto)))
-                .andExpect(status().isOk())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
+                .andExpect(status().isOk());
 
-        verify(authService).handleLogin(any(LoginDto.class));
+        ArgumentCaptor<LoginDto> captor = ArgumentCaptor.forClass(LoginDto.class);
+        verify(authService, times(1)).handleLogin(captor.capture());
         verifyNoMoreInteractions(authService);
+
+        assertThat(captor.getValue().email()).isEqualTo("max@test.com");
+        assertThat(captor.getValue().password()).isEqualTo("secret");
     }
 
     @Test
-    void login_invalidJson_returns400_andDoesNotCallService() throws Exception {
+    void login_malformedJson_returns400_andDoesNotCallService() throws Exception {
         mockMvc.perform(post("/bugnbass/api/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{")) // kaputtes JSON
+                        .content("{"))
                 .andExpect(status().isBadRequest());
 
         verifyNoInteractions(authService);
     }
+
     // -------- REGISTER --------
 
     @Test
-    void register_validBody_returns200_andCallsService() throws Exception {
-
+    void register_validBody_returns200_andPassesDtoToService() throws Exception {
         RegisterDto registerDto =
                 new RegisterDto("Max", "Mustermann", "max@test.com", "secret");
 
-        when(authService.handleRegister(any()))
+        when(authService.handleRegister(any(RegisterDto.class)))
                 .thenReturn(mock(AuthResponse.class));
 
         mockMvc.perform(post("/bugnbass/api/auth/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(registerDto)))
-                .andExpect(status().isOk())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
+                .andExpect(status().isOk());
 
-        verify(authService).handleRegister(any(RegisterDto.class));
+        ArgumentCaptor<RegisterDto> captor = ArgumentCaptor.forClass(RegisterDto.class);
+        verify(authService, times(1)).handleRegister(captor.capture());
         verifyNoMoreInteractions(authService);
+
+        RegisterDto passed = captor.getValue();
+        assertThat(passed.firstname()).isEqualTo("Max");
+        assertThat(passed.lastname()).isEqualTo("Mustermann");
+        assertThat(passed.email()).isEqualTo("max@test.com");
+        assertThat(passed.password()).isEqualTo("secret");
     }
 
-
     @Test
-    void register_invalidJson_returns400_andDoesNotCallService() throws Exception {
+    void register_malformedJson_returns400_andDoesNotCallService() throws Exception {
         mockMvc.perform(post("/bugnbass/api/auth/register")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{")) // kaputtes JSON
+                        .content("{"))
                 .andExpect(status().isBadRequest());
 
         verifyNoInteractions(authService);

@@ -1,6 +1,8 @@
 package com.bugnbass.backend.controller;
 
 import com.bugnbass.backend.exceptions.GlobalExceptionHandler;
+import com.bugnbass.backend.exceptions.ImageNotFoundException;
+import com.bugnbass.backend.exceptions.MediaAccessException;
 import com.bugnbass.backend.model.Product;
 import com.bugnbass.backend.model.enums.ProductCategory;
 import com.bugnbass.backend.security.AuthTokenFilter;
@@ -67,6 +69,39 @@ class MediaControllerTest {
         verifyNoInteractions(productService);
         verifyNoMoreInteractions(mediaService);
     }
+
+    @Test
+    @WithMockUser(roles = "USER")
+    void getImage_imageNotFound_returns404_andCallsService() throws Exception {
+        when(mediaService.getImage("guitars/missing.png"))
+                .thenThrow(new ImageNotFoundException("Image not found: guitars/missing.png"));
+
+        mockMvc.perform(get("/bugnbass/api/media/guitars/missing.png"))
+                .andExpect(status().isNotFound())
+                .andExpect(content().string("Image not found: guitars/missing.png"));
+
+        verify(mediaService).getImage("guitars/missing.png");
+        verifyNoInteractions(productService);
+        verifyNoMoreInteractions(mediaService);
+    }
+
+    // ❌ negativ 2: technischer Fehler -> 500
+    @Test
+    @WithMockUser(roles = "USER")
+    void getImage_mediaAccessError_returns500_andCallsService() throws Exception {
+        when(mediaService.getImage("guitars/test.png"))
+                .thenThrow(new MediaAccessException("Invalid image path", new RuntimeException("cause")));
+
+        mockMvc.perform(get("/bugnbass/api/media/guitars/test.png"))
+                .andExpect(status().isInternalServerError())
+                // falls du im Handler "Media access error" zurückgibst:
+                .andExpect(content().string("Media access error"));
+
+        verify(mediaService).getImage("guitars/test.png");
+        verifyNoInteractions(productService);
+        verifyNoMoreInteractions(mediaService);
+    }
+
 
     // ---------- POST /bugnbass/api/media/file/{productId} ----------
 

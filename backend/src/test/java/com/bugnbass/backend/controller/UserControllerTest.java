@@ -47,18 +47,32 @@ class UserControllerTest {
     // -------------------- TESTS --------------------
 
     @Test
-    void updateUser_withoutAuth_returns4xx_andDoesNotCallService() throws Exception {
-
+    void updateUser_withoutAuth_returns401_andDoesNotCallService() throws Exception {
         UserDto request = sampleUserDto();
 
         mockMvc.perform(patch("/bugnbass/api/user/profile")
                         .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().is4xxClientError());
+                .andExpect(status().isUnauthorized());
 
         verifyNoInteractions(userService);
     }
+
+    @Test
+    @WithMockUser(roles = "USER")
+    void updateUser_missingCsrf_returns403_andDoesNotCallService() throws Exception {
+        UserDto request = sampleUserDto();
+
+        mockMvc.perform(patch("/bugnbass/api/user/profile")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isForbidden());
+
+        verifyNoInteractions(userService);
+    }
+
+
 
     @Test
     @WithMockUser(roles = "USER")

@@ -3,6 +3,8 @@ package com.bugnbass.backend.controller;
 import com.bugnbass.backend.dto.ProductFilter;
 import com.bugnbass.backend.dto.ProductResponseDto;
 import com.bugnbass.backend.exceptions.GlobalExceptionHandler;
+import com.bugnbass.backend.exceptions.ProductNotFoundException;
+import com.bugnbass.backend.model.Product;
 import com.bugnbass.backend.model.enums.ProductCategory;
 import com.bugnbass.backend.model.enums.StockStatus;
 import com.bugnbass.backend.security.AuthTokenFilter;
@@ -27,7 +29,6 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-
 @WebMvcTest(
         controllers = UserProductsController.class,
         excludeFilters = @ComponentScan.Filter(
@@ -45,26 +46,56 @@ class UserProductsControllerTest {
     @MockBean
     ProductService userProductService;
 
+    // ---------- GET /bugnbass/api/products/{id} ----------
+
+    @Test
+    void getProduct_validId_returns200_andCallsService() throws Exception {
+        Product product = mock(Product.class);
+        when(userProductService.getProduct(10L)).thenReturn(product);
+
+        mockMvc.perform(get("/bugnbass/api/products/{id}", 10))
+                .andExpect(status().isOk());
+
+        verify(userProductService).getProduct(10L);
+        verifyNoMoreInteractions(userProductService);
+    }
+
+    @Test
+    void getProduct_notFound_returns404_andCallsService() throws Exception {
+        when(userProductService.getProduct(999L))
+                .thenThrow(new ProductNotFoundException("Product not found"));
+
+        mockMvc.perform(get("/bugnbass/api/products/{id}", 999))
+                .andExpect(status().isNotFound())
+                .andExpect(content().string("Product not found"));
+
+        verify(userProductService).getProduct(999L);
+        verifyNoMoreInteractions(userProductService);
+    }
+
+    // ---------- GET /bugnbass/api/products ----------
+
     @Test
     void getProducts_returnsListOfDtos() throws Exception {
-        // Arrange: echtes DTO, damit JSON prüfbar ist
+        ProductCategory cat = ProductCategory.class.getEnumConstants()[0];
+        StockStatus stock = StockStatus.class.getEnumConstants()[0];
+
         ProductResponseDto dto = new ProductResponseDto(
                 10L,
                 "Jazz Bass",
-                ProductCategory.valueOf(ProductCategory.class.getEnumConstants()[0].name()), // ersetze gern durch FIXEN enum-wert
+                cat,
                 "Nice bass",
                 999,
                 15,
                 "Fender",
-                StockStatus.valueOf(StockStatus.class.getEnumConstants()[0].name()), // ersetze gern durch FIXEN enum-wert
+                stock,
                 3,
                 true,
-                List.of() // images leer
+                List.of()
         );
 
         when(userProductService.getProducts(any())).thenReturn(List.of(dto));
 
-        // Act + Assert
         mockMvc.perform(get("/bugnbass/api/products"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -86,9 +117,11 @@ class UserProductsControllerTest {
     void getProducts_withParams_mapsToFilterCorrectly() throws Exception {
         when(userProductService.getProducts(any())).thenReturn(List.of());
 
+        String category = ProductCategory.class.getEnumConstants()[0].name();
+
         mockMvc.perform(get("/bugnbass/api/products")
                         .param("name", "bass")
-                        .param("category", ProductCategory.class.getEnumConstants()[0].name()) // z.B. "GUITAR"
+                        .param("category", category)
                         .param("priceMin", "10")
                         .param("priceMax", "100")
                         .param("brand", "Fender")
@@ -101,13 +134,8 @@ class UserProductsControllerTest {
         verify(userProductService).getProducts(captor.capture());
 
         ProductFilter filter = captor.getValue();
-
-        // WICHTIG: falls ProductFilter ein record ist -> name(), category(), ...
-        // falls es Getter hat -> getName(), getCategory(), ...
-        //
-        // Ich schreibe hier die record-Variante, weil du schon records nutzt:
         assertThat(filter.name()).isEqualTo("bass");
-        assertThat(filter.category()).isNotNull();
+        assertThat(filter.category().name()).isEqualTo(category);
         assertThat(filter.priceMin()).isEqualTo(10);
         assertThat(filter.priceMax()).isEqualTo(100);
         assertThat(filter.brand()).containsExactly("Fender", "Ibanez");

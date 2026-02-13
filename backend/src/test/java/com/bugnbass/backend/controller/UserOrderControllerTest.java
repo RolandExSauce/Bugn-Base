@@ -48,8 +48,10 @@ class UserOrderControllerTest {
 
     @MockBean OrderService orderService;
 
+    // ---------- POST /bugnbass/api/user/orders ----------
+
     @Test
-    void createOrder_withoutAuth_returns401or403_andDoesNotCallService() throws Exception {
+    void createOrder_withoutAuth_returns4xx_andDoesNotCallService() throws Exception {
         // csrf dazu, damit nicht CSRF der Grund für 403 ist
         OrderDto dto = validOrderDto();
 
@@ -79,10 +81,21 @@ class UserOrderControllerTest {
 
         ArgumentCaptor<OrderDto> captor = ArgumentCaptor.forClass(OrderDto.class);
         verify(orderService).createOrder(captor.capture());
+
         assertThat(captor.getValue().shippingAddress()).isEqualTo(dto.shippingAddress());
         assertThat(captor.getValue().orderItems()).hasSize(1);
 
         verifyNoMoreInteractions(orderService);
+    }
+
+    // ---------- GET /bugnbass/api/user/orders/{id} ----------
+
+    @Test
+    void getOrderById_withoutAuth_returns4xx_andDoesNotCallService() throws Exception {
+        mockMvc.perform(get("/bugnbass/api/user/orders/{id}", 5))
+                .andExpect(status().is4xxClientError());
+
+        verifyNoInteractions(orderService);
     }
 
     @Test
@@ -103,6 +116,16 @@ class UserOrderControllerTest {
         verifyNoMoreInteractions(orderService);
     }
 
+    // ---------- GET /bugnbass/api/user/orders/customer ----------
+
+    @Test
+    void getOrdersForCustomer_withoutAuth_returns4xx_andDoesNotCallService() throws Exception {
+        mockMvc.perform(get("/bugnbass/api/user/orders/customer"))
+                .andExpect(status().is4xxClientError());
+
+        verifyNoInteractions(orderService);
+    }
+
     @Test
     @WithMockUser(roles = "USER")
     void getOrdersForCustomer_withUser_returns200_andArray() throws Exception {
@@ -116,6 +139,17 @@ class UserOrderControllerTest {
 
         verify(orderService).getOrdersByCustomer();
         verifyNoMoreInteractions(orderService);
+    }
+
+    // ---------- PATCH /bugnbass/api/user/orders/cancel/{id} ----------
+
+    @Test
+    void cancelOrder_withoutAuth_returns4xx_andDoesNotCallService() throws Exception {
+        mockMvc.perform(patch("/bugnbass/api/user/orders/cancel/{id}", 7)
+                        .with(csrf()))
+                .andExpect(status().is4xxClientError());
+
+        verifyNoInteractions(orderService);
     }
 
     @Test
@@ -133,6 +167,17 @@ class UserOrderControllerTest {
         verifyNoMoreInteractions(orderService);
     }
 
+    // ---------- PATCH /bugnbass/api/user/orders/{id}/return ----------
+
+    @Test
+    void returnOrder_withoutAuth_returns4xx_andDoesNotCallService() throws Exception {
+        mockMvc.perform(patch("/bugnbass/api/user/orders/{id}/return", 9)
+                        .with(csrf()))
+                .andExpect(status().is4xxClientError());
+
+        verifyNoInteractions(orderService);
+    }
+
     @Test
     @WithMockUser(roles = "USER")
     void returnOrder_withUser_returns200_andStatus() throws Exception {
@@ -147,6 +192,8 @@ class UserOrderControllerTest {
         verify(orderService).returnOrder(9L);
         verifyNoMoreInteractions(orderService);
     }
+
+    // -------------------- HELPERS --------------------
 
     private static OrderDto validOrderDto() {
         return new OrderDto(

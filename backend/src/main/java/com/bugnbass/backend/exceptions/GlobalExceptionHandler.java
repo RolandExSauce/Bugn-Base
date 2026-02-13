@@ -14,10 +14,11 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 /**
  * Global exception handler for the application.
  *
- * <p>Maps application- and security-related exceptions to appropriate HTTP
- * status codes so that the frontend can distinguish between
- * authentication errors (401), authorization errors (403),
- * and internal server errors (500).
+ * <p>This class centralizes exception handling across all controllers
+ * using {@link RestControllerAdvice}. It maps application-specific,
+ * validation-related, and Spring Security exceptions to appropriate
+ * HTTP status codes so that the frontend can reliably distinguish
+ * between different error categories (e.g. 400, 401, 403, 404, 500).
  * </p>
  */
 @RestControllerAdvice
@@ -27,7 +28,8 @@ public class GlobalExceptionHandler {
    * Handles cases where a requested product cannot be found.
    *
    * @param e the thrown {@link ProductNotFoundException}
-   * @return a 404 NOT FOUND response with the exception message
+   * @return a {@link ResponseEntity} with HTTP 404 (NOT FOUND)
+   *         containing the exception message
    */
   @ExceptionHandler(ProductNotFoundException.class)
   public ResponseEntity<String> handleProductNotFoundExc(ProductNotFoundException e) {
@@ -39,7 +41,8 @@ public class GlobalExceptionHandler {
    * that already exists.
    *
    * @param e the thrown {@link ProductNameAlreadyExistsException}
-   * @return a 404 NOT FOUND response with the exception message
+   * @return a {@link ResponseEntity} with HTTP 404 (NOT FOUND)
+   *         containing the exception message
    */
   @ExceptionHandler(ProductNameAlreadyExistsException.class)
   public ResponseEntity<String> handleProductNameAlreadyExistsExc(
@@ -51,7 +54,8 @@ public class GlobalExceptionHandler {
    * Handles cases where an image resource cannot be found.
    *
    * @param e the thrown {@link ImageNotFoundException}
-   * @return a 404 NOT FOUND response with the exception message
+   * @return a {@link ResponseEntity} with HTTP 404 (NOT FOUND)
+   *         containing the exception message
    */
   @ExceptionHandler(ImageNotFoundException.class)
   public ResponseEntity<String> handleImageNotFoundExc(ImageNotFoundException e) {
@@ -62,7 +66,8 @@ public class GlobalExceptionHandler {
    * Handles errors occurring during image upload or update operations.
    *
    * @param e the thrown {@link ImageUploadUpdateException}
-   * @return a 500 INTERNAL SERVER ERROR response with the exception message
+   * @return a {@link ResponseEntity} with HTTP 500 (INTERNAL SERVER ERROR)
+   *         containing the exception message
    */
   @ExceptionHandler(ImageUploadUpdateException.class)
   public ResponseEntity<String> handleImageUploadUpdateExc(ImageUploadUpdateException e) {
@@ -71,14 +76,14 @@ public class GlobalExceptionHandler {
 
   /**
    * Handles authorization failures caused by method-level security
-   * (e.g. {@code @PreAuthorize}).
+   * annotations such as {@code @PreAuthorize}.
    *
-   * <p>This exception indicates that the user is authenticated
-   * but does not have sufficient permissions.
+   * <p>This indicates that the user is authenticated but does not have
+   * sufficient permissions to access the requested resource.
    * </p>
    *
    * @param e the thrown {@link AuthorizationDeniedException}
-   * @return a 403 FORBIDDEN response
+   * @return a {@link ResponseEntity} with HTTP 403 (FORBIDDEN)
    */
   @ExceptionHandler(AuthorizationDeniedException.class)
   public ResponseEntity<String> handleAuthorizationDenied(AuthorizationDeniedException e) {
@@ -90,7 +95,7 @@ public class GlobalExceptionHandler {
    * Spring Security authorization checks.
    *
    * @param e the thrown {@link AccessDeniedException}
-   * @return a 403 FORBIDDEN response
+   * @return a {@link ResponseEntity} with HTTP 403 (FORBIDDEN)
    */
   @ExceptionHandler(AccessDeniedException.class)
   public ResponseEntity<String> handleAccessDenied(AccessDeniedException e) {
@@ -98,10 +103,11 @@ public class GlobalExceptionHandler {
   }
 
   /**
-   * Handles authentication-related errors such as invalid or missing credentials.
+   * Handles authentication-related errors such as invalid, expired,
+   * or missing credentials.
    *
    * @param e the thrown {@link AuthenticationException}
-   * @return a 401 UNAUTHORIZED response
+   * @return a {@link ResponseEntity} with HTTP 401 (UNAUTHORIZED)
    */
   @ExceptionHandler(AuthenticationException.class)
   public ResponseEntity<String> handleAuthenticationException(AuthenticationException e) {
@@ -109,34 +115,75 @@ public class GlobalExceptionHandler {
   }
 
   /**
-   * Handles all uncaught exceptions that are not explicitly mapped
-   * to a specific HTTP status.
+   * Handles method argument type mismatches, such as when a request
+   * parameter cannot be converted to the required target type.
    *
-   * @param e the thrown {@link Exception}
-   * @return a 500 INTERNAL SERVER ERROR response with the exception message
+   * @param e the thrown {@link MethodArgumentTypeMismatchException}
+   * @return a {@link ResponseEntity} with HTTP 400 (BAD REQUEST)
+   *         and a generic error message
    */
-  @ExceptionHandler(Exception.class)
-  public ResponseEntity<String> handleGenericExc(Exception e) {
-    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
-  }
-
   @ExceptionHandler(MethodArgumentTypeMismatchException.class)
   public ResponseEntity<String> handleTypeMismatch(MethodArgumentTypeMismatchException e) {
     return ResponseEntity.status(HttpStatus.BAD_REQUEST)
             .body("Invalid request parameter");
   }
 
+  /**
+   * Handles malformed or unreadable HTTP request bodies,
+   * for example invalid JSON syntax.
+   *
+   * @param e the thrown {@link HttpMessageNotReadableException}
+   * @return a {@link ResponseEntity} with HTTP 400 (BAD REQUEST)
+   *         and a generic error message
+   */
   @ExceptionHandler(HttpMessageNotReadableException.class)
   public ResponseEntity<String> handleNotReadable(HttpMessageNotReadableException e) {
     return ResponseEntity.status(HttpStatus.BAD_REQUEST)
             .body("Invalid request body");
   }
 
+  /**
+   * Handles validation errors triggered by {@code @Valid}
+   * annotated request bodies or parameters.
+   *
+   * @param e the thrown {@link MethodArgumentNotValidException}
+   * @return a {@link ResponseEntity} with HTTP 400 (BAD REQUEST)
+   *         and a generic validation error message
+   */
   @ExceptionHandler(MethodArgumentNotValidException.class)
   public ResponseEntity<String> handleValidation(MethodArgumentNotValidException e) {
     return ResponseEntity.status(HttpStatus.BAD_REQUEST)
             .body("Validation failed");
   }
 
+  /**
+   * Handles media access related errors, such as failures when
+   * accessing or processing stored media resources.
+   *
+   * @param e the thrown {@link MediaAccessException}
+   * @return a {@link ResponseEntity} with HTTP 500 (INTERNAL SERVER ERROR)
+   *         and a generic error message
+   */
+  @ExceptionHandler(MediaAccessException.class)
+  public ResponseEntity<String> handleMediaAccess(MediaAccessException e) {
+    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+            .body("Media access error");
+  }
 
+  /**
+   * Handles all uncaught exceptions that are not explicitly mapped
+   * to a specific HTTP status.
+   *
+   * <p>This serves as a fallback handler to prevent unhandled exceptions
+   * from leaking internal details to the client.
+   * </p>
+   *
+   * @param e the thrown {@link Exception}
+   * @return a {@link ResponseEntity} with HTTP 500 (INTERNAL SERVER ERROR)
+   *         containing the exception message
+   */
+  @ExceptionHandler(Exception.class)
+  public ResponseEntity<String> handleGenericExc(Exception e) {
+    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+  }
 }
