@@ -65,7 +65,7 @@ public class ProductValidator {
       Product existingProduct = productWithSameName.get();
 
       // If updating and found the same product by ID, allow it
-      if (existingProduct.getId().equals(excludeProductId)) {
+      if (excludeProductId != null && excludeProductId.equals(existingProduct.getId())) {
         return;
       }
 

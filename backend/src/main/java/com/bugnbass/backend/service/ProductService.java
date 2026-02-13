@@ -53,8 +53,11 @@ public class ProductService {
     public List<ProductResponseDto> getProducts(ProductFilter filter) {
 
         List<Product> allProducts = productRepository.findAll().stream()
-                .filter(Product::getActive)
+                .filter(p -> Boolean.TRUE.equals(p.getActive()))
                 .toList();
+
+        int pageSize = filter.pageSize() == null ? DEFAULT_PAGE_SIZE : filter.pageSize();
+        int pageNumber = filter.pageNumber() == null ? DEFAULT_PAGE_NUMBER : filter.pageNumber();
 
         return allProducts.stream()
                 .filter(p -> filter.name() == null
@@ -67,10 +70,10 @@ public class ProductService {
                         || p.getPrice() <= filter.priceMax())
                 .filter(p -> filter.brand() == null
                         || filter.brand().contains(p.getBrand()))
-                .skip(filter.pageNumber() == null ? DEFAULT_PAGE_NUMBER :
-                        (long) filter.pageNumber() * filter.pageSize())
-                .limit(filter.pageSize() == null ? DEFAULT_PAGE_SIZE : filter.pageSize())
+                .skip((long) pageNumber * pageSize)
+                .limit(pageSize)
                 .map(ProductResponseDto::fromEntity)
                 .toList();
     }
+
 }

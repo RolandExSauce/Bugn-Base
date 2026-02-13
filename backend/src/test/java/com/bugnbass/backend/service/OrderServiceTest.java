@@ -101,6 +101,7 @@ class OrderServiceTest {
         assertThat(savedOrder.getDeliveryDate()).isEqualTo(today.plusWeeks(2));
         assertThat(savedOrder.getTotalOrderPrice()).isEqualTo(250);
 
+        @SuppressWarnings("unchecked")
         ArgumentCaptor<List<OrderItem>> itemsCaptor = ArgumentCaptor.forClass((Class) List.class);
         verify(orderItemRepo).saveAll(itemsCaptor.capture());
         List<OrderItem> items = itemsCaptor.getValue();
