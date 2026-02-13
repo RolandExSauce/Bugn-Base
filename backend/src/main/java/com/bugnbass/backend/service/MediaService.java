@@ -1,5 +1,7 @@
 package com.bugnbass.backend.service;
 
+import com.bugnbass.backend.exceptions.ImageNotFoundException;
+import com.bugnbass.backend.exceptions.MediaAccessException;
 import com.bugnbass.backend.model.Product;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -94,19 +96,26 @@ public class MediaService {
      * @param relativePath the relative path of the image under the media root
      * @return the Resource representing the image
      */
+
     public Resource getImage(String relativePath) {
+
         try {
             Path filePath = mediaRoot.resolve(relativePath).normalize();
+
+            if (!filePath.startsWith(mediaRoot)) {
+                throw new ImageNotFoundException("Invalid image path");
+            }
+
             Resource resource = new UrlResource(filePath.toUri());
 
             if (!resource.exists() || !resource.isReadable()) {
-                throw new RuntimeException("Image not found: " + relativePath);
+                throw new ImageNotFoundException("Image not found: " + relativePath);
             }
 
             return resource;
 
         } catch (MalformedURLException e) {
-            throw new RuntimeException("Invalid image path", e);
+            throw new MediaAccessException("Invalid image path", e);
         }
     }
 
