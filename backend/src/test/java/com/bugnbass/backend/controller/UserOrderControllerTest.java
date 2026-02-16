@@ -6,8 +6,10 @@ import com.bugnbass.backend.exceptions.GlobalExceptionHandler;
 import com.bugnbass.backend.model.enums.OrderStatus;
 import com.bugnbass.backend.model.enums.PaymentMethod;
 import com.bugnbass.backend.security.AuthTokenFilter;
-import com.bugnbass.backend.service.OrderService;
+import com.bugnbass.backend.service.UserOrderService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.time.LocalDate;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,19 +20,22 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
-
-import java.time.LocalDate;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
-import org.springframework.security.test.context.support.WithMockUser;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(
         controllers = UserOrderController.class,
@@ -43,10 +48,14 @@ import org.springframework.security.test.context.support.WithMockUser;
 @Import(GlobalExceptionHandler.class)
 class UserOrderControllerTest {
 
-    @Autowired MockMvc mockMvc;
-    @Autowired ObjectMapper objectMapper;
+    @Autowired
+    MockMvc mockMvc;
 
-    @MockBean OrderService orderService;
+    @Autowired
+    ObjectMapper objectMapper;
+
+    @MockBean
+    UserOrderService userOrderService;
 
     // ---------- POST /bugnbass/api/user/orders ----------
 
@@ -60,13 +69,13 @@ class UserOrderControllerTest {
                         .content(objectMapper.writeValueAsString(dto)))
                 .andExpect(status().is4xxClientError());
 
-        verifyNoInteractions(orderService);
+        verifyNoInteractions(userOrderService);
     }
 
     @Test
     @WithMockUser(roles = "USER")
     void createOrder_withUser_returns201_andReturnsStatus_andPassesDtoToService() throws Exception {
-        when(orderService.createOrder(any())).thenReturn(OrderStatus.RECEIVED);
+        when(userOrderService.createOrder(any(OrderDto.class))).thenReturn(OrderStatus.RECEIVED);
 
         OrderDto dto = validOrderDto();
 
@@ -79,12 +88,12 @@ class UserOrderControllerTest {
                 .andExpect(content().string("\"RECEIVED\""));
 
         ArgumentCaptor<OrderDto> captor = ArgumentCaptor.forClass(OrderDto.class);
-        verify(orderService).createOrder(captor.capture());
+        verify(userOrderService).createOrder(captor.capture());
 
         assertThat(captor.getValue().shippingAddress()).isEqualTo(dto.shippingAddress());
         assertThat(captor.getValue().orderItems()).hasSize(1);
 
-        verifyNoMoreInteractions(orderService);
+        verifyNoMoreInteractions(userOrderService);
     }
 
     // ---------- GET /bugnbass/api/user/orders/{id} ----------
@@ -94,14 +103,14 @@ class UserOrderControllerTest {
         mockMvc.perform(get("/bugnbass/api/user/orders/{id}", 5))
                 .andExpect(status().is4xxClientError());
 
-        verifyNoInteractions(orderService);
+        verifyNoInteractions(userOrderService);
     }
 
     @Test
     @WithMockUser(roles = "USER")
     void getOrderById_withUser_returns200_andJson() throws Exception {
         OrderDto dto = validOrderDto();
-        when(orderService.getOrderById(5L)).thenReturn(dto);
+        when(userOrderService.getOrderById(5L)).thenReturn(dto);
 
         mockMvc.perform(get("/bugnbass/api/user/orders/{id}", 5))
                 .andExpect(status().isOk())
@@ -111,8 +120,8 @@ class UserOrderControllerTest {
                 .andExpect(jsonPath("$.deliveryFullname").value(dto.deliveryFullname()))
                 .andExpect(jsonPath("$.deliveryPostcode").value(dto.deliveryPostcode()));
 
-        verify(orderService).getOrderById(5L);
-        verifyNoMoreInteractions(orderService);
+        verify(userOrderService).getOrderById(5L);
+        verifyNoMoreInteractions(userOrderService);
     }
 
     // ---------- GET /bugnbass/api/user/orders/customer ----------
@@ -122,13 +131,13 @@ class UserOrderControllerTest {
         mockMvc.perform(get("/bugnbass/api/user/orders/customer"))
                 .andExpect(status().is4xxClientError());
 
-        verifyNoInteractions(orderService);
+        verifyNoInteractions(userOrderService);
     }
 
     @Test
     @WithMockUser(roles = "USER")
     void getOrdersForCustomer_withUser_returns200_andArray() throws Exception {
-        when(orderService.getOrdersByCustomer()).thenReturn(List.of(validOrderDto()));
+        when(userOrderService.getOrdersByCustomer()).thenReturn(List.of(validOrderDto()));
 
         mockMvc.perform(get("/bugnbass/api/user/orders/customer"))
                 .andExpect(status().isOk())
@@ -136,8 +145,8 @@ class UserOrderControllerTest {
                 .andExpect(jsonPath("$").isArray())
                 .andExpect(jsonPath("$.length()").value(1));
 
-        verify(orderService).getOrdersByCustomer();
-        verifyNoMoreInteractions(orderService);
+        verify(userOrderService).getOrdersByCustomer();
+        verifyNoMoreInteractions(userOrderService);
     }
 
     // ---------- PATCH /bugnbass/api/user/orders/cancel/{id} ----------
@@ -148,13 +157,13 @@ class UserOrderControllerTest {
                         .with(csrf()))
                 .andExpect(status().is4xxClientError());
 
-        verifyNoInteractions(orderService);
+        verifyNoInteractions(userOrderService);
     }
 
     @Test
     @WithMockUser(roles = "USER")
     void cancelOrder_withUser_returns200_andStatus() throws Exception {
-        when(orderService.cancelOrder(7L)).thenReturn(OrderStatus.CANCELED);
+        when(userOrderService.cancelOrder(7L)).thenReturn(OrderStatus.CANCELED);
 
         mockMvc.perform(patch("/bugnbass/api/user/orders/cancel/{id}", 7)
                         .with(csrf()))
@@ -162,8 +171,8 @@ class UserOrderControllerTest {
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(content().string("\"CANCELED\""));
 
-        verify(orderService).cancelOrder(7L);
-        verifyNoMoreInteractions(orderService);
+        verify(userOrderService).cancelOrder(7L);
+        verifyNoMoreInteractions(userOrderService);
     }
 
     // ---------- PATCH /bugnbass/api/user/orders/{id}/return ----------
@@ -174,13 +183,13 @@ class UserOrderControllerTest {
                         .with(csrf()))
                 .andExpect(status().is4xxClientError());
 
-        verifyNoInteractions(orderService);
+        verifyNoInteractions(userOrderService);
     }
 
     @Test
     @WithMockUser(roles = "USER")
     void returnOrder_withUser_returns200_andStatus() throws Exception {
-        when(orderService.returnOrder(9L)).thenReturn(OrderStatus.RETURNED);
+        when(userOrderService.returnOrder(9L)).thenReturn(OrderStatus.RETURNED);
 
         mockMvc.perform(patch("/bugnbass/api/user/orders/{id}/return", 9)
                         .with(csrf()))
@@ -188,8 +197,8 @@ class UserOrderControllerTest {
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(content().string("\"RETURNED\""));
 
-        verify(orderService).returnOrder(9L);
-        verifyNoMoreInteractions(orderService);
+        verify(userOrderService).returnOrder(9L);
+        verifyNoMoreInteractions(userOrderService);
     }
 
     // -------------------- HELPERS --------------------

@@ -1,10 +1,8 @@
 package com.bugnbass.backend.controller;
 
-import com.bugnbass.backend.dto.AdminUpdateUserDto;
 import com.bugnbass.backend.dto.ProductDto;
 import com.bugnbass.backend.model.Product;
-import com.bugnbass.backend.model.User;
-import com.bugnbass.backend.service.AdminService;
+import com.bugnbass.backend.service.AdminProductService;
 import com.bugnbass.backend.service.MediaService;
 import com.bugnbass.backend.service.OrderService;
 import java.util.List;
@@ -35,7 +33,7 @@ public class AdminProductController {
     private final MediaService mediaService;
 
     /** Service handling admin-related operations. */
-    private final AdminService adminService;
+    private final AdminProductService adminProductService;
 
     /** Service handling order-related operations. */
     private final OrderService orderService;
@@ -44,14 +42,14 @@ public class AdminProductController {
      * Constructs the AdminController with the required services.
      *
      * @param mediaService the MediaService instance
-     * @param adminService the AdminService instance
+     * @param adminProductService the AdminService instance
      * @param orderService the OrderService instance
      */
     public AdminProductController(MediaService mediaService,
-                                  AdminService adminService,
+                                  AdminProductService adminProductService,
                                   OrderService orderService) {
         this.mediaService = mediaService;
-        this.adminService = adminService;
+        this.adminProductService = adminProductService;
         this.orderService = orderService;
     }
 
@@ -63,7 +61,7 @@ public class AdminProductController {
      */
     @GetMapping("/product/{id}")
     public Product getProduct(@PathVariable(name = "id") String id) {
-        return adminService.getProduct(id);
+        return adminProductService.getProduct(id);
     }
 
     /**
@@ -73,7 +71,7 @@ public class AdminProductController {
      */
     @GetMapping("/products")
     public List<Product> getProducts() {
-        return adminService.getProducts();
+        return adminProductService.getProducts();
     }
 
     /**
@@ -84,7 +82,7 @@ public class AdminProductController {
      */
     @PostMapping("/add-product")
     public ResponseEntity<Product> addProduct(@RequestBody ProductDto newProduct) {
-        Product saved = adminService.addProduct(newProduct);
+        Product saved = adminProductService.addProduct(newProduct);
         return ResponseEntity.status(HttpStatus.CREATED).body(saved);
     }
 
@@ -96,7 +94,7 @@ public class AdminProductController {
      */
     @DeleteMapping("/delete-product/{id}")
     public ResponseEntity<Void> deleteProduct(@PathVariable(name = "id") String id) {
-        adminService.deleteProduct(id);
+        adminProductService.deleteProduct(id);
         return ResponseEntity.noContent().build();
     }
 
@@ -111,7 +109,7 @@ public class AdminProductController {
     public ResponseEntity<Void> updateProduct(
             @PathVariable(name = "id") String id,
             @RequestBody ProductDto productDto) {
-        adminService.updateProduct(id, productDto);
+        adminProductService.updateProduct(id, productDto);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 

@@ -2,7 +2,7 @@ package com.bugnbass.backend.controller;
 
 import com.bugnbass.backend.dto.AdminUpdateUserDto;
 import com.bugnbass.backend.model.User;
-import com.bugnbass.backend.service.AdminService;
+import com.bugnbass.backend.service.AdminUserService;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -38,7 +38,7 @@ public class AdminUserController {
     /**
      * Service responsible for administrative operations.
      */
-    private final AdminService adminService;
+    private final AdminUserService adminUserService;
 
     /**
      * Retrieves all users in the system.
@@ -47,7 +47,8 @@ public class AdminUserController {
      */
     @GetMapping
     public List<User> getUsers() {
-        return adminService.getUsers();
+
+        return adminUserService.getUsers();
     }
 
     /**
@@ -60,7 +61,7 @@ public class AdminUserController {
     public User getUserById(
             @PathVariable("id") String id
     ) {
-        return adminService.getUserById(id);
+        return adminUserService.getUserById(id);
     }
 
     /**
@@ -75,7 +76,7 @@ public class AdminUserController {
             @PathVariable("id") String id,
             @Valid @RequestBody AdminUpdateUserDto dto
     ) {
-        User updated = adminService.updateUser(id, dto);
+        User updated = adminUserService.updateUser(id, dto);
         return ResponseEntity.ok(updated);
     }
 
@@ -91,7 +92,7 @@ public class AdminUserController {
     public ResponseEntity<Void> deleteUser(
             @PathVariable("id") String id
     ) {
-        adminService.deleteUser(id);
+        adminUserService.deleteUser(id);
         return ResponseEntity.noContent().build();
     }
 }
