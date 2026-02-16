@@ -1,7 +1,7 @@
 package com.bugnbass.backend.controller;
 
 import com.bugnbass.backend.dto.OrderDto;
-import com.bugnbass.backend.service.OrderService;
+import com.bugnbass.backend.service.AdminOrderService;
 import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -25,15 +25,16 @@ import org.springframework.web.bind.annotation.RestController;
 public class AdminOrderController {
 
     /** Service handling order-related business logic. */
-    private final OrderService orderService;
+    private final AdminOrderService adminOrderService;
 
     /**
      * Constructs the AdminOrderController with the required OrderService.
      *
-     * @param orderService the OrderService instance
+     * @param adminOrderService the OrderService instance
      */
-    public AdminOrderController(OrderService orderService) {
-        this.orderService = orderService;
+    public AdminOrderController(AdminOrderService adminOrderService) {
+
+        this.adminOrderService = adminOrderService;
     }
 
     /**
@@ -43,7 +44,7 @@ public class AdminOrderController {
      */
     @GetMapping()
     public ResponseEntity<List<OrderDto>> getAllOrders() {
-        return ResponseEntity.ok(orderService.getAllOrders());
+        return ResponseEntity.ok(adminOrderService.getAllOrders());
     }
 
     /**
@@ -54,7 +55,7 @@ public class AdminOrderController {
      */
     @PatchMapping("/update")
     public ResponseEntity<OrderDto> updateOrder(@RequestBody OrderDto dto) {
-        return ResponseEntity.ok(orderService.updateOrder(dto));
+        return ResponseEntity.ok(adminOrderService.updateOrder(dto));
     }
 
     /**
@@ -65,7 +66,7 @@ public class AdminOrderController {
      */
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> deleteOrder(@PathVariable(name = "id") Long id) {
-        orderService.deleteOrder(id);
+        adminOrderService.deleteOrder(id);
         return ResponseEntity.noContent().build();
     }
 }

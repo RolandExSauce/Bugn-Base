@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
-import type { User } from "../../types/models";
+import type { Role, User } from "../../types/models";
+import AdminUserService from "../../services/admin.user.service";
 import AdminDeleteButton from "../common/AdminDeleteButton";
 import AdminUpdateButton from "../common/AdminUpdateButton";
 import AdminSelectRowButton from "../common/AdminSelectRowButton";
@@ -15,11 +16,33 @@ interface UserProps {
   user: User;
   handleSelect: (id: string) => void;
   selectedUserId: string | null;
+  onUpdated: (user: User) => void;
+  onDeleted: (id: string) => void;
 }
 
-const UserRow = ({ user, handleSelect, selectedUserId }: UserProps) => {
+type AdminUpdateUserDto = {
+  firstname: string;
+  lastname: string;
+  phone?: string | number;
+  address?: string;
+  postcode: number;
+  email: string;
+  active: boolean;
+  role: Role; // "ROLE_USER" | "ROLE_ADMIN"
+};
+
+const UserRow = ({
+  user,
+  handleSelect,
+  selectedUserId,
+  onUpdated,
+  onDeleted,
+}: UserProps) => {
   const [form, setForm] = useState<User>(user);
   const [isEdited, setIsEdited] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+
   const trRef = useRef<HTMLTableRowElement>(null);
 
   useEffect(() => setForm(user), [user]);
@@ -37,19 +60,18 @@ const UserRow = ({ user, handleSelect, selectedUserId }: UserProps) => {
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
-
     setIsEdited(true);
 
     if (e.target instanceof HTMLInputElement && e.target.type === "checkbox") {
       setForm({ ...form, [name]: e.target.checked });
+    } else if (name === "postcode") {
+      setForm({ ...form, [name]: Number(value) });
     } else {
       setForm({ ...form, [name]: value });
     }
   };
 
-  const handleSave = () => {
-    // todo: "do you want to save"
-
+  const validate = () => {
     const newInvalidInput = {
       firstname: false,
       lastname: false,
@@ -68,10 +90,15 @@ const UserRow = ({ user, handleSelect, selectedUserId }: UserProps) => {
       newInvalidInput.lastname = true;
       invalidInputs = true;
     }
-    if (!PHONE_REGEX.test(String(form.phone))) {
-      newInvalidInput.phone = true;
-      invalidInputs = true;
+
+    // phone kann optional sein → nur validieren wenn vorhanden
+    if (form.phone !== undefined && form.phone !== null && String(form.phone).trim() !== "") {
+      if (!PHONE_REGEX.test(String(form.phone))) {
+        newInvalidInput.phone = true;
+        invalidInputs = true;
+      }
     }
+
     if (!ADDRESS_REGEX.test(form.address ?? "")) {
       newInvalidInput.address = true;
       invalidInputs = true;
@@ -85,14 +112,64 @@ const UserRow = ({ user, handleSelect, selectedUserId }: UserProps) => {
       invalidInputs = true;
     }
 
-    if (invalidInputs) {
-      setInvalidInput(newInvalidInput);
-      return;
+    setInvalidInput(newInvalidInput);
+    return !invalidInputs;
+  };
+
+  const handleSave = async () => {
+    if (!validate()) return;
+
+    const dto: AdminUpdateUserDto = {
+      firstname: form.firstname,
+      lastname: form.lastname,
+      phone: form.phone,
+      address: form.address,
+      postcode: Number(form.postcode),
+      email: form.email,
+      active: form.active,
+      role: form.role,
+    };
+
+    try {
+      setIsSaving(true);
+      const updated = await AdminUserService.updateUser(form.id, dto);
+
+      // UI feedback
+      trRef.current?.classList.remove("user-row-success");
+      void trRef.current?.offsetWidth;
+      trRef.current?.classList.add("user-row-success");
+
+      setIsEdited(false);
+      handleSelect("");
+      onUpdated(updated);
+    } catch (err) {
+      console.error("Error updating user:", err);
+      alert("User konnte nicht gespeichert werden.");
+    } finally {
+      setIsSaving(false);
     }
+  };
 
-    // API call
-    // AdminService.updateUser(form);
+  const handleDelete = async () => {
+    const ok = confirm("Benutzer wirklich löschen/deaktivieren?");
+    if (!ok) return;
 
+    try {
+      setIsDeleting(true);
+      await AdminUserService.deleteUser(form.id);
+      onDeleted(form.id);
+    } catch (err) {
+      console.error("Error deleting user:", err);
+      alert("User konnte nicht gelöscht/deaktiviert werden.");
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  const handleUndoEdit = () => {
+    handleSelect("");
+    setForm(user);
+    setIsEdited(false);
     setInvalidInput({
       firstname: false,
       lastname: false,
@@ -101,31 +178,14 @@ const UserRow = ({ user, handleSelect, selectedUserId }: UserProps) => {
       postcode: false,
       email: false,
     });
-
-    trRef.current?.classList.remove("user-row-success");
-    void trRef.current?.offsetWidth;
-    trRef.current?.classList.add("user-row-success");
-    setTimeout(() => {
-      handleSelect("");
-      setIsEdited(false);
-    }, 800);
   };
 
-  const handleDelete = () => {
-    // first confirm, do you really want to delete
-    // AdminService.deleteUser(form.id);
-  };
-
-  const handleUndoEdit = () => {
-    handleSelect("");
-    setForm(user);
-  };
-
-  // render editable row if the row is selected
+  // Editable row
   if (selectedUserId === form.id) {
     return (
       <tr key={form.id} ref={trRef} className="editable-user-row">
         <td>{form.id}</td>
+
         <td>
           <input
             type="text"
@@ -139,6 +199,7 @@ const UserRow = ({ user, handleSelect, selectedUserId }: UserProps) => {
             </span>
           )}
         </td>
+
         <td>
           <input
             type="text"
@@ -152,11 +213,12 @@ const UserRow = ({ user, handleSelect, selectedUserId }: UserProps) => {
             </span>
           )}
         </td>
+
         <td>
           <input
             type="tel"
             name="phone"
-            value={form.phone}
+            value={form.phone ?? ""}
             onChange={handleChange}
           />
           {invalidInput.phone && (
@@ -165,11 +227,12 @@ const UserRow = ({ user, handleSelect, selectedUserId }: UserProps) => {
             </span>
           )}
         </td>
+
         <td>
           <input
             type="text"
             name="address"
-            value={form.address}
+            value={form.address ?? ""}
             onChange={handleChange}
           />
           {invalidInput.address && (
@@ -178,6 +241,7 @@ const UserRow = ({ user, handleSelect, selectedUserId }: UserProps) => {
             </span>
           )}
         </td>
+
         <td>
           <input
             type="number"
@@ -191,6 +255,7 @@ const UserRow = ({ user, handleSelect, selectedUserId }: UserProps) => {
             </span>
           )}
         </td>
+
         <td>
           <input
             type="email"
@@ -204,6 +269,7 @@ const UserRow = ({ user, handleSelect, selectedUserId }: UserProps) => {
             </span>
           )}
         </td>
+
         <td>
           <input
             type="checkbox"
@@ -212,60 +278,93 @@ const UserRow = ({ user, handleSelect, selectedUserId }: UserProps) => {
             onChange={handleChange}
           />
         </td>
+
         <td>
           <select name="role" value={form.role} onChange={handleChange}>
-            <option value="user">USER</option>
-            <option value="admin">ADMIN</option>
+            <option value="ROLE_USER">USER</option>
+            <option value="ROLE_ADMIN">ADMIN</option>
           </select>
         </td>
+
         <td>
-          <AdminUpdateButton disabled={!isEdited} action={handleSave} />
-          <button className="admin-user-action-button" onClick={handleUndoEdit}>
+        <div className="d-flex gap-2">
+          <button
+            className="btn btn-sm btn-success d-flex align-items-center gap-1"
+            onClick={handleSave}
+            disabled={!isEdited || isSaving}
+            title="Speichern"
+          >
             <img
-              width="25px"
-              height="25px"
-              src="/undo.svg"
-              alt="Undo user edit button icon"
+              src="/save.svg"
+              alt="Speichern"
+              style={{ width: 16, height: 16 }}
             />
           </button>
-        </td>
+          <button
+            className="btn btn-sm btn-secondary d-flex align-items-center gap-1"
+            onClick={handleUndoEdit}
+            title="Abbrechen"
+          >
+            <img
+              src="/undo.svg"
+              alt="Abbrechen"
+              style={{ width: 16, height: 16 }}
+            />
+          </button>
+        </div>
+      </td>
       </tr>
     );
   }
 
+  // Readonly row
   return (
     <tr key={form.id}>
       <td>{form.id}</td>
       <td>{form.firstname}</td>
       <td>{form.lastname}</td>
-      <td>{form.phone}</td>
-      <td>{form.address}</td>
+      <td>{form.phone ?? ""}</td>
+      <td>{form.address ?? ""}</td>
       <td>{form.postcode}</td>
       <td>{form.email}</td>
       <td>
-        <input
-          type="checkbox"
-          name="active"
-          disabled
-          checked={form.active}
-          onChange={handleChange}
-        />
+        <input type="checkbox" disabled checked={form.active} readOnly />
       </td>
       <td>
-        <select
-          disabled={true}
-          name="role"
-          value={form.role}
-          onChange={handleChange}
-        >
-          <option value="user">USER</option>
-          <option value="admin">ADMIN</option>
+        <select disabled name="role" value={form.role} onChange={handleChange}>
+          <option value="ROLE_USER">USER</option>
+          <option value="ROLE_ADMIN">ADMIN</option>
         </select>
       </td>
       <td>
-        <AdminSelectRowButton action={() => handleSelect(form.id)} />
-        <AdminDeleteButton action={handleDelete} />
+        <div className="d-flex gap-2">
+          <button
+            title="User bearbeiten"
+            className="btn btn-sm btn-outline-primary d-flex align-items-center gap-1"
+            onClick={() => handleSelect(form.id)}
+          >
+            <img
+              src="/update.svg"
+              alt="Bearbeiten"
+              style={{ width: 14, height: 14 }}
+            />
+          </button>
+
+          <button
+            title="User löschen/deaktivieren"
+            className="btn btn-sm btn-outline-danger d-flex align-items-center gap-1"
+            onClick={handleDelete}
+            disabled={isDeleting}
+          >
+            <img
+              src="/delete.svg"
+              alt="Löschen"
+              style={{ width: 14, height: 14 }}
+            />
+          </button>
+        </div>
       </td>
+
     </tr>
   );
 };

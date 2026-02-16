@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Order } from "../../components/order/Order";
-import type { Order as OrderDTO, User } from "../../types/models";
+import type { Order as OrderDTO, User, MessageDto } from "../../types/models";
 import {
   ADDRESS_REGEX,
   EMAIL_REGEX,
@@ -12,11 +12,14 @@ import {
 import { useAuthContext } from "../../context/AuthContext";
 import UserOrderService from "../../services/user.order.service";
 import UserProfileService from "../../services/user.profile.service";
+import MessageService from "../../services/message.service";
 
 const UserProfil = () => {
   const { auth, logout } = useAuthContext();
+
   const [isEdited, setIsEdited] = useState(false);
   const [orders, setOrders] = useState<OrderDTO[]>([]);
+  const [inboxCount, setInboxCount] = useState(0);
 
   const navigate = useNavigate();
 
@@ -52,10 +55,18 @@ const UserProfil = () => {
       email: auth.user.email ?? "",
     });
 
-    // Fetch real orders for the user
+    // Orders
     UserOrderService.getOrdersForCustomer()
       .then((data) => setOrders(data))
       .catch((err) => console.error("Error fetching orders:", err));
+
+    // Inbox counter (nur beantwortete Nachrichten)
+    if (auth.role === "ROLE_USER") {
+  MessageService.getInboxUnreadCount()
+    .then(setInboxCount)
+    .catch((err) => console.error("Error fetching unread count:", err));
+}
+
   }, [auth]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -68,6 +79,7 @@ const UserProfil = () => {
 
   const handleSaveUserDetails = async (e: React.FormEvent) => {
     e.preventDefault();
+
     const newInvalidInput = {
       firstname: false,
       lastname: false,
@@ -116,7 +128,6 @@ const UserProfil = () => {
     }
 
     setInvalidInput(newInvalidInput);
-
     if (hasError) return;
 
     try {
@@ -124,9 +135,11 @@ const UserProfil = () => {
         id: auth!.user.id,
         ...userProfileForm,
       });
+
       formRef.current?.classList.remove("success-animation");
       void formRef.current?.offsetWidth;
       formRef.current?.classList.add("success-animation");
+
       setIsEdited(false);
       auth!.user = updatedUser;
     } catch (error) {
@@ -219,13 +232,13 @@ const UserProfil = () => {
           >
             Speichern
           </button>
+
           {invalidInput.firstname && (
             <p className="text-danger">Gultiger Vorname ist erforderlich</p>
           )}
           {invalidInput.lastname && (
             <p className="text-danger">Gültiger Nachname ist erforderlich</p>
           )}
-
           {invalidInput.email && (
             <p className="text-danger">Gültiger E-Mail ist erforderlich</p>
           )}
@@ -250,6 +263,19 @@ const UserProfil = () => {
             </Link>
           )}
 
+          {auth?.role === "ROLE_USER" && (
+            <button
+              type="button"
+              onClick={() => navigate("/my-messages")}
+              className="profile-save-button bg-primary rounded text-white px-4 py-2 fw-bold h4 d-flex align-items-center gap-2"
+            >
+              Meine Nachrichten
+              {inboxCount > 0 && (
+                <span className="badge bg-light text-dark">{inboxCount}</span>
+              )}
+            </button>
+          )}
+
           <button
             onClick={logout}
             type="button"
@@ -271,4 +297,5 @@ const UserProfil = () => {
     </div>
   );
 };
+
 export default UserProfil;

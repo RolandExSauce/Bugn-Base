@@ -10,35 +10,52 @@ import com.bugnbass.backend.model.Product;
 import com.bugnbass.backend.model.User;
 import com.bugnbass.backend.model.enums.OrderStatus;
 import com.bugnbass.backend.model.enums.PaymentMethod;
-import com.bugnbass.backend.model.enums.UserRole;
 import com.bugnbass.backend.repository.OrderItemRepository;
 import com.bugnbass.backend.repository.OrderRepository;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.*;
+import org.mockito.ArgumentCaptor;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Optional;
-
-import static org.assertj.core.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class OrderServiceTest {
+class UserOrderServiceTest {
 
-    @Mock OrderRepository orderRepo;
-    @Mock OrderItemRepository orderItemRepo;
-    @Mock ProductService productService;
-    @Mock UserService userService;
-    @Mock OrderMapper orderMapper;
+    @Mock
+    OrderRepository orderRepo;
 
-    @InjectMocks OrderService orderService;
+    @Mock
+    OrderItemRepository orderItemRepo;
+
+    @Mock
+    ProductService productService;
+
+    @Mock
+    UserService userService;
+
+    @Mock
+    OrderMapper orderMapper;
+
+    @InjectMocks
+    UserOrderService orderService;
 
     private final String email = "user@test.com";
 
@@ -56,7 +73,7 @@ class OrderServiceTest {
     // -------------------- createOrder --------------------
 
     @Test
-    void createOrder_createsOrder_savesOrderAndItems_returnsReceived() throws Exception {
+    void createOrder_createsOrder_savesOrderAndItems_returnsReceived() {
         LocalDate today = LocalDate.now();
 
         User user = mock(User.class);
@@ -107,6 +124,7 @@ class OrderServiceTest {
         List<OrderItem> items = itemsCaptor.getValue();
 
         assertThat(items).hasSize(2);
+
         assertThat(items.get(0).getOrder()).isSameAs(savedOrder);
         assertThat(items.get(0).getProduct()).isSameAs(p1);
         assertThat(items.get(0).getQuantity()).isEqualTo(2);
@@ -184,9 +202,8 @@ class OrderServiceTest {
     }
 
     @Test
-    void getOrderById_throwsAccessDenied_whenNotOwnerAndNotAdmin() {
+    void getOrderById_throwsAccessDenied_whenNotOwner() {
         User authUser = mock(User.class);
-        when(authUser.getRole()).thenReturn(UserRole.ROLE_USER);
         when(userService.findCustomerByEmail(email)).thenReturn(Optional.of(authUser));
 
         User owner = mock(User.class);
@@ -203,31 +220,6 @@ class OrderServiceTest {
         verify(userService).findCustomerByEmail(email);
         verifyNoInteractions(orderMapper);
         verifyNoMoreInteractions(orderRepo, userService);
-    }
-
-    @Test
-    void getOrderById_allowsAdmin_whenNotOwner() {
-        User admin = mock(User.class);
-        when(admin.getRole()).thenReturn(UserRole.ROLE_ADMIN);
-        when(userService.findCustomerByEmail(email)).thenReturn(Optional.of(admin));
-
-        User owner = mock(User.class);
-
-        Order order = mock(Order.class);
-        when(orderRepo.findById(5L)).thenReturn(Optional.of(order));
-        when(order.getUser()).thenReturn(owner);
-
-        OrderDto mapped = mock(OrderDto.class);
-        when(orderMapper.toDto(order)).thenReturn(mapped);
-
-        OrderDto result = orderService.getOrderById(5L);
-
-        assertThat(result).isSameAs(mapped);
-
-        verify(orderRepo).findById(5L);
-        verify(userService).findCustomerByEmail(email);
-        verify(orderMapper).toDto(order);
-        verifyNoMoreInteractions(orderRepo, userService, orderMapper);
     }
 
     // -------------------- getOrdersByCustomer --------------------
@@ -310,9 +302,8 @@ class OrderServiceTest {
     }
 
     @Test
-    void cancelOrder_throws_whenNotOwnerAndNotAdmin() {
+    void cancelOrder_throws_whenNotOwner() {
         User user = mock(User.class);
-        when(user.getRole()).thenReturn(UserRole.ROLE_USER);
         when(userService.findCustomerByEmail(email)).thenReturn(Optional.of(user));
 
         User owner = mock(User.class);
@@ -324,31 +315,6 @@ class OrderServiceTest {
         assertThatThrownBy(() -> orderService.cancelOrder(7L))
                 .isInstanceOf(RuntimeException.class)
                 .hasMessageContaining("only cancel your own orders");
-
-        verify(orderRepo).findById(7L);
-        verify(userService).findCustomerByEmail(email);
-        verifyNoMoreInteractions(orderRepo, userService);
-        verifyNoInteractions(orderMapper, orderItemRepo, productService);
-    }
-
-    @Test
-    void cancelOrder_allowsAdmin_toCancelForeignOrder() {
-        User admin = mock(User.class);
-        when(admin.getRole()).thenReturn(UserRole.ROLE_ADMIN);
-        when(userService.findCustomerByEmail(email)).thenReturn(Optional.of(admin));
-
-        User owner = mock(User.class);
-
-        Order order = mock(Order.class);
-        when(orderRepo.findById(7L)).thenReturn(Optional.of(order));
-        when(order.getUser()).thenReturn(owner);
-        when(order.getOrderStatus()).thenReturn(OrderStatus.RECEIVED);
-
-        OrderStatus result = orderService.cancelOrder(7L);
-
-        assertThat(result).isEqualTo(OrderStatus.CANCELED);
-        verify(order).setOrderStatus(OrderStatus.CANCELED);
-        verify(orderRepo).save(order);
 
         verify(orderRepo).findById(7L);
         verify(userService).findCustomerByEmail(email);
@@ -474,34 +440,8 @@ class OrderServiceTest {
     }
 
     @Test
-    void returnOrder_allowsAdmin_toReturnForeignOrder_ifDelivered() {
-        User admin = mock(User.class);
-        when(admin.getRole()).thenReturn(UserRole.ROLE_ADMIN);
-        when(userService.findCustomerByEmail(email)).thenReturn(Optional.of(admin));
-
-        User owner = mock(User.class);
-
-        Order order = mock(Order.class);
-        when(orderRepo.findById(9L)).thenReturn(Optional.of(order));
-        when(order.getUser()).thenReturn(owner);
-        when(order.getOrderStatus()).thenReturn(OrderStatus.DELIVERED);
-
-        OrderStatus result = orderService.returnOrder(9L);
-
-        assertThat(result).isEqualTo(OrderStatus.RETURNED);
-        verify(order).setOrderStatus(OrderStatus.RETURNED);
-        verify(orderRepo).save(order);
-
-        verify(orderRepo).findById(9L);
-        verify(userService).findCustomerByEmail(email);
-        verifyNoMoreInteractions(orderRepo, userService);
-        verifyNoInteractions(orderMapper, orderItemRepo, productService);
-    }
-
-    @Test
-    void returnOrder_throws_whenNotOwnerAndNotAdmin() {
+    void returnOrder_throws_whenNotOwner() {
         User user = mock(User.class);
-        when(user.getRole()).thenReturn(UserRole.ROLE_USER); // gebraucht, weil NOT owner
         when(userService.findCustomerByEmail(email)).thenReturn(Optional.of(user));
 
         User owner = mock(User.class);
@@ -518,113 +458,5 @@ class OrderServiceTest {
         verify(userService).findCustomerByEmail(email);
         verifyNoMoreInteractions(orderRepo, userService);
         verifyNoInteractions(orderMapper, orderItemRepo, productService);
-    }
-
-    // -------------------- getAllOrders --------------------
-
-    @Test
-    void getAllOrders_mapsAll() {
-        Order o1 = mock(Order.class);
-        when(orderRepo.findAll()).thenReturn(List.of(o1));
-
-        OrderDto d1 = mock(OrderDto.class);
-        when(orderMapper.toDto(o1)).thenReturn(d1);
-
-        List<OrderDto> result = orderService.getAllOrders();
-
-        assertThat(result).containsExactly(d1);
-
-        verify(orderRepo).findAll();
-        verify(orderMapper).toDto(o1);
-        verifyNoMoreInteractions(orderRepo, orderMapper);
-        verifyNoInteractions(userService, orderItemRepo, productService);
-    }
-
-    @Test
-    void getAllOrders_returnsEmptyList_whenNoOrders() {
-        when(orderRepo.findAll()).thenReturn(List.of());
-
-        List<OrderDto> result = orderService.getAllOrders();
-
-        assertThat(result).isEmpty();
-
-        verify(orderRepo).findAll();
-        verifyNoMoreInteractions(orderRepo);
-        verifyNoInteractions(orderMapper, userService, orderItemRepo, productService);
-    }
-
-    // -------------------- updateOrder --------------------
-
-    @Test
-    void updateOrder_updatesStatus_andReturnsMappedDto() {
-        Order order = mock(Order.class);
-        when(orderRepo.findById(1L)).thenReturn(Optional.of(order));
-
-        OrderDto input = new OrderDto(
-                1L, null, null, List.of(), null, null,
-                OrderStatus.SHIPPING, null, null, null, null
-        );
-
-        OrderDto mapped = mock(OrderDto.class);
-        when(orderMapper.toDto(order)).thenReturn(mapped);
-
-        OrderDto result = orderService.updateOrder(input);
-
-        assertThat(result).isSameAs(mapped);
-
-        verify(orderRepo).findById(1L);
-        verify(order).setOrderStatus(OrderStatus.SHIPPING);
-        verify(orderRepo).save(order);
-        verify(orderMapper).toDto(order);
-
-        verifyNoMoreInteractions(orderRepo, orderMapper);
-        verifyNoInteractions(userService, orderItemRepo, productService);
-    }
-
-    @Test
-    void updateOrder_throws_whenOrderNotFound() {
-        when(orderRepo.findById(1L)).thenReturn(Optional.empty());
-
-        OrderDto input = new OrderDto(
-                1L, null, null, List.of(), null, null,
-                OrderStatus.SHIPPING, null, null, null, null
-        );
-
-        assertThatThrownBy(() -> orderService.updateOrder(input))
-                .isInstanceOf(RuntimeException.class)
-                .hasMessageContaining("Order not found");
-
-        verify(orderRepo).findById(1L);
-        verifyNoMoreInteractions(orderRepo);
-        verifyNoInteractions(orderMapper, userService, orderItemRepo, productService);
-    }
-
-    // -------------------- deleteOrder --------------------
-
-    @Test
-    void deleteOrder_deletesWhenFound() {
-        Order order = mock(Order.class);
-        when(orderRepo.findById(2L)).thenReturn(Optional.of(order));
-
-        orderService.deleteOrder(2L);
-
-        verify(orderRepo).findById(2L);
-        verify(orderRepo).delete(order);
-        verifyNoMoreInteractions(orderRepo);
-        verifyNoInteractions(orderMapper, userService, orderItemRepo, productService);
-    }
-
-    @Test
-    void deleteOrder_throws_whenOrderNotFound() {
-        when(orderRepo.findById(2L)).thenReturn(Optional.empty());
-
-        assertThatThrownBy(() -> orderService.deleteOrder(2L))
-                .isInstanceOf(RuntimeException.class)
-                .hasMessageContaining("Order not found");
-
-        verify(orderRepo).findById(2L);
-        verify(orderRepo, never()).delete(any());
-        verifyNoMoreInteractions(orderRepo);
-        verifyNoInteractions(orderMapper, userService, orderItemRepo, productService);
     }
 }

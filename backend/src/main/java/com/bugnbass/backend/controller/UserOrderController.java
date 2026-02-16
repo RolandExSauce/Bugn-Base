@@ -2,7 +2,7 @@ package com.bugnbass.backend.controller;
 
 import com.bugnbass.backend.dto.OrderDto;
 import com.bugnbass.backend.model.enums.OrderStatus;
-import com.bugnbass.backend.service.OrderService;
+import com.bugnbass.backend.service.UserOrderService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -31,7 +31,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserOrderController {
 
     /** Service handling order-related business logic. */
-    private final OrderService orderService;
+    private final UserOrderService userOrderService;
 
     /**
      * Creates a new order for the authenticated user.
@@ -41,7 +41,7 @@ public class UserOrderController {
      */
     @PostMapping
     public ResponseEntity<OrderStatus> createOrder(@RequestBody OrderDto dto) {
-        OrderStatus status = orderService.createOrder(dto);
+        OrderStatus status = userOrderService.createOrder(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(status);
     }
 
@@ -53,7 +53,7 @@ public class UserOrderController {
      */
     @GetMapping("/{id}")
     public ResponseEntity<OrderDto> getOrderById(@PathVariable(name = "id") Long id) {
-        OrderDto dto = orderService.getOrderById(id);
+        OrderDto dto = userOrderService.getOrderById(id);
         return ResponseEntity.ok(dto);
     }
 
@@ -64,7 +64,7 @@ public class UserOrderController {
      */
     @GetMapping("/customer")
     public ResponseEntity<List<OrderDto>> getOrdersForCustomer() {
-        List<OrderDto> orders = orderService.getOrdersByCustomer();
+        List<OrderDto> orders = userOrderService.getOrdersByCustomer();
         return ResponseEntity.ok(orders);
     }
 
@@ -76,7 +76,7 @@ public class UserOrderController {
      */
     @PatchMapping("/cancel/{id}")
     public ResponseEntity<OrderStatus> cancelOrder(@PathVariable(name = "id") Long id) {
-        OrderStatus status = orderService.cancelOrder(id);
+        OrderStatus status = userOrderService.cancelOrder(id);
         return ResponseEntity.ok(status);
     }
 
@@ -88,7 +88,7 @@ public class UserOrderController {
      */
     @PatchMapping("/{id}/return")
     public ResponseEntity<OrderStatus> returnOrder(@PathVariable(name = "id") Long id) {
-        OrderStatus status = orderService.returnOrder(id);
+        OrderStatus status = userOrderService.returnOrder(id);
         return ResponseEntity.ok(status);
     }
 }

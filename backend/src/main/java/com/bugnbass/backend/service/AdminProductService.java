@@ -9,39 +9,35 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 /**
- * Service class for admin-specific product operations such as retrieval,
+ * Service responsible for administrative product operations such as retrieval,
  * creation, update, and soft deletion.
  */
 @Service
-public class AdminService {
+public class AdminProductService {
 
-    /**
-     * Repository for CRUD operations on Product entities.
-     */
     private final ProductRepository productRepository;
-
-    /**
-     * Validator for product data.
-     */
     private final ProductValidator productValidator;
 
     /**
-     * Constructs the AdminService with required dependencies.
+     * Constructs the AdminProductService with required dependencies.
      *
-     * @param productRepository the ProductRepository instance
-     * @param productValidator  the ProductValidator instance
+     * @param productRepository repository for product persistence
+     * @param productValidator  validator for product business rules
      */
-    public AdminService(ProductRepository productRepository, ProductValidator productValidator) {
+    public AdminProductService(
+            ProductRepository productRepository,
+            ProductValidator productValidator
+    ) {
         this.productRepository = productRepository;
         this.productValidator = productValidator;
     }
 
     /**
-     * Retrieves a product by its ID.
+     * Retrieves a product by its identifier.
      *
-     * @param id the product ID as String
-     * @return the Product object
-     * @throws ProductNotFoundException if product with given ID does not exist
+     * @param id the product identifier as string
+     * @return the {@link Product} entity
+     * @throws ProductNotFoundException if no product with the given ID exists
      */
     public Product getProduct(String id) {
         return productRepository.findById(Long.valueOf(id))
@@ -51,20 +47,21 @@ public class AdminService {
     /**
      * Retrieves all products.
      *
-     * @return a list of all Product objects
+     * @return list of all {@link Product} entities
      */
     public List<Product> getProducts() {
         return productRepository.findAll();
     }
 
     /**
-     * Adds a new product to the repository.
+     * Creates and persists a new product.
      *
-     * @param dto the ProductDTO containing product data
-     * @return the saved Product object
+     * @param dto the product data transfer object
+     * @return the persisted {@link Product}
      */
     public Product addProduct(ProductDto dto) {
         productValidator.validateProductData(dto);
+
         Product product = Product.builder()
                 .name(dto.name())
                 .category(dto.category())
@@ -76,29 +73,33 @@ public class AdminService {
                 .shippingTime(dto.shippingTime())
                 .active(dto.active())
                 .build();
+
         return productRepository.save(product);
     }
 
     /**
-     * Soft deletes a product by setting its active flag to false.
-     * Note: Does not remove the product from the database.
+     * Soft deletes a product by marking it as inactive.
      *
-     * @param id the product ID as String
+     * @param id the product identifier as string
      */
     public void deleteProduct(String id) {
         Product product = getProduct(id);
         product.setActive(false);
+        productRepository.save(product);
     }
 
     /**
-     * Updates an existing product with provided data.
+     * Updates an existing product with provided values.
      *
-     * @param id  the product ID as String
-     * @param dto the ProductDTO containing updated product data
+     * <p>Only non-null fields in the DTO are applied.
+     *
+     * @param id  the product identifier as string
+     * @param dto the product update data
      */
     public void updateProduct(String id, ProductDto dto) {
         Long productId = Long.valueOf(id);
         Product product = getProduct(id);
+
         productValidator.validateProductData(dto, productId);
 
         if (dto.name() != null) {

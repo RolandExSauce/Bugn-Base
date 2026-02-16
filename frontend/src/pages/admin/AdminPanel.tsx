@@ -1,9 +1,8 @@
 import { useState } from "react";
 import OrdersList from "../../components/admin/OrdersList";
 import ProductsList from "../../components/admin/ProductsList";
-// import UsersList from "../../components/admin/UsersList";
-// import MessagesList from "../../components/admin/MessagesList";
-// import OrdersList from "../../components/admin/OrdersList";
+import UsersList from "../../components/admin/UsersList";
+import MessagesList from "../../components/admin/MessagesList";
 
 export default function AdminPage() {
   const [selected, setSelected] = useState("bestellungen");
@@ -65,8 +64,8 @@ export default function AdminPage() {
       <div>
         {selected === "bestellungen" && <OrdersList />}
         {selected === "produkte" && <ProductsList />}
-        {/* {selected === "benutzer" && <UsersList />}
-        {selected === "nachrichten" && <MessagesList />} */}
+        {selected === "benutzer" && <UsersList />}
+        {selected === "nachrichten" && <MessagesList />}
       </div>
     </div>
   );

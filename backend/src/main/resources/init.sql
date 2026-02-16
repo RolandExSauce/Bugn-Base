@@ -79,11 +79,16 @@ CREATE TABLE order_items
 CREATE TABLE messages
 (
     message_id UUID PRIMARY KEY,
+    user_id           UUID           REFERENCES users (id) ON DELETE SET NULL,
     name       VARCHAR(100),
     email      VARCHAR(255),
     subject    VARCHAR(255),
     message    TEXT,
-    created_at TIMESTAMP
+    created_at TIMESTAMP,
+    admin_reply TEXT,
+    replied_at TIMESTAMP,
+    status varchar(50) NOT NULL,
+    read_at TIMESTAMP
 );
 
 CREATE TABLE reviews
@@ -312,27 +317,80 @@ VALUES ('r-001', 1, '11111111-1111-1111-1111-111111111111', 5, 'Fantastic piano!
        ('r-010', 4, 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', 1, 'Very disappointed with the build quality.',
         '2025-09-29 17:40:00');
 
-INSERT INTO messages (message_id, name, email, subject, message, created_at)
-VALUES ('00000000-0000-0000-0000-000000000001', 'Alice Steiner', 'alice.steiner@example.com',
-        'Shipping Delay', 'Hi, I have not received my order yet. Can you check?', '2025-05-10 10:15:00'),
-       ('00000000-0000-0000-0000-000000000002', 'Mark Weber', 'mark.weber@example.com',
-        'Product Question', 'Is the PrestoTune White-F suitable for beginners?', '2025-05-11 14:30:00'),
-       ('00000000-0000-0000-0000-000000000003', 'Sara Müller', 'sara.mueller@example.com',
-        NULL, 'Just wanted to say your shop is amazing. Thank you!', '2025-05-12 09:45:00'),
-       ('00000000-0000-0000-0000-000000000004', 'Tom Berger', 'tom.berger@example.com',
-        'Broken Item', 'My violin arrived with a broken string. Can it be replaced?', '2025-05-13 16:10:00'),
-       ('00000000-0000-0000-0000-000000000005', 'Nina Krüger', 'nina.krueger@example.com',
-        'Invoice Request', 'Could you resend my invoice?', '2025-05-13 17:55:00'),
-       ('00000000-0000-0000-0000-000000000006', 'David Klein', 'david.klein@example.com',
-        'Return Request', 'I want to return a piano I ordered. What is the process?', '2025-05-14 11:05:00'),
-       ('00000000-0000-0000-0000-000000000007', 'Julia Hoffmann', 'julia.hoffmann@example.com',
-        NULL, 'Thank you for the fast and safe delivery!', '2025-05-14 13:40:00'),
-       ('00000000-0000-0000-0000-000000000008', 'Jan Lehmann', 'jan.lehmann@example.com',
-        'Pickup Option', 'Can I pick up the product directly from your store?', '2025-05-15 08:25:00'),
-       ('00000000-0000-0000-0000-000000000009', 'Emma Bauer', 'emma.bauer@example.com',
-        NULL, 'Thanks for your help earlier! Great customer service.', '2025-05-17 14:50:00'),
-       ('00000000-0000-0000-0000-000000000010', 'Tobias König', 'tobias.koenig@example.com',
-        'Gift Packaging', 'Do you offer gift wrapping for piano purchases?', '2025-05-18 11:35:00');
+INSERT INTO messages (
+    message_id, user_id, name, email, subject, message, created_at, admin_reply, replied_at, status, read_at
+)
+VALUES
+    ('00000000-0000-0000-0000-000000000001', 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb',
+     'Maria Lopez', 'maria82@example.com',
+     'Shipping Delay',
+     'Hi, I have not received my order yet. Can you check?',
+     '2025-05-10 10:15:00',
+     NULL, NULL, 'OPEN', NULL),
+
+    ('00000000-0000-0000-0000-000000000002', '22222222-2222-2222-2222-222222222222',
+     'Jack Roberts', 'jack.r@example.com',
+     'Product Question',
+     'Is the PrestoTune White-F suitable for beginners?',
+     '2025-05-11 14:30:00',
+     NULL, NULL, 'OPEN', NULL),
+
+    ('00000000-0000-0000-0000-000000000003', '33333333-3333-3333-3333-333333333333',
+     'Li Chen', 'li.chen@example.com',
+     NULL,
+     'Just wanted to say your shop is amazing. Thank you!',
+     '2025-05-12 09:45:00',
+     NULL, NULL, 'OPEN', NULL),
+
+    ('00000000-0000-0000-0000-000000000004', '44444444-4444-4444-4444-444444444444',
+     'Sophie Campbell', 'sophie.c@example.com',
+     'Broken Item',
+     'My violin arrived with a broken string. Can it be replaced?',
+     '2025-05-13 16:10:00',
+     NULL, NULL, 'OPEN', NULL),
+
+    ('00000000-0000-0000-0000-000000000005', '55555555-5555-5555-5555-555555555555',
+     'Daniel Klein', 'daniel.k@example.com',
+     'Invoice Request',
+     'Could you resend my invoice?',
+     '2025-05-13 17:55:00',
+     NULL, NULL, 'OPEN', NULL),
+
+    ('00000000-0000-0000-0000-000000000006', '66666666-6666-6666-6666-666666666666',
+     'Nina Vargas', 'nina.v@example.com',
+     'Return Request',
+     'I want to return a piano I ordered. What is the process?',
+     '2025-05-14 11:05:00',
+     NULL, NULL, 'OPEN', NULL),
+
+    ('00000000-0000-0000-0000-000000000007', '77777777-7777-7777-7777-777777777777',
+     'Omar Tariq', 'omar.t@example.com',
+     NULL,
+     'Thank you for the fast and safe delivery!',
+     '2025-05-14 13:40:00',
+     NULL, NULL, 'OPEN', NULL),
+
+    ('00000000-0000-0000-0000-000000000008', 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa',
+     'Peo Oneal', 'user@mail.com',
+     'Pickup Option',
+     'Can I pick up the product directly from your store?',
+     '2025-05-15 08:25:00',
+     NULL, NULL, 'OPEN', NULL),
+
+    ('00000000-0000-0000-0000-000000000009', 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa',
+     'Peo Oneal', 'user@mail.com',
+     NULL,
+     'Thanks for your help earlier! Great customer service.',
+     '2025-05-17 14:50:00',
+     NULL, NULL, 'OPEN', NULL),
+
+    ('00000000-0000-0000-0000-000000000010', 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb',
+     'Maria Lopez', 'maria82@example.com',
+     'Gift Packaging',
+     'Do you offer gift wrapping for piano purchases?',
+     '2025-05-18 11:35:00',
+     NULL, NULL, 'OPEN', NULL);
+
 
 INSERT INTO order_items (order_id, product_id, quantity, price) VALUES
 -- Order 99

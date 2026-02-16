@@ -99,7 +99,7 @@ public class SecurityConfig {
                                 "/bugnbass/api/swagger-ui/**",
                                 "/bugnbass/api/v3/api-docs/**"
                         ).permitAll()
-                        // admin endpoints require authentication
+                        .requestMatchers("/bugnbass/api/messages/**").authenticated()
                         .requestMatchers("/bugnbass/api/admin/**").authenticated()
                         .anyRequest().permitAll()
                 )

@@ -1,5 +1,6 @@
 import { useRef, useState } from "react";
 import { EMAIL_REGEX, NAME_REGEX, TEXT_REGEX } from "../utils/regex";
+import MessageService from "../services/message.service";
 
 const Contact = () => {
   const formRef = useRef<HTMLDivElement>(null);
@@ -7,12 +8,14 @@ const Contact = () => {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
+    subject: "",
     message: "",
   });
 
   const [formInvalid, setFormInvalid] = useState({
     name: false,
     email: false,
+    subject: false,
     message: false,
   });
 
@@ -20,25 +23,39 @@ const Contact = () => {
     setFormData((prev) => ({ ...prev, [key]: value }));
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
+    // subject validation: optional -> wenn Pflicht, dann `formData.subject.trim().length === 0`
     const invalidFields = {
       name: !NAME_REGEX.test(formData.name),
       email: !EMAIL_REGEX.test(formData.email),
+      subject: formData.subject.trim().length === 0, // <-- Betreff Pflicht (falls optional: einfach `false`)
       message: !TEXT_REGEX.test(formData.message),
     };
+
     setFormInvalid(invalidFields);
 
     const hasError = Object.values(invalidFields).some(Boolean);
     if (hasError) return;
 
-    formRef.current?.classList.remove("success-animation");
-    void formRef.current?.offsetWidth;
-    formRef.current?.classList.add("success-animation");
+    try {
+      await MessageService.createMessage({
+        name: formData.name,
+        email: formData.email,
+        subject: formData.subject, // <-- jetzt mitsenden
+        message: formData.message,
+      });
 
-    setTimeout(() => {
-      setFormData({ name: "", email: "", message: "" });
-      setFormInvalid({ name: false, email: false, message: false });
-    }, 800);
+      formRef.current?.classList.remove("success-animation");
+      void formRef.current?.offsetWidth;
+      formRef.current?.classList.add("success-animation");
+
+      setTimeout(() => {
+        setFormData({ name: "", email: "", subject: "", message: "" });
+        setFormInvalid({ name: false, email: false, subject: false, message: false });
+      }, 800);
+    } catch (err) {
+      console.error("Fehler beim Senden:", err);
+    }
   };
 
   return (
@@ -67,6 +84,18 @@ const Contact = () => {
           />
           {formInvalid.email && (
             <div className="text-danger">Email ist ungültig</div>
+          )}
+
+          {/* NEU: Betreff */}
+          <input
+            type="text"
+            className="form-control"
+            placeholder="Betreff"
+            value={formData.subject}
+            onChange={(e) => handleChange("subject", e.target.value)}
+          />
+          {formInvalid.subject && (
+            <div className="text-danger">Betreff darf nicht leer sein</div>
           )}
 
           <textarea
