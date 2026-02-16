@@ -1,5 +1,6 @@
 import { useRef, useState } from "react";
 import { EMAIL_REGEX, NAME_REGEX, TEXT_REGEX } from "../utils/regex";
+import MessageService from "../services/message.service";
 
 const Contact = () => {
   const formRef = useRef<HTMLDivElement>(null);
@@ -20,7 +21,7 @@ const Contact = () => {
     setFormData((prev) => ({ ...prev, [key]: value }));
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const invalidFields = {
       name: !NAME_REGEX.test(formData.name),
       email: !EMAIL_REGEX.test(formData.email),
@@ -31,15 +32,29 @@ const Contact = () => {
     const hasError = Object.values(invalidFields).some(Boolean);
     if (hasError) return;
 
-    formRef.current?.classList.remove("success-animation");
-    void formRef.current?.offsetWidth;
-    formRef.current?.classList.add("success-animation");
+    try {
+      await MessageService.createMessage({
+        name: formData.name,
+        email: formData.email,
+        subject: "",
+        message: formData.message,
+      });
 
-    setTimeout(() => {
-      setFormData({ name: "", email: "", message: "" });
-      setFormInvalid({ name: false, email: false, message: false });
-    }, 800);
+      formRef.current?.classList.remove("success-animation");
+      void formRef.current?.offsetWidth;
+      formRef.current?.classList.add("success-animation");
+
+      setTimeout(() => {
+        setFormData({ name: "", email: "", message: "" });
+        setFormInvalid({ name: false, email: false, message: false });
+      }, 800);
+    } catch (err) {
+      console.error("Fehler beim Senden:", err);
+    }
+
   };
+
+
 
   return (
     <div ref={formRef} className="d-flex flex-column container py-4">

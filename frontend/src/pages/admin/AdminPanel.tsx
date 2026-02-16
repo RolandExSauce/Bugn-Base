@@ -2,7 +2,7 @@ import { useState } from "react";
 import OrdersList from "../../components/admin/OrdersList";
 import ProductsList from "../../components/admin/ProductsList";
 import UsersList from "../../components/admin/UsersList";
-// import MessagesList from "../../components/admin/MessagesList";
+import MessagesList from "../../components/admin/MessagesList";
 
 export default function AdminPage() {
   const [selected, setSelected] = useState("bestellungen");
@@ -65,7 +65,7 @@ export default function AdminPage() {
         {selected === "bestellungen" && <OrdersList />}
         {selected === "produkte" && <ProductsList />}
         {selected === "benutzer" && <UsersList />}
-        {/* {selected === "nachrichten" && <MessagesList />} */}
+        {selected === "nachrichten" && <MessagesList />}
       </div>
     </div>
   );

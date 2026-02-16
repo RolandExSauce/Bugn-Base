@@ -133,11 +133,20 @@ export interface Review {
   createdAt: Date;
 }
 
+export type MessageStatus = "OPEN" | "ANSWERED";
+
 export interface MessageDto {
-  messageId: string;
+  id: string;
   name: string;
   email: string;
-  subject: string;
+  subject: string | null;
   message: string;
-  createdAt: Date;
+  createdAt: string;
+  adminReply: string | null;
+  repliedAt: string | null;
+  messageStatus: MessageStatus;
+  readAt: string | null;          
 }
+
+
+

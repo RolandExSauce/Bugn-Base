@@ -8,8 +8,6 @@ import com.bugnbass.backend.service.AdminService;
 import com.bugnbass.backend.service.MediaService;
 import com.bugnbass.backend.service.OrderService;
 import java.util.List;
-
-import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -116,7 +114,5 @@ public class AdminProductController {
         adminService.updateProduct(id, productDto);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
-
-
 
 }

@@ -11,6 +11,7 @@ import Contact from "./pages/Contact";
 import Listing from "./pages/Listing";
 import Product from "./pages/Product";
 import ProtectedRoute from "./ProtectedRoute";
+import MyMessagesPage from "./components/user/MyMessages";
 
 export default function App() {
   return (
@@ -24,6 +25,14 @@ export default function App() {
             element={
               <ProtectedRoute>
                 <Profile />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/my-messages"
+            element={
+              <ProtectedRoute>
+                <MyMessagesPage />
               </ProtectedRoute>
             }
           />
