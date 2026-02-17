@@ -46,7 +46,7 @@ public class ReviewController {
      * @return the created review
      */
     @PostMapping
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
     public ReviewResponseDto create(
             @Valid @RequestBody CreateReviewRequest req
     ) {
