@@ -76,7 +76,7 @@ export default function ProductFilterComponent({
         <img src="/filter.svg" alt="" /> Filter
       </span>
 
-      <form className="product-filter d-flex flex-column row-gap-3 h-100 pe-3" onSubmit={handleSubmit}>
+      <form className="product-filter d-flex flex-column row-gap-3 pe-3" onSubmit={handleSubmit}>
         <fieldset className="instrument-fieldset">
           <legend>Instrumententyp</legend>
 
@@ -168,29 +168,113 @@ export default function ProductFilterComponent({
         </fieldset>
 
         {/* ⚠️ Bewertung: aktuell ohne Backend-Wirkung */}
+        {/* Bewertung */}
         <fieldset>
           <legend>Bewertung</legend>
-          <select
-            name="stars"
-            value={filter.stars ?? ""}
-            onChange={(e) =>
-              setFilter((prev) => ({
-                ...prev,
-                stars: e.target.value ? Number(e.target.value) : undefined,
-              }))
-            }
-          >
-            <option value="">Alle Bewertungen</option>
-            <option value="5">★★★★★ (5)</option>
-            <option value="4">★★★★☆ (4+)</option>
-            <option value="3">★★★☆☆ (3+)</option>
-            <option value="2">★★☆☆☆ (2+)</option>
-            <option value="1">★☆☆☆☆ (1+)</option>
-          </select>
+
+          <div className="d-flex flex-column gap-1">
+            <label>
+              <input
+                className="filter-instrument-radio"
+                type="radio"
+                name="stars"
+                checked={filter.stars === undefined}
+                onChange={() =>
+                  setFilter((prev) => ({
+                    ...prev,
+                    stars: undefined,
+                  }))
+                }
+              />
+              Alle Bewertungen
+            </label>
+
+            <label>
+              <input
+                className="filter-instrument-radio"
+                type="radio"
+                name="stars"
+                checked={filter.stars === 5}
+                onChange={() =>
+                  setFilter((prev) => ({
+                    ...prev,
+                    stars: 5,
+                  }))
+                }
+              />
+              ★★★★★ (5)
+            </label>
+
+            <label>
+              <input
+                className="filter-instrument-radio"
+                type="radio"
+                name="stars"
+                checked={filter.stars === 4}
+                onChange={() =>
+                  setFilter((prev) => ({
+                    ...prev,
+                    stars: 4,
+                  }))
+                }
+              />
+              ★★★★☆ (4+)
+            </label>
+
+            <label>
+              <input
+                className="filter-instrument-radio"
+                type="radio"
+                name="stars"
+                checked={filter.stars === 3}
+                onChange={() =>
+                  setFilter((prev) => ({
+                    ...prev,
+                    stars: 3,
+                  }))
+                }
+              />
+              ★★★☆☆ (3+)
+            </label>
+
+            <label>
+              <input
+                className="filter-instrument-radio"
+                type="radio"
+                name="stars"
+                checked={filter.stars === 2}
+                onChange={() =>
+                  setFilter((prev) => ({
+                    ...prev,
+                    stars: 2,
+                  }))
+                }
+              />
+              ★★☆☆☆ (2+)
+            </label>
+
+            <label>
+              <input
+                className="filter-instrument-radio"
+                type="radio"
+                name="stars"
+                checked={filter.stars === 1}
+                onChange={() =>
+                  setFilter((prev) => ({
+                    ...prev,
+                    stars: 1,
+                  }))
+                }
+              />
+              ★☆☆☆☆ (1+)
+            </label>
+          </div>
+
           <p className="small text-muted mb-0">
             Hinweis: Bewertung funktioniert erst, wenn das Backend Ratings liefert.
           </p>
         </fieldset>
+
 
         <div className="filter-actions d-flex flex-column row-gap-2 align-items-center">
           <button className="filter-apply-button" type="submit">
