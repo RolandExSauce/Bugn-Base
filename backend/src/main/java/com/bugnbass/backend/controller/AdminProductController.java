@@ -4,7 +4,6 @@ import com.bugnbass.backend.dto.ProductDto;
 import com.bugnbass.backend.model.Product;
 import com.bugnbass.backend.service.AdminProductService;
 import com.bugnbass.backend.service.MediaService;
-import com.bugnbass.backend.service.OrderService;
 import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,22 +34,16 @@ public class AdminProductController {
     /** Service handling admin-related operations. */
     private final AdminProductService adminProductService;
 
-    /** Service handling order-related operations. */
-    private final OrderService orderService;
-
     /**
      * Constructs the AdminController with the required services.
      *
      * @param mediaService the MediaService instance
      * @param adminProductService the AdminService instance
-     * @param orderService the OrderService instance
      */
     public AdminProductController(MediaService mediaService,
-                                  AdminProductService adminProductService,
-                                  OrderService orderService) {
+                                  AdminProductService adminProductService) {
         this.mediaService = mediaService;
         this.adminProductService = adminProductService;
-        this.orderService = orderService;
     }
 
     /**

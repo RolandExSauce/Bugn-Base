@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-
 /**
  * REST controller for publicly accessible product operations.
  * Provides endpoints to retrieve individual products or lists of products with optional filtering.
@@ -21,18 +20,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/bugnbass/api/products")
 public class UserProductsController {
 
-    /**
-     * Service handling product-related operations.
-     */
-    private final ProductService userProductService;
+    private final ProductService productService;
 
     /**
-     * Constructs the ProductsController with the required ProductService.
+     * Creates a new controller instance with the required product service.
      *
-     * @param userProductService the ProductService instance
+     * @param productService the product service
      */
-    public UserProductsController(ProductService userProductService) {
-        this.userProductService = userProductService;
+    public UserProductsController(ProductService productService) {
+        this.productService = productService;
     }
 
     /**
@@ -42,30 +38,32 @@ public class UserProductsController {
      * @return the Product object
      */
     @GetMapping("/{id}")
-    public Product getProduct(@PathVariable(name = "id") Long id) {
-        return userProductService.getProduct(id);
+    public Product getProduct(@PathVariable("id") Long id) {
+        return productService.getProduct(id);
     }
 
     /**
      * Retrieves a list of products with optional filtering by name, category,
-     * price range, brand, and pagination.
+     * price range, brand, rating (stars), and pagination.
      *
      * @param name     optional product name filter
      * @param category optional product category filter
      * @param priceMin optional minimum price filter
      * @param priceMax optional maximum price filter
      * @param brand    optional list of brand filters
-     * @param pageNo   optional page number for pagination
+     * @param stars    optional minimum rating filter (e.g., 4 = 4 stars and above)
+     * @param pageNo   optional page number for pagination (0-based)
      * @param pageSize optional page size for pagination
-     * @return a list of ProductResponseDTO objects matching the filters
+     * @return a list of ProductResponseDto objects matching the filters
      */
-    @GetMapping()
+    @GetMapping
     public List<ProductResponseDto> getProducts(
             @RequestParam(name = "name", required = false) String name,
             @RequestParam(name = "category", required = false) ProductCategory category,
             @RequestParam(name = "priceMin", required = false) Integer priceMin,
             @RequestParam(name = "priceMax", required = false) Integer priceMax,
             @RequestParam(name = "brand", required = false) List<String> brand,
+            @RequestParam(name = "stars", required = false) Integer stars,
             @RequestParam(name = "pageNo", required = false) Integer pageNo,
             @RequestParam(name = "pageSize", required = false) Integer pageSize
     ) {
@@ -75,8 +73,11 @@ public class UserProductsController {
                 priceMin,
                 priceMax,
                 brand,
+                stars,
                 pageNo,
-                pageSize);
-        return userProductService.getProducts(productFilters);
+                pageSize
+        );
+
+        return productService.getProducts(productFilters);
     }
 }

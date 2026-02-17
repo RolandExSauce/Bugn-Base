@@ -17,7 +17,6 @@ import java.util.List;
  * @param orderStatus      the current status of the order
  * @param shippingAddress  the shipping address for the order
  * @param paymentMethod    the payment method used for the order
- * @param deliveryFullname the recipient's full name for delivery
  * @param deliveryPostcode the recipient's postcode for delivery
  */
 public record OrderDto(
@@ -30,7 +29,8 @@ public record OrderDto(
     OrderStatus orderStatus,
     String shippingAddress,
     PaymentMethod paymentMethod,
-    String deliveryFullname,
-    Integer deliveryPostcode
+    Integer deliveryPostcode,
+    String userFirstName,
+    String userLastName
 ) {
 }

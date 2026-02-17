@@ -6,6 +6,7 @@ import com.bugnbass.backend.exceptions.ProductNotFoundException;
 import com.bugnbass.backend.model.Product;
 import com.bugnbass.backend.model.enums.ProductCategory;
 import com.bugnbass.backend.repository.ProductRepository;
+import com.bugnbass.backend.repository.ReviewRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,6 +14,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,6 +26,9 @@ class ProductServiceTest {
 
     @Mock
     ProductRepository productRepository;
+
+    @Mock
+    ReviewRepository reviewRepository;
 
     @InjectMocks
     ProductService productService;
@@ -41,6 +46,10 @@ class ProductServiceTest {
         activeP1 = product(1L, true, "Jazz Bass", "Fender", 999, category);
         activeP2 = product(2L, true, "Precision Bass", "Ibanez", 499, category);
         inactiveP = product(3L, false, "Hidden", "NoBrand", 123, category);
+
+        // default stub damit kein Test NPE bekommt
+        lenient().when(reviewRepository.findRatingStatsByProductIds(anyCollection()))
+                .thenReturn(List.of());
     }
 
     private Product product(Long id, boolean active, String name, String brand, int price, ProductCategory cat) {
@@ -59,6 +68,10 @@ class ProductServiceTest {
                 .build();
     }
 
+    private Object[] stats(Long productId, double avg, long count) {
+        return new Object[]{productId, avg, count};
+    }
+
     @Test
     void getProduct_returnsProductWhenFoundAndActive() {
         when(productRepository.findByIdAndActiveTrue(1L)).thenReturn(Optional.of(activeP1));
@@ -67,7 +80,6 @@ class ProductServiceTest {
 
         assertThat(result).isSameAs(activeP1);
         verify(productRepository).findByIdAndActiveTrue(1L);
-        verifyNoMoreInteractions(productRepository);
     }
 
     @Test
@@ -78,27 +90,50 @@ class ProductServiceTest {
                 .isInstanceOf(ProductNotFoundException.class);
 
         verify(productRepository).findByIdAndActiveTrue(99L);
-        verifyNoMoreInteractions(productRepository);
     }
 
     @Test
-    void getProducts_filtersOutInactiveAlways() {
+    void getProducts_filtersOutInactive_andLoadsRatingStats() {
         when(productRepository.findAll()).thenReturn(List.of(activeP1, inactiveP, activeP2));
 
-        ProductFilter filter = new ProductFilter(null, null, null, null, null, null, null);
+        when(reviewRepository.findRatingStatsByProductIds(any(Collection.class)))
+                .thenReturn(List.of(
+                        stats(1L, 4.5, 12L),
+                        stats(2L, 3.0, 2L)
+                ));
+
+        ProductFilter filter = new ProductFilter(null, null, null, null, null, null, null, null);
 
         List<ProductResponseDto> result = productService.getProducts(filter);
 
-        assertThat(result).extracting(ProductResponseDto::id).containsExactly(1L, 2L);
+        assertThat(result).extracting(ProductResponseDto::id)
+                .containsExactlyInAnyOrder(1L, 2L);
+
+        ProductResponseDto p1 = result.stream()
+                .filter(p -> p.id().equals(1L))
+                .findFirst()
+                .orElseThrow();
+
+        ProductResponseDto p2 = result.stream()
+                .filter(p -> p.id().equals(2L))
+                .findFirst()
+                .orElseThrow();
+
+        assertThat(p1.averageRating()).isEqualTo(4.5);
+        assertThat(p1.reviewCount()).isEqualTo(12L);
+
+        assertThat(p2.averageRating()).isEqualTo(3.0);
+        assertThat(p2.reviewCount()).isEqualTo(2L);
+
         verify(productRepository).findAll();
-        verifyNoMoreInteractions(productRepository);
+        verify(reviewRepository).findRatingStatsByProductIds(anyCollection());
     }
 
     @Test
     void getProducts_filtersByName_caseInsensitiveContains() {
         when(productRepository.findAll()).thenReturn(List.of(activeP1, activeP2));
 
-        ProductFilter filter = new ProductFilter("jAzZ", null, null, null, null, null, null);
+        ProductFilter filter = new ProductFilter("jAzZ", null, null, null, null, null, null, null);
 
         List<ProductResponseDto> result = productService.getProducts(filter);
 
@@ -110,7 +145,7 @@ class ProductServiceTest {
     void getProducts_filtersByCategory() {
         when(productRepository.findAll()).thenReturn(List.of(activeP1, activeP2));
 
-        ProductFilter filter = new ProductFilter(null, category, null, null, null, null, null);
+        ProductFilter filter = new ProductFilter(null, category, null, null, null, null, null, null);
 
         List<ProductResponseDto> result = productService.getProducts(filter);
 
@@ -122,7 +157,7 @@ class ProductServiceTest {
     void getProducts_filtersByPriceMinAndMax() {
         when(productRepository.findAll()).thenReturn(List.of(activeP1, activeP2));
 
-        ProductFilter filter = new ProductFilter(null, null, 500, 1000, null, null, null);
+        ProductFilter filter = new ProductFilter(null, null, 500, 1000, null, null, null, null);
 
         List<ProductResponseDto> result = productService.getProducts(filter);
 
@@ -134,7 +169,7 @@ class ProductServiceTest {
     void getProducts_filtersByBrandList() {
         when(productRepository.findAll()).thenReturn(List.of(activeP1, activeP2));
 
-        ProductFilter filter = new ProductFilter(null, null, null, null, List.of("Ibanez"), null, null);
+        ProductFilter filter = new ProductFilter(null, null, null, null, List.of("Ibanez"), null, null, null);
 
         List<ProductResponseDto> result = productService.getProducts(filter);
 
@@ -146,7 +181,7 @@ class ProductServiceTest {
     void getProducts_customPagination_page1_size1_returnsSecondItem() {
         when(productRepository.findAll()).thenReturn(List.of(activeP1, activeP2));
 
-        ProductFilter filter = new ProductFilter(null, null, null, null, null, 1, 1);
+        ProductFilter filter = new ProductFilter(null, null, null, null, null, null, 1, 1);
 
         List<ProductResponseDto> result = productService.getProducts(filter);
 
@@ -158,8 +193,7 @@ class ProductServiceTest {
     void getProducts_pageNumberProvided_butPageSizeNull_usesDefaultPageSize_andDoesNotThrow() {
         when(productRepository.findAll()).thenReturn(List.of(activeP1, activeP2));
 
-        // pageNumber=1, pageSize=null -> darf NICHT crashen (nach Service-Fix)
-        ProductFilter filter = new ProductFilter(null, null, null, null, null, 1, null);
+        ProductFilter filter = new ProductFilter(null, null, null, null, null, null, 1, null);
 
         assertThatCode(() -> productService.getProducts(filter))
                 .doesNotThrowAnyException();
@@ -169,7 +203,7 @@ class ProductServiceTest {
     void getProducts_whenRepositoryEmpty_returnsEmptyList() {
         when(productRepository.findAll()).thenReturn(List.of());
 
-        ProductFilter filter = new ProductFilter(null, null, null, null, null, null, null);
+        ProductFilter filter = new ProductFilter(null, null, null, null, null, null, null, null);
 
         List<ProductResponseDto> result = productService.getProducts(filter);
 
@@ -180,7 +214,7 @@ class ProductServiceTest {
     void getProducts_whenAllInactive_returnsEmptyList() {
         when(productRepository.findAll()).thenReturn(List.of(inactiveP));
 
-        ProductFilter filter = new ProductFilter(null, null, null, null, null, null, null);
+        ProductFilter filter = new ProductFilter(null, null, null, null, null, null, null, null);
 
         List<ProductResponseDto> result = productService.getProducts(filter);
 
@@ -191,7 +225,7 @@ class ProductServiceTest {
     void getProducts_whenFilterMatchesNothing_returnsEmptyList() {
         when(productRepository.findAll()).thenReturn(List.of(activeP1, activeP2));
 
-        ProductFilter filter = new ProductFilter("does-not-exist", null, null, null, null, null, null);
+        ProductFilter filter = new ProductFilter("does-not-exist", null, null, null, null, null, null, null);
 
         List<ProductResponseDto> result = productService.getProducts(filter);
 

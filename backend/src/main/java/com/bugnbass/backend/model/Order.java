@@ -101,12 +101,6 @@ public class Order {
     private PaymentMethod paymentMethod;
 
     /**
-     * Full name of the recipient for delivery purposes.
-     */
-    @Column(name = "delivery_fullname")
-    private String deliveryFullname;
-
-    /**
      * Postcode for delivery.
      */
     @Column(name = "delivery_postcode")

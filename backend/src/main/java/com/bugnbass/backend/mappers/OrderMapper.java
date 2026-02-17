@@ -21,20 +21,22 @@ public class OrderMapper {
    */
   public OrderDto toDto(Order order) {
     return new OrderDto(
-        order.getId(),
-        order.getOrderNumber(),
-        order.getTotalOrderPrice(),
-        order.getOrderItems()
-            .stream()
-            .map(this::toItemDto)
-            .toList(),
-        order.getOrderedDate(),
-        order.getDeliveryDate(),
-        order.getOrderStatus(),
-        order.getShippingAddress(),
-        order.getPaymentMethod(),
-        order.getDeliveryFullname(),
-        order.getDeliveryPostcode()
+            order.getId(),
+            order.getOrderNumber(),
+            order.getTotalOrderPrice(),
+            order.getOrderItems()
+                    .stream()
+                    .map(this::toItemDto)
+                    .toList(),
+            order.getOrderedDate(),
+            order.getDeliveryDate(),
+            order.getOrderStatus(),
+            order.getShippingAddress(),
+            order.getPaymentMethod(),
+            order.getDeliveryPostcode(),
+
+            order.getUser() != null ? order.getUser().getFirstname() : null,
+            order.getUser() != null ? order.getUser().getLastname() : null
     );
   }
 
@@ -47,6 +49,7 @@ public class OrderMapper {
   private OrderItemDto toItemDto(OrderItem item) {
     return new OrderItemDto(
         item.getProduct().getId(),
+        item.getProduct().getName(),
         item.getQuantity(),
         item.getPrice()
     );

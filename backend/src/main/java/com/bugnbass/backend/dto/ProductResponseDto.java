@@ -7,17 +7,19 @@ import java.util.List;
 /**
  * DTO representing a product in responses to the client.
  *
- * @param id           unique identifier of the product
- * @param name         name of the product
- * @param category     category of the product
- * @param description  product description
- * @param price        product price
- * @param shippingCost shipping cost for the product
- * @param brand        brand of the product
- * @param stockStatus  current stock status
- * @param shippingTime estimated shipping time
- * @param active       whether the product is active
- * @param images       list of associated images
+ * @param id            unique identifier of the product
+ * @param name          name of the product
+ * @param category      category of the product
+ * @param description   product description
+ * @param price         product price
+ * @param shippingCost  shipping cost for the product
+ * @param brand         brand of the product
+ * @param stockStatus   current stock status
+ * @param shippingTime  estimated shipping time
+ * @param active        whether the product is active
+ * @param images        list of associated images
+ * @param averageRating average rating of the product
+ * @param reviewCount   number of reviews
  */
 public record ProductResponseDto(
         Long id,
@@ -30,15 +32,26 @@ public record ProductResponseDto(
         StockStatus stockStatus,
         Integer shippingTime,
         Boolean active,
-        List<ImageDto> images
+        List<ImageDto> images,
+
+        Double averageRating,   // ⭐ neu
+        Long reviewCount        // ⭐ neu
 ) {
+
     /**
      * Converts a Product entity to a ProductResponseDTO.
      *
-     * @param product the Product entity
+     * @param product       the Product entity
+     * @param averageRating calculated average rating
+     * @param reviewCount   number of reviews
      * @return the ProductResponseDTO
      */
-    public static ProductResponseDto fromEntity(com.bugnbass.backend.model.Product product) {
+    public static ProductResponseDto fromEntity(
+            com.bugnbass.backend.model.Product product,
+            Double averageRating,
+            Long reviewCount
+    ) {
+
         List<ImageDto> imageDtos = product.getImages().stream()
                 .map(ImageDto::fromEntity)
                 .toList();
@@ -54,7 +67,9 @@ public record ProductResponseDto(
                 product.getStockStatus(),
                 product.getShippingTime(),
                 product.getActive(),
-                imageDtos
+                imageDtos,
+                averageRating,
+                reviewCount
         );
     }
 }
