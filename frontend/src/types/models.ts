@@ -36,17 +36,19 @@ export interface ProductDTO {
   active: boolean;
 }
 
-export interface ProductFilter {
-  name?: string;
-  category?: ProductCategory;
-  priceMin?: number;
-  priceMax?: number;
-  brand?: string[];
-  pageNumber?: number;
-  pageSize?: number;
-  sort?: SortType; // Frontend-only: for client-side sorting
-  stars?: number; // Frontend-only: for client-side star filtering
-}
+export type ProductFilter = {
+  name?: string | null;
+  category?: ProductCategory | null;
+  priceMin?: number | null;
+  priceMax?: number | null;
+  brand?: string[] | null;
+  pageNumber?: number | null;
+  pageSize?: number | null;
+  sort?: SortType;
+  stars?: number;
+};
+
+
 
 export interface Image {
   imageId: string;
@@ -90,11 +92,13 @@ export interface RegisterDto {
   password: string;
 }
 
-// Backend Order Model (for responses)
 export interface Order {
   id: number;
   orderNumber: string;
-  user: User;
+
+  userFirstName: string;
+  userLastName: string;
+
   totalOrderPrice: number;
   orderItems: OrderItem[];
   orderedDate: string;
@@ -102,12 +106,13 @@ export interface Order {
   orderStatus: OrderStatus;
   shippingAddress: string;
   paymentMethod: PaymentMethod;
-  deliveryFullname: string;
   deliveryPostcode: number;
 }
 
+
 export interface OrderItem {
   productId: number;
+  productName: string;
   quantity: number;
   price: number;
 }
@@ -124,14 +129,6 @@ export interface Cart {
 }
 
 // == REVIEW AND MESSAGES TYPES AND RELATED =========================================================================================================
-export interface Review {
-  reviewId: string;
-  product: Product;
-  username: string;
-  rating: number;
-  comment: string;
-  createdAt: Date;
-}
 
 export type MessageStatus = "OPEN" | "ANSWERED";
 
@@ -148,5 +145,17 @@ export interface MessageDto {
   readAt: string | null;          
 }
 
+export type Review = {
+  id: string;
+  userName: string;
+  rating: number; // 1..5
+  comment?: string | null;
+  createdAt: string; // ISO
+};
 
+export type CreateReviewRequest = {
+  productId: number; // oder string, je nachdem wie du Product.id typisiert hast
+  rating: number;
+  comment?: string;
+};
 

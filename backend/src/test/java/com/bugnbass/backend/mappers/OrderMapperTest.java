@@ -5,15 +5,16 @@ import com.bugnbass.backend.dto.OrderItemDto;
 import com.bugnbass.backend.model.Order;
 import com.bugnbass.backend.model.OrderItem;
 import com.bugnbass.backend.model.Product;
+import com.bugnbass.backend.model.User;
 import com.bugnbass.backend.model.enums.OrderStatus;
 import com.bugnbass.backend.model.enums.PaymentMethod;
-import org.junit.jupiter.api.Test;
-
 import java.time.LocalDate;
 import java.util.List;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 class OrderMapperTest {
 
@@ -26,11 +27,16 @@ class OrderMapperTest {
 
         Product product = mock(Product.class);
         when(product.getId()).thenReturn(99L);
+        when(product.getName()).thenReturn("Test Product");
 
         OrderItem item = mock(OrderItem.class);
         when(item.getProduct()).thenReturn(product);
         when(item.getQuantity()).thenReturn(2);
         when(item.getPrice()).thenReturn(500);
+
+        User user = mock(User.class);
+        when(user.getFirstname()).thenReturn("Max");
+        when(user.getLastname()).thenReturn("Mustermann");
 
         Order order = mock(Order.class);
         when(order.getId()).thenReturn(7L);
@@ -42,8 +48,8 @@ class OrderMapperTest {
         when(order.getOrderStatus()).thenReturn(OrderStatus.RECEIVED);
         when(order.getShippingAddress()).thenReturn("Street 1");
         when(order.getPaymentMethod()).thenReturn(PaymentMethod.class.getEnumConstants()[0]);
-        when(order.getDeliveryFullname()).thenReturn("Max Mustermann");
         when(order.getDeliveryPostcode()).thenReturn(1010);
+        when(order.getUser()).thenReturn(user);
 
         OrderDto dto = orderMapper.toDto(order);
 
@@ -56,18 +62,24 @@ class OrderMapperTest {
         assertThat(dto.orderStatus()).isEqualTo(OrderStatus.RECEIVED);
         assertThat(dto.shippingAddress()).isEqualTo("Street 1");
         assertThat(dto.paymentMethod()).isNotNull();
-        assertThat(dto.deliveryFullname()).isEqualTo("Max Mustermann");
         assertThat(dto.deliveryPostcode()).isEqualTo(1010);
+        assertThat(dto.userFirstName()).isEqualTo("Max");
+        assertThat(dto.userLastName()).isEqualTo("Mustermann");
 
         assertThat(dto.orderItems()).hasSize(1);
         OrderItemDto itemDto = dto.orderItems().get(0);
         assertThat(itemDto.productId()).isEqualTo(99L);
+        assertThat(itemDto.productName()).isEqualTo("Test Product");
         assertThat(itemDto.quantity()).isEqualTo(2);
         assertThat(itemDto.price()).isEqualTo(500);
     }
 
     @Test
     void toDto_mapsEmptyItemsList_toEmptyDtoItems() {
+        User user = mock(User.class);
+        when(user.getFirstname()).thenReturn("Max");
+        when(user.getLastname()).thenReturn("Mustermann");
+
         Order order = mock(Order.class);
         when(order.getId()).thenReturn(1L);
         when(order.getOrderNumber()).thenReturn("ORD-EMPTY");
@@ -78,21 +90,24 @@ class OrderMapperTest {
         when(order.getOrderStatus()).thenReturn(OrderStatus.RECEIVED);
         when(order.getShippingAddress()).thenReturn("Somewhere");
         when(order.getPaymentMethod()).thenReturn(PaymentMethod.class.getEnumConstants()[0]);
-        when(order.getDeliveryFullname()).thenReturn("Nobody");
         when(order.getDeliveryPostcode()).thenReturn(9999);
+        when(order.getUser()).thenReturn(user);
 
         OrderDto dto = orderMapper.toDto(order);
 
         assertThat(dto).isNotNull();
         assertThat(dto.orderItems()).isNotNull();
         assertThat(dto.orderItems()).isEmpty();
+        assertThat(dto.userFirstName()).isEqualTo("Max");
+        assertThat(dto.userLastName()).isEqualTo("Mustermann");
     }
 
     @Test
     void toDto_mapsMultipleItems_andPreservesOrder() {
-        // Arrange
         Product p1 = mock(Product.class);
         when(p1.getId()).thenReturn(1L);
+        when(p1.getName()).thenReturn("Product 1");
+
         OrderItem i1 = mock(OrderItem.class);
         when(i1.getProduct()).thenReturn(p1);
         when(i1.getQuantity()).thenReturn(1);
@@ -100,10 +115,16 @@ class OrderMapperTest {
 
         Product p2 = mock(Product.class);
         when(p2.getId()).thenReturn(2L);
+        when(p2.getName()).thenReturn("Product 2");
+
         OrderItem i2 = mock(OrderItem.class);
         when(i2.getProduct()).thenReturn(p2);
         when(i2.getQuantity()).thenReturn(3);
         when(i2.getPrice()).thenReturn(200);
+
+        User user = mock(User.class);
+        when(user.getFirstname()).thenReturn("Max");
+        when(user.getLastname()).thenReturn("Mustermann");
 
         Order order = mock(Order.class);
         when(order.getId()).thenReturn(42L);
@@ -115,18 +136,24 @@ class OrderMapperTest {
         when(order.getOrderStatus()).thenReturn(OrderStatus.RECEIVED);
         when(order.getShippingAddress()).thenReturn("Street 2");
         when(order.getPaymentMethod()).thenReturn(PaymentMethod.class.getEnumConstants()[0]);
-        when(order.getDeliveryFullname()).thenReturn("Max Mustermann");
         when(order.getDeliveryPostcode()).thenReturn(1010);
+        when(order.getUser()).thenReturn(user);
 
         OrderDto dto = orderMapper.toDto(order);
 
         assertThat(dto.orderItems()).hasSize(2);
+
         assertThat(dto.orderItems().get(0).productId()).isEqualTo(1L);
+        assertThat(dto.orderItems().get(0).productName()).isEqualTo("Product 1");
         assertThat(dto.orderItems().get(0).quantity()).isEqualTo(1);
         assertThat(dto.orderItems().get(0).price()).isEqualTo(100);
 
         assertThat(dto.orderItems().get(1).productId()).isEqualTo(2L);
+        assertThat(dto.orderItems().get(1).productName()).isEqualTo("Product 2");
         assertThat(dto.orderItems().get(1).quantity()).isEqualTo(3);
         assertThat(dto.orderItems().get(1).price()).isEqualTo(200);
+
+        assertThat(dto.userFirstName()).isEqualTo("Max");
+        assertThat(dto.userLastName()).isEqualTo("Mustermann");
     }
 }

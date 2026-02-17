@@ -20,8 +20,12 @@ import org.springframework.transaction.annotation.Transactional;
 /**
  * Service responsible for customer-facing order operations.
  *
- * <p>Allows authenticated users to create orders, view their own orders,
- * cancel eligible orders, and return delivered orders.
+ * <p>Business rules:
+ * <ul>
+ *   <li>If status is RECEIVED: user can cancel -> status becomes CANCELED</li>
+ *   <li>If status is SHIPPING: user cannot perform actions (no cancel, no return)</li>
+ *   <li>If status is DELIVERED: user can return -> status becomes RETURNED</li>
+ * </ul>
  */
 @Service
 @RequiredArgsConstructor
@@ -48,7 +52,6 @@ public class UserOrderService {
         order.setShippingAddress(dto.shippingAddress());
         order.setOrderNumber(generateOrderNumber());
         order.setDeliveryPostcode(dto.deliveryPostcode());
-        order.setDeliveryFullname(dto.deliveryFullname());
         order.setPaymentMethod(dto.paymentMethod());
 
         List<OrderItem> items = dto.orderItems().stream().map(itemDTO -> {
@@ -66,7 +69,6 @@ public class UserOrderService {
         int totalPrice = items.stream()
                 .mapToInt(i -> i.getPrice() * i.getQuantity())
                 .sum();
-
         order.setTotalOrderPrice(totalPrice);
 
         orderRepo.save(order);
@@ -80,10 +82,10 @@ public class UserOrderService {
      */
     @Transactional(readOnly = true)
     public OrderDto getOrderById(Long id) {
-        Order order = orderRepo.findById(id)
-                .orElseThrow(() -> new RuntimeException("Order not found"));
-
         User user = getAuthenticatedUser();
+
+        Order order = orderRepo.findByIdWithItemsAndProducts(id)
+                .orElseThrow(() -> new RuntimeException("Order not found"));
 
         if (!order.getUser().equals(user)) {
             throw new RuntimeException("Access denied");
@@ -92,6 +94,7 @@ public class UserOrderService {
         return orderMapper.toDto(order);
     }
 
+
     /**
      * Retrieves all orders of the authenticated user.
      */
@@ -99,60 +102,61 @@ public class UserOrderService {
     public List<OrderDto> getOrdersByCustomer() {
         User user = getAuthenticatedUser();
 
-        return orderRepo.findByUser(user)
+        return orderRepo.findByUserWithItemsAndProducts(user)
                 .stream()
                 .map(orderMapper::toDto)
                 .toList();
     }
 
     /**
-     * Cancels an order if allowed.
+     * Cancels an order.
+     *
+     * <p>Allowed only when the current status is RECEIVED.
+     * After cancel, status becomes CANCELED.
      */
     public OrderStatus cancelOrder(Long id) {
+        User user = getAuthenticatedUser();
+
         Order order = orderRepo.findById(id)
                 .orElseThrow(() -> new RuntimeException("Order not found"));
-
-        User user = getAuthenticatedUser();
 
         if (!order.getUser().equals(user)) {
             throw new RuntimeException("You can only cancel your own orders");
         }
 
-        if (order.getOrderStatus() == OrderStatus.CANCELED) {
-            throw new RuntimeException("Order is already canceled");
-        }
-
-        if (order.getOrderStatus() == OrderStatus.SHIPPING
-                || order.getOrderStatus() == OrderStatus.DELIVERED) {
-            throw new RuntimeException("Delivered or shipped orders cannot be canceled");
+        if (order.getOrderStatus() != OrderStatus.RECEIVED) {
+            throw new RuntimeException(
+                    "Order cannot be canceled in status: " + order.getOrderStatus());
         }
 
         order.setOrderStatus(OrderStatus.CANCELED);
         orderRepo.save(order);
-
         return OrderStatus.CANCELED;
     }
 
     /**
-     * Returns a delivered order.
+     * Returns an order.
+     *
+     * <p>Allowed only when the current status is DELIVERED.
+     * After return, status becomes RETURNED.
      */
     public OrderStatus returnOrder(Long id) {
+        User user = getAuthenticatedUser();
+
         Order order = orderRepo.findById(id)
                 .orElseThrow(() -> new RuntimeException("Order not found"));
-
-        User user = getAuthenticatedUser();
 
         if (!order.getUser().equals(user)) {
             throw new RuntimeException("You can only return your own orders");
         }
 
         if (order.getOrderStatus() != OrderStatus.DELIVERED) {
-            throw new RuntimeException("Only delivered orders can be returned");
+            throw new RuntimeException(
+                    "Order cannot be returned in status: " + order.getOrderStatus());
         }
 
         order.setOrderStatus(OrderStatus.RETURNED);
         orderRepo.save(order);
-
         return OrderStatus.RETURNED;
     }
 

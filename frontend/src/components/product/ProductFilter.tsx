@@ -1,89 +1,67 @@
 import { useEffect, useState } from "react";
-import type {
-  ProductFilter,
-  ProductCategory,
-  SortType,
-} from "../../types/models";
-import { mockProducts } from "../../api/mock";
-
-// Extract unique brands from mock products for each category
-const getBrandsByCategory = (category: ProductCategory): string[] => {
-  const brands = mockProducts
-    .filter((p) => p.category === category)
-    .map((p) => p.brand);
-  return [...new Set(brands)]; // Remove duplicates
-};
+import type { ProductFilter, ProductCategory, SortType } from "../../types/models";
 
 export default function ProductFilterComponent({
   applyFilter,
   currentFilter,
+  availableBrands,
 }: {
   applyFilter: (filter: ProductFilter) => void;
   currentFilter: ProductFilter | null;
+  availableBrands: string[];
 }) {
   const [filter, setFilter] = useState<ProductFilter>({
-    category: "GUITARS",
+    category: undefined,   // ✅ kein default GUITARS
     brand: [],
     sort: "",
     stars: undefined,
   });
 
-  const [availableBrands, setAvailableBrands] = useState<string[]>(
-    getBrandsByCategory("GUITARS")
-  );
-
-  // Update local state when parent's currentFilter changes
   useEffect(() => {
     if (currentFilter) {
-      setFilter(currentFilter);
-      // Also update available brands based on category
-      const newBrands = getBrandsByCategory(
-        currentFilter.category || "GUITARS"
-      );
-      setAvailableBrands(newBrands);
+      setFilter({
+        ...currentFilter,
+        brand: currentFilter.brand ?? [],
+      });
     } else {
-      // Reset to defaults when parent has no filter
-      const defaultFilter: ProductFilter = {
-        category: "GUITARS",
+      setFilter({
+        category: undefined,
         brand: [],
         sort: "",
         stars: undefined,
-      };
-      setFilter(defaultFilter);
-      setAvailableBrands(getBrandsByCategory("GUITARS"));
+      });
     }
   }, [currentFilter]);
 
-  const updateCategory = (category: ProductCategory) => {
-    const newBrands = getBrandsByCategory(category);
-    setAvailableBrands(newBrands);
-
-    // Reset brands when category changes
+  const updateCategory = (category?: ProductCategory) => {
+    // ✅ bei "Alle" category undefined setzen
     setFilter((prev) => ({
       ...prev,
       category,
-      brand: (prev.brand || []).filter((brand) => newBrands.includes(brand)),
+      // Brands optional resetten, wenn du willst:
+      // brand: [],
     }));
   };
 
   const handleBrandChange = (brand: string) => {
-    const currentBrands = filter.brand || [];
-    const newBrands = currentBrands.includes(brand)
-      ? currentBrands.filter((b) => b !== brand)
-      : [...currentBrands, brand];
+    setFilter((prev) => {
+      const currentBrands = prev.brand ?? [];
+      const newBrands = currentBrands.includes(brand)
+        ? currentBrands.filter((b) => b !== brand)
+        : [...currentBrands, brand];
 
-    setFilter((prev) => ({ ...prev, brand: newBrands }));
+      return { ...prev, brand: newBrands };
+    });
   };
 
   const handleResetFilter = () => {
     const newFilter: ProductFilter = {
-      category: "GUITARS",
+      category: undefined,
       brand: [],
       sort: "",
       stars: undefined,
     };
     setFilter(newFilter);
-    setAvailableBrands(getBrandsByCategory("GUITARS"));
     applyFilter(newFilter);
   };
 
@@ -98,19 +76,27 @@ export default function ProductFilterComponent({
         <img src="/filter.svg" alt="" /> Filter
       </span>
 
-      <form
-        className="product-filter d-flex flex-column row-gap-3 h-100 pe-3"
-        onSubmit={handleSubmit}
-      >
+      <form className="product-filter d-flex flex-column row-gap-3 h-100 pe-3" onSubmit={handleSubmit}>
         <fieldset className="instrument-fieldset">
           <legend>Instrumententyp</legend>
+
+          {/* ✅ Alle Kategorien */}
+          <label>
+            <input
+              className="filter-instrument-radio"
+              type="radio"
+              name="category"
+              checked={!filter.category}
+              onChange={() => updateCategory(undefined)}
+            />
+            Alle
+          </label>
 
           <label>
             <input
               className="filter-instrument-radio"
               type="radio"
               name="category"
-              value="GUITAR"
               checked={filter.category === "GUITARS"}
               onChange={() => updateCategory("GUITARS")}
             />
@@ -122,7 +108,6 @@ export default function ProductFilterComponent({
               className="filter-instrument-radio"
               type="radio"
               name="category"
-              value="PIANO"
               checked={filter.category === "PIANOS"}
               onChange={() => updateCategory("PIANOS")}
             />
@@ -134,7 +119,6 @@ export default function ProductFilterComponent({
               className="filter-instrument-radio"
               type="radio"
               name="category"
-              value="VIOLIN"
               checked={filter.category === "VIOLINS"}
               onChange={() => updateCategory("VIOLINS")}
             />
@@ -164,8 +148,8 @@ export default function ProductFilterComponent({
         <fieldset className="brand-fieldset">
           <legend>Marke</legend>
           <div className="filter-brands">
-            {availableBrands.map((brand, i) => (
-              <label key={i}>
+            {availableBrands.map((brand) => (
+              <label key={brand}>
                 <input
                   className="filter-brands-checkbox"
                   type="checkbox"
@@ -178,13 +162,12 @@ export default function ProductFilterComponent({
               </label>
             ))}
             {availableBrands.length === 0 && (
-              <p className="small text-muted">
-                Keine Marken in dieser Kategorie
-              </p>
+              <p className="small text-muted">Keine Marken verfügbar</p>
             )}
           </div>
         </fieldset>
 
+        {/* ⚠️ Bewertung: aktuell ohne Backend-Wirkung */}
         <fieldset>
           <legend>Bewertung</legend>
           <select
@@ -204,20 +187,19 @@ export default function ProductFilterComponent({
             <option value="2">★★☆☆☆ (2+)</option>
             <option value="1">★☆☆☆☆ (1+)</option>
           </select>
+          <p className="small text-muted mb-0">
+            Hinweis: Bewertung funktioniert erst, wenn das Backend Ratings liefert.
+          </p>
         </fieldset>
 
         <div className="filter-actions d-flex flex-column row-gap-2 align-items-center">
           <button className="filter-apply-button" type="submit">
-            <img src="/apply-filter.svg" alt="" />
+            
             Anwenden
           </button>
 
-          <button
-            className="filter-reset-button"
-            type="button"
-            onClick={handleResetFilter}
-          >
-            <img src="/filter-reset.svg" alt="" />
+          <button className="filter-reset-button" type="button" onClick={handleResetFilter}>
+            
             Zurücksetzen
           </button>
         </div>

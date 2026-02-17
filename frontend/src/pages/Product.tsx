@@ -3,36 +3,52 @@ import { useParams } from "react-router-dom";
 import Carousel from "../components/product/Carousel";
 import Review from "../components/product/Review";
 import { useCartContext } from "../context/CartContext";
-import type { Product } from "../types/models";
-import ShopService from "../services/shop.service"; // adjust import path
+import type { Product, Review as ReviewType } from "../types/models";
+import ShopService from "../services/shop.service";
+import ReviewService from "../services/review.service";
 
 export default function Product() {
   const { productId } = useParams();
+
   const [product, setProduct] = useState<Product | null>(null);
+  const [reviews, setReviews] = useState<ReviewType[]>([]);
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
   const [quantity, setQuantity] = useState(1);
   const { addItem } = useCartContext();
   const buttonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
-    const fetchProduct = async () => {
+    const fetchAll = async () => {
       if (!productId) return;
+
       setLoading(true);
       setError(null);
 
       try {
+        // 1) Produkt laden
         const data = await ShopService.getProduct(productId);
         setProduct(data);
+
+        // 2) Reviews laden
+        const pid = Number(productId);
+        if (!Number.isNaN(pid)) {
+          const reviewData = await ReviewService.getByProduct(pid);
+          setReviews(reviewData);
+        } else {
+          setReviews([]);
+        }
       } catch (err) {
-        console.error("Error fetching product:", err);
+        console.error("Error fetching product/reviews:", err);
         setError("Produkt konnte nicht geladen werden.");
       } finally {
         setLoading(false);
       }
     };
 
-    fetchProduct();
+    void fetchAll();
   }, [productId]);
 
   const handleAddToCart = () => {
@@ -66,22 +82,29 @@ export default function Product() {
         <div className="product-main-top-left w-md-50 w-75">
           <Carousel imgUrls={product.images?.map((img) => img.url) || []} />
         </div>
+
         <div className="product-main-top-right d-flex flex-column row-gap-3 w-md-50 w-75">
           <div className="product-main-top-right-name h1">{product.name}</div>
+
           <div className="product-main-top-right-description">
             {product.description}
           </div>
+
           <div className="product-main-top-right-price">
             ${product.price.toFixed(2)}
           </div>
+
           <div className="product-main-top-right-brand">{product.brand}</div>
+
           <div className="product-main-top-right-stock">
             {product.stockStatus === "IN_STOCK" ? "In Stock" : "Out of Stock"}
           </div>
+
           <div className="product-main-top-right-shipping">
             Shipping: {product.shippingTime} days, $
             {product.shippingCost.toFixed(2)}
           </div>
+
           <div className="product-main-top-right-buttons d-flex flex-column align-items-end row-gap-3">
             <label
               className="d-flex flex-row column-gap-3 align-items-center"
@@ -101,6 +124,7 @@ export default function Product() {
                 required
               />
             </label>
+
             <button
               ref={buttonRef}
               onClick={handleAddToCart}
@@ -112,12 +136,18 @@ export default function Product() {
           </div>
         </div>
       </div>
-      <div className="product-main-bottom d-flex flex-column row-gap-3">
-        <span className="product-main-bottom-title mt-4 fw-bold fs-2 border-top">
+
+      <div className="pt-4 pb-5 product-main-bottom d-flex flex-column row-gap-3">
+        <span className="product-main-bottom-title mt-4 fw-bold fs-2 border-top pt-3">
           Rezensionen
         </span>
-        {Array.from({ length: 10 }).map((_, i) => (
-          <Review key={i} />
+
+        {reviews.length === 0 && (
+          <div className="text-muted">Noch keine Bewertungen.</div>
+        )}
+
+        {reviews.map((r) => (
+          <Review key={r.id} review={r} />
         ))}
       </div>
     </div>

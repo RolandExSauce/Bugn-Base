@@ -27,11 +27,12 @@ public class AdminOrderService {
      */
     @Transactional(readOnly = true)
     public List<OrderDto> getAllOrders() {
-        return orderRepo.findAll()
+        return orderRepo.findAllWithUserItemsAndProducts()
                 .stream()
                 .map(orderMapper::toDto)
                 .toList();
     }
+
 
     /**
      * Retrieves an order by its identifier.

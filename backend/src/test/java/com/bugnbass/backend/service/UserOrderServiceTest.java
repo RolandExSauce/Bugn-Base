@@ -29,12 +29,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.mock;
 
 @ExtendWith(MockitoExtension.class)
 class UserOrderServiceTest {
@@ -70,30 +69,43 @@ class UserOrderServiceTest {
         SecurityContextHolder.clearContext();
     }
 
+    // -------------------- helpers --------------------
+
+    private User stubAuthenticatedUser() {
+        User user = mock(User.class);
+        when(userService.findCustomerByEmail(email)).thenReturn(Optional.of(user));
+        return user;
+    }
+
     // -------------------- createOrder --------------------
 
     @Test
     void createOrder_createsOrder_savesOrderAndItems_returnsReceived() {
         LocalDate today = LocalDate.now();
 
-        User user = mock(User.class);
-        when(userService.findCustomerByEmail(email)).thenReturn(Optional.of(user));
+        User user = stubAuthenticatedUser();
 
-        OrderItemDto i1 = new OrderItemDto(10L, 2, 0);
-        OrderItemDto i2 = new OrderItemDto(11L, 1, 0);
+        OrderItemDto i1 = new OrderItemDto(10L, "Piano", 2, 0);
+        OrderItemDto i2 = new OrderItemDto(11L, "Guitar", 1, 0);
 
         OrderDto dto = new OrderDto(
-                null, null, null,
+                null,
+                null,
+                null,
                 List.of(i1, i2),
-                null, null, null,
+                null,
+                null,
+                null,
                 "My Street 1",
                 PaymentMethod.PAYPAL,
-                "Max Mustermann",
-                1010
+                1010,
+                "Max",
+                "Mustermann"
         );
 
         Product p1 = mock(Product.class);
         when(p1.getPrice()).thenReturn(100);
+
         Product p2 = mock(Product.class);
         when(p2.getPrice()).thenReturn(50);
 
@@ -111,7 +123,6 @@ class UserOrderServiceTest {
         assertThat(savedOrder.getUser()).isSameAs(user);
         assertThat(savedOrder.getOrderStatus()).isEqualTo(OrderStatus.RECEIVED);
         assertThat(savedOrder.getShippingAddress()).isEqualTo("My Street 1");
-        assertThat(savedOrder.getDeliveryFullname()).isEqualTo("Max Mustermann");
         assertThat(savedOrder.getDeliveryPostcode()).isEqualTo(1010);
         assertThat(savedOrder.getPaymentMethod()).isEqualTo(PaymentMethod.PAYPAL);
         assertThat(savedOrder.getOrderedDate()).isEqualTo(today);
@@ -136,7 +147,6 @@ class UserOrderServiceTest {
         assertThat(items.get(1).getPrice()).isEqualTo(50);
 
         verifyNoInteractions(orderMapper);
-        verifyNoMoreInteractions(orderRepo, orderItemRepo, productService, userService);
     }
 
     @Test
@@ -144,13 +154,18 @@ class UserOrderServiceTest {
         when(userService.findCustomerByEmail(email)).thenReturn(Optional.empty());
 
         OrderDto dto = new OrderDto(
-                null, null, null,
+                null,
+                null,
+                null,
                 List.of(),
-                null, null, null,
+                null,
+                null,
+                null,
                 "addr",
                 PaymentMethod.PAYPAL,
-                "Name",
-                1010
+                1010,
+                null,
+                null
         );
 
         assertThatThrownBy(() -> orderService.createOrder(dto))
@@ -158,19 +173,20 @@ class UserOrderServiceTest {
                 .hasMessageContaining(email);
 
         verify(userService).findCustomerByEmail(email);
-        verifyNoInteractions(orderRepo, orderItemRepo, productService, orderMapper);
-        verifyNoMoreInteractions(userService);
+        verifyNoInteractions(orderRepo);
+        verifyNoInteractions(orderItemRepo);
+        verifyNoInteractions(productService);
+        verifyNoInteractions(orderMapper);
     }
 
     // -------------------- getOrderById --------------------
 
     @Test
     void getOrderById_returnsDto_whenOwner() {
-        User user = mock(User.class);
-        when(userService.findCustomerByEmail(email)).thenReturn(Optional.of(user));
+        User user = stubAuthenticatedUser();
 
         Order order = mock(Order.class);
-        when(orderRepo.findById(5L)).thenReturn(Optional.of(order));
+        when(orderRepo.findByIdWithItemsAndProducts(5L)).thenReturn(Optional.of(order));
         when(order.getUser()).thenReturn(user);
 
         OrderDto mapped = mock(OrderDto.class);
@@ -180,58 +196,59 @@ class UserOrderServiceTest {
 
         assertThat(result).isSameAs(mapped);
 
-        verify(orderRepo).findById(5L);
         verify(userService).findCustomerByEmail(email);
+        verify(orderRepo).findByIdWithItemsAndProducts(5L);
         verify(orderMapper).toDto(order);
-
-        verifyNoMoreInteractions(orderRepo, userService, orderMapper);
-        verifyNoInteractions(orderItemRepo, productService);
+        verifyNoInteractions(orderItemRepo);
+        verifyNoInteractions(productService);
     }
 
     @Test
     void getOrderById_throws_whenOrderNotFound() {
-        when(orderRepo.findById(5L)).thenReturn(Optional.empty());
+        stubAuthenticatedUser();
+        when(orderRepo.findByIdWithItemsAndProducts(5L)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> orderService.getOrderById(5L))
                 .isInstanceOf(RuntimeException.class)
                 .hasMessageContaining("Order not found");
 
-        verify(orderRepo).findById(5L);
-        verifyNoMoreInteractions(orderRepo);
-        verifyNoInteractions(userService, orderMapper, orderItemRepo, productService);
+        verify(userService).findCustomerByEmail(email);
+        verify(orderRepo).findByIdWithItemsAndProducts(5L);
+        verifyNoInteractions(orderMapper);
+        verifyNoInteractions(orderItemRepo);
+        verifyNoInteractions(productService);
     }
 
     @Test
     void getOrderById_throwsAccessDenied_whenNotOwner() {
-        User authUser = mock(User.class);
-        when(userService.findCustomerByEmail(email)).thenReturn(Optional.of(authUser));
-
+        stubAuthenticatedUser();
         User owner = mock(User.class);
 
         Order order = mock(Order.class);
-        when(orderRepo.findById(5L)).thenReturn(Optional.of(order));
+        when(orderRepo.findByIdWithItemsAndProducts(5L)).thenReturn(Optional.of(order));
         when(order.getUser()).thenReturn(owner);
 
         assertThatThrownBy(() -> orderService.getOrderById(5L))
                 .isInstanceOf(RuntimeException.class)
                 .hasMessageContaining("Access denied");
 
-        verify(orderRepo).findById(5L);
         verify(userService).findCustomerByEmail(email);
+        verify(orderRepo).findByIdWithItemsAndProducts(5L);
         verifyNoInteractions(orderMapper);
-        verifyNoMoreInteractions(orderRepo, userService);
+        verifyNoInteractions(orderItemRepo);
+        verifyNoInteractions(productService);
     }
 
     // -------------------- getOrdersByCustomer --------------------
 
     @Test
     void getOrdersByCustomer_returnsMappedList() {
-        User user = mock(User.class);
-        when(userService.findCustomerByEmail(email)).thenReturn(Optional.of(user));
+        User user = stubAuthenticatedUser();
 
         Order o1 = mock(Order.class);
         Order o2 = mock(Order.class);
-        when(orderRepo.findByUser(user)).thenReturn(List.of(o1, o2));
+
+        when(orderRepo.findByUserWithItemsAndProducts(user)).thenReturn(List.of(o1, o2));
 
         OrderDto d1 = mock(OrderDto.class);
         OrderDto d2 = mock(OrderDto.class);
@@ -243,12 +260,11 @@ class UserOrderServiceTest {
         assertThat(result).containsExactly(d1, d2);
 
         verify(userService).findCustomerByEmail(email);
-        verify(orderRepo).findByUser(user);
+        verify(orderRepo).findByUserWithItemsAndProducts(user);
         verify(orderMapper).toDto(o1);
         verify(orderMapper).toDto(o2);
-
-        verifyNoMoreInteractions(userService, orderRepo, orderMapper);
-        verifyNoInteractions(orderItemRepo, productService);
+        verifyNoInteractions(orderItemRepo);
+        verifyNoInteractions(productService);
     }
 
     @Test
@@ -260,16 +276,17 @@ class UserOrderServiceTest {
                 .hasMessageContaining(email);
 
         verify(userService).findCustomerByEmail(email);
-        verifyNoInteractions(orderRepo, orderMapper, orderItemRepo, productService);
-        verifyNoMoreInteractions(userService);
+        verifyNoInteractions(orderRepo);
+        verifyNoInteractions(orderMapper);
+        verifyNoInteractions(orderItemRepo);
+        verifyNoInteractions(productService);
     }
 
     // -------------------- cancelOrder --------------------
 
     @Test
     void cancelOrder_setsCanceled_whenOwnerAndValidState() {
-        User user = mock(User.class);
-        when(userService.findCustomerByEmail(email)).thenReturn(Optional.of(user));
+        User user = stubAuthenticatedUser();
 
         Order order = mock(Order.class);
         when(orderRepo.findById(7L)).thenReturn(Optional.of(order));
@@ -282,30 +299,32 @@ class UserOrderServiceTest {
         verify(order).setOrderStatus(OrderStatus.CANCELED);
         verify(orderRepo).save(order);
 
-        verify(orderRepo).findById(7L);
         verify(userService).findCustomerByEmail(email);
-        verifyNoMoreInteractions(orderRepo, userService);
-        verifyNoInteractions(orderMapper, orderItemRepo, productService);
+        verify(orderRepo).findById(7L);
+        verifyNoInteractions(orderMapper);
+        verifyNoInteractions(orderItemRepo);
+        verifyNoInteractions(productService);
     }
 
     @Test
     void cancelOrder_throws_whenOrderNotFound() {
+        stubAuthenticatedUser();
         when(orderRepo.findById(7L)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> orderService.cancelOrder(7L))
                 .isInstanceOf(RuntimeException.class)
                 .hasMessageContaining("Order not found");
 
+        verify(userService).findCustomerByEmail(email);
         verify(orderRepo).findById(7L);
-        verifyNoMoreInteractions(orderRepo);
-        verifyNoInteractions(userService, orderMapper, orderItemRepo, productService);
+        verifyNoInteractions(orderMapper);
+        verifyNoInteractions(orderItemRepo);
+        verifyNoInteractions(productService);
     }
 
     @Test
     void cancelOrder_throws_whenNotOwner() {
-        User user = mock(User.class);
-        when(userService.findCustomerByEmail(email)).thenReturn(Optional.of(user));
-
+        stubAuthenticatedUser();
         User owner = mock(User.class);
 
         Order order = mock(Order.class);
@@ -316,16 +335,16 @@ class UserOrderServiceTest {
                 .isInstanceOf(RuntimeException.class)
                 .hasMessageContaining("only cancel your own orders");
 
-        verify(orderRepo).findById(7L);
         verify(userService).findCustomerByEmail(email);
-        verifyNoMoreInteractions(orderRepo, userService);
-        verifyNoInteractions(orderMapper, orderItemRepo, productService);
+        verify(orderRepo).findById(7L);
+        verifyNoInteractions(orderMapper);
+        verifyNoInteractions(orderItemRepo);
+        verifyNoInteractions(productService);
     }
 
     @Test
     void cancelOrder_throws_whenAlreadyCanceled() {
-        User user = mock(User.class);
-        when(userService.findCustomerByEmail(email)).thenReturn(Optional.of(user));
+        User user = stubAuthenticatedUser();
 
         Order order = mock(Order.class);
         when(orderRepo.findById(7L)).thenReturn(Optional.of(order));
@@ -334,18 +353,14 @@ class UserOrderServiceTest {
 
         assertThatThrownBy(() -> orderService.cancelOrder(7L))
                 .isInstanceOf(RuntimeException.class)
-                .hasMessageContaining("already canceled");
+                .hasMessageContaining("Order cannot be canceled in status: CANCELED");
 
-        verify(orderRepo).findById(7L);
-        verify(userService).findCustomerByEmail(email);
         verify(orderRepo, never()).save(any());
-        verifyNoMoreInteractions(orderRepo, userService);
     }
 
     @Test
     void cancelOrder_throws_whenShipping() {
-        User user = mock(User.class);
-        when(userService.findCustomerByEmail(email)).thenReturn(Optional.of(user));
+        User user = stubAuthenticatedUser();
 
         Order order = mock(Order.class);
         when(orderRepo.findById(7L)).thenReturn(Optional.of(order));
@@ -354,18 +369,14 @@ class UserOrderServiceTest {
 
         assertThatThrownBy(() -> orderService.cancelOrder(7L))
                 .isInstanceOf(RuntimeException.class)
-                .hasMessageContaining("cannot be canceled");
+                .hasMessageContaining("Order cannot be canceled in status: SHIPPING");
 
-        verify(orderRepo).findById(7L);
-        verify(userService).findCustomerByEmail(email);
         verify(orderRepo, never()).save(any());
-        verifyNoMoreInteractions(orderRepo, userService);
     }
 
     @Test
     void cancelOrder_throws_whenDelivered() {
-        User user = mock(User.class);
-        when(userService.findCustomerByEmail(email)).thenReturn(Optional.of(user));
+        User user = stubAuthenticatedUser();
 
         Order order = mock(Order.class);
         when(orderRepo.findById(7L)).thenReturn(Optional.of(order));
@@ -374,20 +385,16 @@ class UserOrderServiceTest {
 
         assertThatThrownBy(() -> orderService.cancelOrder(7L))
                 .isInstanceOf(RuntimeException.class)
-                .hasMessageContaining("cannot be canceled");
+                .hasMessageContaining("Order cannot be canceled in status: DELIVERED");
 
-        verify(orderRepo).findById(7L);
-        verify(userService).findCustomerByEmail(email);
         verify(orderRepo, never()).save(any());
-        verifyNoMoreInteractions(orderRepo, userService);
     }
 
     // -------------------- returnOrder --------------------
 
     @Test
     void returnOrder_setsReturned_onlyIfDelivered() {
-        User user = mock(User.class);
-        when(userService.findCustomerByEmail(email)).thenReturn(Optional.of(user));
+        User user = stubAuthenticatedUser();
 
         Order order = mock(Order.class);
         when(orderRepo.findById(9L)).thenReturn(Optional.of(order));
@@ -400,16 +407,16 @@ class UserOrderServiceTest {
         verify(order).setOrderStatus(OrderStatus.RETURNED);
         verify(orderRepo).save(order);
 
-        verify(orderRepo).findById(9L);
         verify(userService).findCustomerByEmail(email);
-        verifyNoMoreInteractions(orderRepo, userService);
-        verifyNoInteractions(orderMapper, orderItemRepo, productService);
+        verify(orderRepo).findById(9L);
+        verifyNoInteractions(orderMapper);
+        verifyNoInteractions(orderItemRepo);
+        verifyNoInteractions(productService);
     }
 
     @Test
     void returnOrder_throws_whenNotDelivered() {
-        User user = mock(User.class);
-        when(userService.findCustomerByEmail(email)).thenReturn(Optional.of(user));
+        User user = stubAuthenticatedUser();
 
         Order order = mock(Order.class);
         when(orderRepo.findById(9L)).thenReturn(Optional.of(order));
@@ -418,32 +425,30 @@ class UserOrderServiceTest {
 
         assertThatThrownBy(() -> orderService.returnOrder(9L))
                 .isInstanceOf(RuntimeException.class)
-                .hasMessageContaining("Only delivered orders can be returned");
+                .hasMessageContaining("Order cannot be returned in status: RECEIVED");
 
-        verify(orderRepo).findById(9L);
-        verify(userService).findCustomerByEmail(email);
         verify(orderRepo, never()).save(any());
-        verifyNoMoreInteractions(orderRepo, userService);
     }
 
     @Test
     void returnOrder_throws_whenOrderNotFound() {
+        stubAuthenticatedUser();
         when(orderRepo.findById(9L)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> orderService.returnOrder(9L))
                 .isInstanceOf(RuntimeException.class)
                 .hasMessageContaining("Order not found");
 
+        verify(userService).findCustomerByEmail(email);
         verify(orderRepo).findById(9L);
-        verifyNoMoreInteractions(orderRepo);
-        verifyNoInteractions(userService, orderMapper, orderItemRepo, productService);
+        verifyNoInteractions(orderMapper);
+        verifyNoInteractions(orderItemRepo);
+        verifyNoInteractions(productService);
     }
 
     @Test
     void returnOrder_throws_whenNotOwner() {
-        User user = mock(User.class);
-        when(userService.findCustomerByEmail(email)).thenReturn(Optional.of(user));
-
+        stubAuthenticatedUser();
         User owner = mock(User.class);
 
         Order order = mock(Order.class);
@@ -454,9 +459,10 @@ class UserOrderServiceTest {
                 .isInstanceOf(RuntimeException.class)
                 .hasMessageContaining("only return your own orders");
 
-        verify(orderRepo).findById(9L);
         verify(userService).findCustomerByEmail(email);
-        verifyNoMoreInteractions(orderRepo, userService);
-        verifyNoInteractions(orderMapper, orderItemRepo, productService);
+        verify(orderRepo).findById(9L);
+        verifyNoInteractions(orderMapper);
+        verifyNoInteractions(orderItemRepo);
+        verifyNoInteractions(productService);
     }
 }

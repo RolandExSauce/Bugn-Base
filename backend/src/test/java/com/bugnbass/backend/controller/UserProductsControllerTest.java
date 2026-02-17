@@ -91,7 +91,9 @@ class UserProductsControllerTest {
                 stock,
                 3,
                 true,
-                List.of()
+                List.of(),
+                4.5,
+                12L
         );
 
         when(userProductService.getProducts(any())).thenReturn(List.of(dto));

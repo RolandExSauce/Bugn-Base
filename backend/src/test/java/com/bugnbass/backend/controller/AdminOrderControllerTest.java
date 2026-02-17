@@ -96,7 +96,6 @@ class AdminOrderControllerTest {
                 .andExpect(jsonPath("$[0].orderNumber").value("ORD-123"))
                 .andExpect(jsonPath("$[0].totalOrderPrice").value(1000))
                 .andExpect(jsonPath("$[0].orderStatus").value("RECEIVED"))
-                .andExpect(jsonPath("$[0].deliveryFullname").value("Max Mustermann"))
                 .andExpect(jsonPath("$[0].deliveryPostcode").value(1234));
 
         verify(adminOrderService).getAllOrders();
@@ -214,14 +213,15 @@ class AdminOrderControllerTest {
                 1L,
                 "ORD-123",
                 1000,
-                List.of(new OrderItemDto(1L, 2, 500)),
+                List.of(new OrderItemDto(1L, "Piano", 2, 500)),
                 LocalDate.of(2026, 2, 11),
                 LocalDate.of(2026, 2, 15),
                 OrderStatus.RECEIVED,
                 "Test Street 1",
                 PaymentMethod.PAYPAL,
-                "Max Mustermann",
-                1234
+                1234,
+                "Max",
+                "Mustermann"
         );
     }
 }

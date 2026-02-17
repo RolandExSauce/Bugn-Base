@@ -117,8 +117,10 @@ class UserOrderControllerTest {
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.orderItems").isArray())
                 .andExpect(jsonPath("$.orderItems.length()").value(1))
-                .andExpect(jsonPath("$.deliveryFullname").value(dto.deliveryFullname()))
-                .andExpect(jsonPath("$.deliveryPostcode").value(dto.deliveryPostcode()));
+                .andExpect(jsonPath("$.deliveryPostcode").value(dto.deliveryPostcode()))
+                .andExpect(jsonPath("$.userFirstName").value(dto.userFirstName()))
+                .andExpect(jsonPath("$.userLastName").value(dto.userLastName()));
+
 
         verify(userOrderService).getOrderById(5L);
         verifyNoMoreInteractions(userOrderService);
@@ -208,14 +210,15 @@ class UserOrderControllerTest {
                 null,
                 "ORD-123",
                 1000,
-                List.of(new OrderItemDto(1L, 2, 500)),
+                List.of(new OrderItemDto(1L, "Piano" , 2, 500)),
                 LocalDate.of(2026, 2, 11),
                 LocalDate.of(2026, 2, 15),
                 OrderStatus.RECEIVED,
                 "Test Street 1",
                 PaymentMethod.PAYPAL,
-                "Max Mustermann",
-                1234
+                1234,
+                "Max",
+                "Mustermann"
         );
     }
 }

@@ -8,6 +8,9 @@ export default function OrdersList() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // ✅ NEU: welche Bestellung ist im Edit-Mode?
+  const [selectedOrderId, setSelectedOrderId] = useState<number | null>(null);
+
   const fetchOrders = async () => {
     try {
       setLoading(true);
@@ -30,10 +33,16 @@ export default function OrdersList() {
     setOrders((prev) =>
       prev.map((order) => (order.id === updatedOrder.id ? updatedOrder : order))
     );
+
+    // ✅ optional: nach Speichern wieder schließen
+    // setSelectedOrderId(null);
   };
 
   const handleOrderDeleted = (orderId: number) => {
     setOrders((prev) => prev.filter((order) => order.id !== orderId));
+
+    // ✅ falls die gelöschte gerade offen war
+    setSelectedOrderId((prev) => (prev === orderId ? null : prev));
   };
 
   if (loading) {
@@ -62,9 +71,7 @@ export default function OrdersList() {
   }
 
   if (orders.length === 0) {
-    return (
-      <div className="alert alert-info">Keine Bestellungen vorhanden.</div>
-    );
+    return <div className="alert alert-info">Keine Bestellungen vorhanden.</div>;
   }
 
   return (
@@ -83,11 +90,16 @@ export default function OrdersList() {
             <th>Aktionen</th>
           </tr>
         </thead>
+
         <tbody>
           {orders.map((order) => (
             <FullOrder
               key={order.id}
               order={order}
+              isSelected={selectedOrderId === order.id}
+              onSelect={() =>
+                setSelectedOrderId((prev) => (prev === order.id ? null : order.id))
+              }
               onUpdate={handleOrderUpdated}
               onDelete={handleOrderDeleted}
             />

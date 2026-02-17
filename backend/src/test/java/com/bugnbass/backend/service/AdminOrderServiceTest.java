@@ -38,7 +38,7 @@ class AdminOrderServiceTest {
     @Test
     void getAllOrders_mapsAll() {
         Order o1 = mock(Order.class);
-        when(orderRepo.findAll()).thenReturn(List.of(o1));
+        when(orderRepo.findAllWithUserItemsAndProducts()).thenReturn(List.of(o1));
 
         OrderDto d1 = mock(OrderDto.class);
         when(orderMapper.toDto(o1)).thenReturn(d1);
@@ -47,7 +47,7 @@ class AdminOrderServiceTest {
 
         assertThat(result).containsExactly(d1);
 
-        verify(orderRepo).findAll();
+        verify(orderRepo).findAllWithUserItemsAndProducts();
         verify(orderMapper).toDto(o1);
 
         verifyNoMoreInteractions(orderRepo, orderMapper);
@@ -55,13 +55,13 @@ class AdminOrderServiceTest {
 
     @Test
     void getAllOrders_returnsEmptyList_whenNoOrders() {
-        when(orderRepo.findAll()).thenReturn(List.of());
+        when(orderRepo.findAllWithUserItemsAndProducts()).thenReturn(List.of());
 
         List<OrderDto> result = adminOrderService.getAllOrders();
 
         assertThat(result).isEmpty();
 
-        verify(orderRepo).findAll();
+        verify(orderRepo).findAllWithUserItemsAndProducts();
         verifyNoMoreInteractions(orderRepo);
 
         verifyNoInteractions(orderMapper);
@@ -109,8 +109,18 @@ class AdminOrderServiceTest {
         when(orderRepo.findById(1L)).thenReturn(Optional.of(order));
 
         OrderDto input = new OrderDto(
-                1L, null, null, List.of(), null, null,
-                OrderStatus.SHIPPING, null, null, null, null
+                1L,
+                null,
+                null,
+                List.of(),
+                null,
+                null,
+                OrderStatus.SHIPPING,
+                null,
+                null,
+                null,
+                null,
+                null
         );
 
         OrderDto mapped = mock(OrderDto.class);
@@ -133,8 +143,18 @@ class AdminOrderServiceTest {
         when(orderRepo.findById(1L)).thenReturn(Optional.empty());
 
         OrderDto input = new OrderDto(
-                1L, null, null, List.of(), null, null,
-                OrderStatus.SHIPPING, null, null, null, null
+                1L,
+                null,
+                null,
+                List.of(),
+                null,
+                null,
+                OrderStatus.SHIPPING,
+                null,
+                null,
+                null,
+                null,
+                null
         );
 
         assertThatThrownBy(() -> adminOrderService.updateOrder(input))

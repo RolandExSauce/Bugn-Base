@@ -63,7 +63,6 @@ CREATE TABLE orders
     order_status      VARCHAR(50)    NOT NULL,
     shipping_address  VARCHAR(255)   NOT NULL,
     payment_method    VARCHAR(50),
-    delivery_fullname VARCHAR(255),
     delivery_postcode INTEGER
 );
 
@@ -102,90 +101,185 @@ CREATE TABLE reviews
 );
 
 INSERT INTO products (name, category, description, price, shipping_cost, brand, stock_status, shipping_time, active)
-VALUES ('PrestoTune White-F', 'PIANOS',
-        'Elegant white finish piano with advanced soundboard technology for superior acoustics.', 350000, 0,
-        'PrestoTune Pianos', 'IN_STOCK', 5, TRUE),
-       ('Newerton Pro', 'PIANOS', 'Professional studio piano with weighted keys and authentic grand piano sound.',
-        99900, 0, 'Newerton', 'OUT_OF_STOCK', 5, FALSE),
-       ('StrumVista Blue', 'PIANOS',
-        'Unique blue finish upright piano with exceptional dynamic range and tone control.', 220000, 0,
-        'StrumVista Black', 'IN_STOCK', 5, TRUE),
-       ('PrestoTune Grand LX', 'PIANOS', 'Luxury grand piano with handcrafted soundboard and premium ebony keys.',
-        5000000, 10000, 'PrestoTune Pianos', 'IN_STOCK', 5, TRUE),
-       ('StrumVista Black', 'PIANOS', 'Premium black grand piano with enhanced resonance and sustain.', 999900, 12000,
-        'StrumVista Guitars', 'IN_STOCK', 5, TRUE),
-       ('EchoLynx White x2', 'PIANOS', 'Compact white piano with dual speaker system for immersive sound experience.',
-        39900, 2500, 'EchoLynx Crafters', 'IN_STOCK', 5, TRUE),
-       ('EchoLynx Crafters', 'PIANOS', 'Artisan-crafted piano with custom tonewoods for warm, balanced sound.', 49900,
-        0, 'EchoLynx Crafters', 'OUT_OF_STOCK', 5, FALSE),
-       ('SonataCraft LX red', 'PIANOS', 'Striking red grand piano with concert hall voicing and precision action.',
-        5559900, 0, 'SonataCraft Pianos', 'IN_STOCK', 5, TRUE),
-       ('Black Upright p44', 'PIANOS', 'Classic upright piano with rich bass response and smooth key action.', 300000,
-        0, 'Melodique Keys', 'IN_STOCK', 5, TRUE),
-       ('Melodique Baby Grand', 'PIANOS', 'Compact grand piano delivering full-sized performance in smaller spaces.',
-        139900, 0, 'Melodique Keys', 'IN_STOCK', 5, TRUE),
-       ('Melodique Piano', 'PIANOS',
-        'Professional upright piano with German hammer action and solid spruce soundboard.', 550000, 0,
-        'Melodique Keys', 'IN_STOCK', 5, TRUE),
-       ('PrestoTune Klamm-33', 'PIANOS',
-        'Entry-level digital piano with authentic weighted key feel and multiple voices.', 40000, 0,
-        'PrestoTune Pianos', 'IN_STOCK', 5, TRUE),
-       ('EchoRidge Keyboard Midi', 'PIANOS',
-        'Versatile MIDI controller piano with premium keybed and extensive connectivity.', 49900, 5500,
-        'EchoRidge Keyboards', 'IN_STOCK', 5, TRUE),
-       ('SonataCraft g66', 'PIANOS', 'Handcrafted concert grand with patented sound projection system.', 1200000, 0,
-        'SonataCraft Pianos', 'IN_STOCK', 5, TRUE),
-       ('FretHarmony', 'PIANOS', 'Studio-quality upright with silent practice system and Bluetooth connectivity.',
-        99900, 0, 'FretHarmony Instruments', 'IN_STOCK', 5, TRUE),
-       ('StrumVibe', 'GUITARS', 'Modern digital piano with realistic hammer action and onboard lesson functions.',
-        87500, 1200, 'SoundForge', 'IN_STOCK', 3, TRUE),
-       ('EchoTone', 'GUITARS', 'Vintage-inspired upright piano with warm tonal character and classic styling.', 149900,
-        2500, 'ClassicKeys Co.', 'OUT_OF_STOCK', 6, FALSE),
-       ('HarmonyFire', 'PIANOS', 'Hybrid piano combining acoustic soundboard with digital versatility.', 79900, 1000,
-        'Virtuoso Makers', 'IN_STOCK', 2, TRUE),
-       ('BassBloom', 'PIANOS', 'Compact digital piano with exceptional bass response and portable design.', 65900, 900,
-        'ToneRiver', 'IN_STOCK', 7, TRUE),
-       ('ChordBliss', 'PIANOS', 'Professional stage piano with premium samples and advanced effects.', 132000, 3000,
-        'ClassicKeys Co.', 'OUT_OF_STOCK', 4, TRUE);
+VALUES
+-- =========================
+-- PIANOS (1-7)
+-- =========================
+('PrestoTune White Upright F', 'PIANOS',
+ 'Elegant white upright piano with smooth key action and clear, balanced tone for home and studio.', 350000, 0,
+ 'PrestoTune Pianos', 'IN_STOCK', 5, TRUE),
+
+('SonataCraft Ivory Grand LX', 'PIANOS',
+ 'Premium white grand piano with rich sustain and refined voicing, designed for living room and stage.', 1200000, 9000,
+ 'SonataCraft Pianos', 'IN_STOCK', 7, TRUE),
+
+('SonataCraft Ruby Grand', 'PIANOS',
+ 'Striking red grand piano with concert-style projection and precise, responsive action.', 5559900, 0,
+ 'SonataCraft Pianos', 'IN_STOCK', 7, TRUE),
+
+('Melodique Black Upright p44', 'PIANOS',
+ 'Classic black upright piano with warm bass response, stable tuning feel, and smooth playability.', 300000, 0,
+ 'Melodique Keys', 'IN_STOCK', 5, TRUE),
+
+('Melodique Walnut Upright', 'PIANOS',
+ 'Warm walnut-finish upright piano with mellow character, ideal for practice and lessons.', 279900, 0,
+ 'Melodique Keys', 'IN_STOCK', 5, TRUE),
+
+('EchoLynx Compact White', 'PIANOS',
+ 'Compact white digital piano with clean design, dual speakers, and responsive weighted feel.', 39900, 2500,
+ 'EchoLynx Keys', 'IN_STOCK', 3, TRUE),
+
+('Newerton Studio Black Pro', 'PIANOS',
+ 'Studio-focused black piano with weighted feel and expressive dynamics for recording and rehearsals.', 99900, 0,
+ 'Newerton Keys', 'OUT_OF_STOCK', 4, TRUE),
+
+-- =========================
+-- GUITARS (8-14)
+-- =========================
+('StrumVista Midnight Black', 'GUITARS',
+ 'Modern electric guitar with tight low-end, comfortable neck, and versatile tones for rock and pop.', 129900, 1900,
+ 'StrumVista Guitars', 'IN_STOCK', 4, TRUE),
+
+('FretHarmony Cherry Classic', 'GUITARS',
+ 'Classic double-cut electric guitar with punchy mids, smooth lead feel, and reliable tuning stability.', 89900, 1500,
+ 'FretHarmony Instruments', 'IN_STOCK', 3, TRUE),
+
+('SoundForge Polar White X', 'GUITARS',
+ 'Sharp-looking white electric guitar built for fast playability and crisp, articulate attack.', 97500, 1800,
+ 'SoundForge', 'IN_STOCK', 3, TRUE),
+
+('EchoTone Sunburst Vintage V', 'GUITARS',
+ 'Vintage-inspired sunburst electric guitar with warm mids, singing sustain, and classic styling.', 149900, 2500,
+ 'EchoTone Guitars', 'OUT_OF_STOCK', 6, TRUE),
+
+('ToneRiver Amber Flame', 'GUITARS',
+ 'Single-cut electric guitar with warm sustain, clear note separation, and stage-ready hardware.', 159900, 2500,
+ 'ToneRiver', 'IN_STOCK', 5, TRUE),
+
+('Newerton Honeyburst Pro', 'GUITARS',
+ 'Premium electric guitar with rich harmonics, stable trem option, and comfortable modern profile.', 169900, 2500,
+ 'Newerton Strings', 'IN_STOCK', 6, TRUE),
+
+('ClassicKeys Crimson Standard', 'GUITARS',
+ 'Solid-body electric guitar with tight response, great intonation, and bold modern look.', 119900, 2000,
+ 'ClassicKeys Co.', 'IN_STOCK', 5, TRUE),
+
+-- =========================
+-- VIOLINS (15-20)
+-- =========================
+('AriaVale Student 4/4', 'VIOLINS',
+ 'Student-friendly 4/4 violin with clear tone, stable setup, and comfortable playability.', 19900, 1200,
+ 'AriaVale Violins', 'IN_STOCK', 3, TRUE),
+
+('CrescendoCraft Student 3/4', 'VIOLINS',
+ '3/4 violin for younger players with warm tone and reliable tuning stability.', 15900, 1000,
+ 'CrescendoCraft', 'IN_STOCK', 3, TRUE),
+
+('SonataBow Travel Outfit', 'VIOLINS',
+ 'Durable violin outfit with robust case, designed for lessons, travel, and daily practice.', 29900, 1800,
+ 'SonataBow', 'IN_STOCK', 4, TRUE),
+
+('LuthierWorks Concert 4/4', 'VIOLINS',
+ 'Concert-grade 4/4 violin with strong projection, nuanced response, and premium craftsmanship.', 249900, 3500,
+ 'LuthierWorks', 'IN_STOCK', 7, TRUE),
+
+('PrestoStrings Vintage V1', 'VIOLINS',
+ 'Vintage-voiced violin with sweet highs, warm lows, and excellent bow articulation.', 79900, 2200,
+ 'PrestoStrings', 'OUT_OF_STOCK', 6, TRUE),
+
+('OrchestraLine Pro Setup', 'VIOLINS',
+ 'Professional setup focused on stability, projection, and refined dynamic control.', 129900, 2800,
+ 'OrchestraLine', 'IN_STOCK', 6, TRUE);
+
 
 INSERT INTO images (image_id, url, product_id)
-VALUES ('00000000-0000-0000-0000-000000000001', '/pianos/p-1.jpg', 1),
-       ('00000000-0000-0000-0000-000000000002', '/pianos/p-6.jpg', 1),
-       ('00000000-0000-0000-0000-000000000003', '/pianos/p-7.jpg', 2),
-       ('00000000-0000-0000-0000-000000000004', '/pianos/p-12.jpg', 2),
-       ('00000000-0000-0000-0000-000000000005', '/pianos/p-15.jpg', 3),
-       ('00000000-0000-0000-0000-000000000006', '/pianos/p-19.jpg', 3),
+VALUES
+-- =========================
+-- PIANOS (1-7)
+-- White Upright -> white upright image
+('00000000-0000-0000-0000-000000000001', '/pianos/p-17.jpg', 1),
+('00000000-0000-0000-0000-000000000002', '/pianos/p-19.jpg', 1),
 
-       ('00000000-0000-0000-0000-000000000007', '/guitars/g-1.jpg', 4),
-       ('00000000-0000-0000-0000-000000000008', '/guitars/g-8.jpg', 4),
-       ('00000000-0000-0000-0000-000000000009', '/guitars/g-5.jpg', 5),
-       ('00000000-0000-0000-0000-000000000010', '/guitars/g-11.jpg', 5),
+-- White Grand -> white grand images
+('00000000-0000-0000-0000-000000000003', '/pianos/p-14.jpg', 2),
+('00000000-0000-0000-0000-000000000004', '/pianos/p-16.jpg', 2),
 
-       ('00000000-0000-0000-0000-000000000011', '/violins/v-2.jpg', 6),
-       ('00000000-0000-0000-0000-000000000012', '/violins/v-7.jpg', 6);
+-- Red Grand -> red grand image (p-18 looks red-accent), plus another grand
+('00000000-0000-0000-0000-000000000005', '/pianos/p-18.jpg', 3),
+('00000000-0000-0000-0000-000000000006', '/pianos/p-3.jpg', 3),
 
-INSERT INTO images (image_id, url, product_id)
-VALUES ('00000000-0000-0000-0000-000000000013', '/pianos/p-1.jpg', 4),
-       ('00000000-0000-0000-0000-000000000014', '/pianos/p-6.jpg', 5),
-       ('00000000-0000-0000-0000-000000000015', '/pianos/p-7.jpg', 6),
-       ('00000000-0000-0000-0000-000000000016', '/pianos/p-12.jpg', 7),
-       ('00000000-0000-0000-0000-000000000017', '/pianos/p-15.jpg', 8),
-       ('00000000-0000-0000-0000-000000000018', '/pianos/p-19.jpg', 9),
+-- Black Upright -> black upright images
+('00000000-0000-0000-0000-000000000007', '/pianos/p-6.jpg', 4),
+('00000000-0000-0000-0000-000000000008', '/pianos/p-12.jpg', 4),
 
-       ('00000000-0000-0000-0000-000000000019', '/guitars/g-1.jpg', 10),
-       ('00000000-0000-0000-0000-000000000020', '/guitars/g-8.jpg', 11),
-       ('00000000-0000-0000-0000-000000000021', '/guitars/g-5.jpg', 12),
+-- Walnut Upright -> wood upright images
+('00000000-0000-0000-0000-000000000009', '/pianos/p-10.jpg', 5),
+('00000000-0000-0000-0000-000000000010', '/pianos/p-11.jpg', 5),
 
-       ('00000000-0000-0000-0000-000000000022', '/violins/v-2.jpg', 13),
-       ('00000000-0000-0000-0000-000000000023', '/violins/v-7.jpg', 14),
-       ('00000000-0000-0000-0000-000000000024', '/violins/v-2.jpg', 19),
-       ('00000000-0000-0000-0000-000000000025', '/violins/v-2.jpg', 20);
+-- Compact White -> white compact / white finish
+('00000000-0000-0000-0000-000000000011', '/pianos/p-13.jpg', 6),
+('00000000-0000-0000-0000-000000000012', '/pianos/p-17.jpg', 6),
 
-INSERT INTO images (image_id, url, product_id)
-VALUES ('00000000-0000-0000-0000-000000000026', '/pianos/p-1.jpg', 15),
-       ('00000000-0000-0000-0000-000000000027', '/pianos/p-6.jpg', 16),
-       ('00000000-0000-0000-0000-000000000028', '/guitars/g-1.jpg', 17),
-       ('00000000-0000-0000-0000-000000000029', '/violins/v-2.jpg', 18);
+-- Studio Black -> sleek black upright images
+('00000000-0000-0000-0000-000000000013', '/pianos/p-7.jpg', 7),
+('00000000-0000-0000-0000-000000000014', '/pianos/p-15.jpg', 7),
+
+-- =========================
+-- GUITARS (8-14)
+-- Black guitar
+('00000000-0000-0000-0000-000000000015', '/guitars/g-1.jpg', 8),
+('00000000-0000-0000-0000-000000000016', '/guitars/g-4.jpg', 8),
+
+-- Cherry / red-ish
+('00000000-0000-0000-0000-000000000017', '/guitars/g-2.jpg', 9),
+('00000000-0000-0000-0000-000000000018', '/guitars/g-8.jpg', 9),
+
+-- White guitar
+('00000000-0000-0000-0000-000000000019', '/guitars/g-3.jpg', 10),
+('00000000-0000-0000-0000-000000000020', '/guitars/g-10.jpg', 10),
+
+-- Sunburst
+('00000000-0000-0000-0000-000000000021', '/guitars/g-5.jpg', 11),
+('00000000-0000-0000-0000-000000000022', '/guitars/g-11.jpg', 11),
+
+-- Amber / flame top
+('00000000-0000-0000-0000-000000000023', '/guitars/g-6.jpg', 12),
+('00000000-0000-0000-0000-000000000024', '/guitars/g-5.jpg', 12),
+
+-- Honeyburst / warm
+('00000000-0000-0000-0000-000000000025', '/guitars/g-6.jpg', 13),
+('00000000-0000-0000-0000-000000000026', '/guitars/g-12.jpg', 13),
+
+-- Crimson
+('00000000-0000-0000-0000-000000000027', '/guitars/g-12.jpg', 14),
+('00000000-0000-0000-0000-000000000028', '/guitars/g-2.jpg', 14),
+
+-- =========================
+-- VIOLINS (15-20)
+-- Student 4/4
+('00000000-0000-0000-0000-000000000029', '/violins/v-1.jpg', 15),
+('00000000-0000-0000-0000-000000000030', '/violins/v-2.jpg', 15),
+
+-- Student 3/4
+('00000000-0000-0000-0000-000000000031', '/violins/v-7.jpg', 16),
+('00000000-0000-0000-0000-000000000032', '/violins/v-8.jpg', 16),
+
+-- Travel outfit (case-y look ist nicht sichtbar, aber diverse Bilder ok)
+('00000000-0000-0000-0000-000000000033', '/violins/v-9.jpg', 17),
+('00000000-0000-0000-0000-000000000034', '/violins/v-10.jpg', 17),
+
+-- Concert grade
+('00000000-0000-0000-0000-000000000035', '/violins/v-3.jpg', 18),
+('00000000-0000-0000-0000-000000000036', '/violins/v-5.jpg', 18),
+
+-- Vintage voiced
+('00000000-0000-0000-0000-000000000037', '/violins/v-6.jpg', 19),
+('00000000-0000-0000-0000-000000000038', '/violins/v-5.jpg', 19),
+
+-- Pro setup
+('00000000-0000-0000-0000-000000000039', '/violins/v-4.jpg', 20),
+('00000000-0000-0000-0000-000000000040', '/violins/v-6.jpg', 20);
+
 
 
 INSERT INTO users (id, email, password, phone, address, postcode, firstname, lastname, role, active, created_at)
@@ -217,105 +311,77 @@ VALUES ('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb', 'maria82@example.com', 'passM@12
 
 INSERT INTO orders (id, order_number, user_id, total_order_price,
                     ordered_date, delivery_date,
-                    order_status, shipping_address, payment_method, delivery_fullname, delivery_postcode)
+                    order_status, shipping_address, payment_method, delivery_postcode)
 VALUES
-    (99, 'ORD-1001', '11111111-1111-1111-1111-111111111111',
-     350000 + 2*999900 + 139900, '2025-05-21', NULL, 'RECEIVED',
-     '123 Elm Street, Springfield', 'PAYPAL', null, 1120),
-
-    (100, 'ORD-1002', '11111111-1111-1111-1111-111111111111',
-     99900 + 49900, '2025-05-10', '2025-05-15', 'SHIPPING',
-     '123 Elm Street, Springfield', 'CREDITCARD', null, 1120),
-
-    (101, 'ORD-2001', '22222222-2222-2222-2222-222222222222',
-     2*220000 + 40000, '2025-05-11', NULL, 'RECEIVED',
-     '456 Oak Avenue, Centerville', 'BANKTRANSFER', null, 1120),
-
-    (102, 'ORD-3001', '33333333-3333-3333-3333-333333333333',
-     5000000, '2025-05-19', NULL, 'SHIPPING',
-     '789 Maple Lane, Rivertown', 'PAYPAL', null, 1120),
-
-    (103, 'ORD-4001', '44444444-4444-4444-4444-444444444444',
-     39900 + 5559900 + 1200000, '2025-05-14', NULL, 'RECEIVED',
-     '321 Birch Rd, Hilltown', 'CREDITCARD', null, 1120),
-
-    (104, 'ORD-5001', '55555555-5555-5555-5555-555555555555',
-     300000 + 2*550000, '2025-05-27', NULL, 'CANCELED',
-     '654 Cedar Street, Lakeside', 'PAYPAL', null, 1120),
-
-    (105, 'ORD-6001', '66666666-6666-6666-6666-666666666666',
-     49900 + 99900, '2025-05-23', '2025-05-26', 'SHIPPING',
-     '213 Spruce Blvd, Newfield', 'PAYPAL', null, 1120),
-
-    (106, 'ORD-7001', '77777777-7777-7777-7777-777777777777',
-     87500 + 149900, '2025-05-09', NULL, 'SHIPPING',
-     '987 Aspen Way, Brookville', 'BANKTRANSFER', null, 1120),
-
-    (107, 'ORD-8001', '88888888-8888-8888-8888-888888888888',
-     2*79900, '2025-05-18', NULL, 'RECEIVED',
-     '147 Redwood Dr, Milltown', 'PAYPAL', null, 1120),
-
-    (108, 'ORD-9001', '99999999-9999-9999-9999-999999999999',
-     65900 + 132000, '2025-05-12', '2025-05-17', 'SHIPPING',
-     '852 Pine St, Cityville', 'CREDITCARD', null, 1120),
-
-    (109, 'ORD-10001', 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa',
-     350000 + 220000 + 999900, '2025-05-28', NULL, 'RECEIVED',
-     '963 Willow Way, Capitol City', 'PAYPAL', null, 1120),
-
-    (110, 'ORD-11001', 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb',
-     99900 + 39900, '2025-05-29', NULL, 'RECEIVED',
-     '123 Elm Street, Springfield', 'PAYPAL', null, 1120),
-
-    (111, 'ORD-11002', '22222222-2222-2222-2222-222222222222',
-     5000000, '2025-05-30', NULL, 'SHIPPING',
-     '456 Oak Avenue, Centerville', 'CREDITCARD', null, 1120),
-
-    (112, 'ORD-11003', '33333333-3333-3333-3333-333333333333',
-     2*49900 + 5559900, '2025-05-31', NULL, 'RECEIVED',
-     '789 Maple Lane, Rivertown', 'BANKTRANSFER', null, 1120),
-
-    (113, 'ORD-11004', '44444444-4444-4444-4444-444444444444',
-     300000 + 139900, '2025-06-01', NULL, 'SHIPPING',
-     '321 Birch Rd, Hilltown', 'PAYPAL', null, 1120),
-
-    (114, 'ORD-11005', '55555555-5555-5555-5555-555555555555',
-     550000 + 40000, '2025-06-02', NULL, 'RECEIVED',
-     '654 Cedar Street, Lakeside', 'PAYPAL', null, 1120),
-
-    (115, 'ORD-11006', '66666666-6666-6666-6666-666666666666',
-     49900 + 1200000, '2025-06-03', NULL, 'SHIPPING',
-     '213 Spruce Blvd, Newfield', 'CREDITCARD', null, 1120),
-
-    (116, 'ORD-11007', '77777777-7777-7777-7777-777777777777',
-     2*99900, '2025-06-04', NULL, 'RECEIVED',
-     '987 Aspen Way, Brookville', 'PAYPAL', null, 1120),
-
-    (117, 'ORD-11008', '88888888-8888-8888-8888-888888888888',
-     87500 + 149900, '2025-06-05', NULL, 'SHIPPING',
-     '147 Redwood Dr, Milltown', 'BANKTRANSFER', null, 1120),
-
-    (118, 'ORD-11009', '99999999-9999-9999-9999-999999999999',
-     79900 + 65900, '2025-06-06', NULL, 'RECEIVED',
-     '852 Pine St, Cityville', 'PAYPAL', null, 1120);
+    (99,  'ORD-1001', '11111111-1111-1111-1111-111111111111', 350000,  '2025-05-21', NULL, 'RECEIVED',  '123 Elm Street', 'PAYPAL', 1120),
+    (100, 'ORD-1002', '11111111-1111-1111-1111-111111111111', 279800,  '2025-05-10', '2025-05-15', 'DELIVERED', '123 Elm Street', 'CREDITCARD', 1120),
+    (101, 'ORD-2001', '22222222-2222-2222-2222-222222222222', 399800,  '2025-05-11', NULL, 'RECEIVED', '456 Oak Avenue', 'BANKTRANSFER', 1120),
+    (102, 'ORD-3001', '33333333-3333-3333-3333-333333333333', 1200000, '2025-05-19', NULL, 'SHIPPING', '789 Maple Lane', 'PAYPAL', 1120),
+    (103, 'ORD-4001', '44444444-4444-4444-4444-444444444444', 5619800, '2025-05-14', NULL, 'RECEIVED', '321 Birch Rd', 'CREDITCARD', 1120),
+    (104, 'ORD-5001', '55555555-5555-5555-5555-555555555555', 600000,  '2025-05-27', NULL, 'CANCELED', '654 Cedar Street', 'PAYPAL', 1120),
+    (105, 'ORD-6001', '66666666-6666-6666-6666-666666666666', 138900,  '2025-05-23', '2025-05-26', 'DELIVERED', '213 Spruce Blvd', 'PAYPAL', 1120),
+    (106, 'ORD-7001', '77777777-7777-7777-7777-777777777777', 237400,  '2025-05-09', NULL, 'SHIPPING', '987 Aspen Way', 'BANKTRANSFER', 1120),
+    (107, 'ORD-8001', '88888888-8888-8888-8888-888888888888', 159800,  '2025-05-18', NULL, 'RECEIVED', '147 Redwood Dr', 'PAYPAL', 1120),
+    (108, 'ORD-9001', '99999999-9999-9999-9999-999999999999', 197900,  '2025-05-12', '2025-05-17', 'DELIVERED', '852 Pine St', 'CREDITCARD', 1120),
+    (109, 'ORD-10001','aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', 629900,  '2025-05-28', NULL, 'RECEIVED', '963 Willow Way', 'PAYPAL', 1120),
+    (110, 'ORD-11001','bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb', 39900,   '2025-05-29', NULL, 'RECEIVED', '123 Elm Street', 'PAYPAL', 1120),
+    (111, 'ORD-11002','22222222-2222-2222-2222-222222222222', 5559900, '2025-05-30', NULL, 'SHIPPING', '456 Oak Avenue', 'CREDITCARD', 1120),
+    (112, 'ORD-11003','33333333-3333-3333-3333-333333333333', 199800,  '2025-05-31', NULL, 'RECEIVED', '789 Maple Lane', 'BANKTRANSFER', 1120),
+    (113, 'ORD-11004','44444444-4444-4444-4444-444444444444', 439900,  '2025-06-01', NULL, 'SHIPPING', '321 Birch Rd', 'PAYPAL', 1120),
+    (114, 'ORD-11005','55555555-5555-5555-5555-555555555555', 279900,  '2025-06-02', NULL, 'RECEIVED', '654 Cedar Street', 'PAYPAL', 1120),
+    (115, 'ORD-11006','66666666-6666-6666-6666-666666666666', 1249900, '2025-06-03', NULL, 'SHIPPING', '213 Spruce Blvd', 'CREDITCARD', 1120),
+    (116, 'ORD-11007','77777777-7777-7777-7777-777777777777', 199800,  '2025-06-04', NULL, 'RECEIVED', '987 Aspen Way', 'PAYPAL', 1120),
+    (117, 'ORD-11008','88888888-8888-8888-8888-888888888888', 237400,  '2025-06-05', NULL, 'SHIPPING', '147 Redwood Dr', 'BANKTRANSFER', 1120),
+    (118, 'ORD-11009','99999999-9999-9999-9999-999999999999', 145800,  '2025-06-06', NULL, 'RECEIVED', '852 Pine St', 'PAYPAL', 1120);
 
 
 INSERT INTO reviews (review_id, product_id, user_id, rating, comment, created_at)
-VALUES ('r-001', 1, '11111111-1111-1111-1111-111111111111', 5, 'Fantastic piano! Great sound quality.',
-        '2025-11-27 14:30:00'),
-       ('r-002', 3, '22222222-2222-2222-2222-222222222222', 4, 'Solid performance and beautiful design.',
-        '2025-11-09 09:15:00'),
-       ('r-003', 5, '33333333-3333-3333-3333-333333333333', 3, 'Good but a bit overpriced.', '2025-11-21 16:45:00'),
-       ('r-004', 2, '44444444-4444-4444-4444-444444444444', 5, 'Amazing value for the price.', '2025-12-04 11:20:00'),
-       ('r-005', 7, '55555555-5555-5555-5555-555555555555', 2, 'Not what I expected.', '2025-10-27 08:10:00'),
-       ('r-006', 10, '66666666-6666-6666-6666-666666666666', 4, 'Great instrument, fast shipping.',
-        '2025-12-01 13:25:00'),
-       ('r-007', 14, '77777777-7777-7777-7777-777777777777', 5, 'The best piano I ever bought.', '2025-12-07 10:50:00'),
-       ('r-008', 12, '88888888-8888-8888-8888-888888888888', 3, 'Decent quality.', '2025-11-18 15:30:00'),
-       ('r-009', 18, '99999999-9999-9999-9999-999999999999', 4, 'Quite impressive for the price.',
-        '2025-11-25 12:05:00'),
-       ('r-010', 4, 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', 1, 'Very disappointed with the build quality.',
-        '2025-09-29 17:40:00');
+VALUES
+
+-- User 1111 (Order 100 → Product 5)
+('r-001', 5, '11111111-1111-1111-1111-111111111111',
+ 5, 'Beautiful tone and very responsive keys. Exactly what I was looking for.',
+ '2025-05-18 14:30:00'),
+
+-- User 6666 (Order 105 → Products 10 & 15)
+('r-002', 10, '66666666-6666-6666-6666-666666666666',
+ 4, 'Great guitar for the price. Comfortable neck and nice sound.',
+ '2025-05-28 10:15:00'),
+
+('r-003', 15, '66666666-6666-6666-6666-666666666666',
+ 5, 'Perfect beginner violin. Easy to play and sounds great.',
+ '2025-05-29 09:20:00'),
+
+-- User 9999 (Order 108 → Products 9 & 17)
+('r-004', 9, '99999999-9999-9999-9999-999999999999',
+ 4, 'Solid build quality and very versatile tones.',
+ '2025-05-19 16:45:00'),
+
+('r-005', 17, '99999999-9999-9999-9999-999999999999',
+ 3, 'Good overall, but the setup needed some adjustment.',
+ '2025-05-20 11:10:00'),
+
+-- Additional realistic reviews from other users with delivered items
+('r-006', 5, '22222222-2222-2222-2222-222222222222',
+ 4, 'Nice instrument with warm sound. Delivery was smooth.',
+ '2025-06-02 13:25:00'),
+
+('r-007', 10, '33333333-3333-3333-3333-333333333333',
+ 5, 'Excellent quality and very fun to play!',
+ '2025-06-04 10:50:00'),
+
+('r-008', 15, '44444444-4444-4444-4444-444444444444',
+ 2, 'Decent for beginners, but the tone could be better.',
+ '2025-06-05 15:30:00'),
+
+('r-009', 9, '55555555-5555-5555-5555-555555555555',
+ 5, 'Amazing instrument for the price range.',
+ '2025-06-06 12:05:00'),
+
+('r-010', 17, '77777777-7777-7777-7777-777777777777',
+ 1, 'Arrived with minor defects. Customer support helped though.',
+ '2025-06-07 17:40:00');
+
 
 INSERT INTO messages (
     message_id, user_id, name, email, subject, message, created_at, admin_reply, replied_at, status, read_at
@@ -393,81 +459,72 @@ VALUES
 
 
 INSERT INTO order_items (order_id, product_id, quantity, price) VALUES
--- Order 99
+
+-- 99
 (99, 1, 1, 350000),
-(99, 5, 2, 999900),
-(99, 10, 1, 139900),
 
--- Order 100
-(100, 2, 1, 99900),
-(100, 7, 1, 49900),
+-- 100 (delivered)
+(100, 5, 1, 279900),
 
--- Order 101
-(101, 3, 2, 220000),
-(101, 12, 1, 40000),
+-- 101
+(101, 8, 2, 199900),
 
--- Order 102
-(102, 4, 1, 5000000),
+-- 102
+(102, 2, 1, 1200000),
 
--- Order 103
-(103, 6, 1, 39900),
-(103, 8, 1, 5559900),
-(103, 14, 1, 1200000),
+-- 103
+(103, 3, 1, 5559900),
+(103, 15, 1, 19900),
 
--- Order 104
-(104, 9, 1, 300000),
-(104, 11, 2, 550000),
+-- 104 (canceled)
+(104, 4, 2, 300000),
 
--- Order 105
-(105, 13, 1, 49900),
-(105, 15, 1, 99900),
+-- 105 (delivered)
+(105, 10, 1, 97500),
+(105, 15, 1, 19900),
 
--- Order 106
-(106, 16, 1, 87500),
-(106, 17, 1, 149900),
+-- 106
+(106, 11, 1, 149900),
+(106, 8, 1, 87500),
 
--- Order 107
-(107, 18, 2, 79900),
+-- 107
+(107, 6, 2, 79900),
 
--- Order 108
-(108, 19, 1, 65900),
-(108, 20, 1, 132000),
+-- 108 (delivered)
+(108, 9, 1, 89900),
+(108, 17, 1, 108000),
 
--- Order 109
+-- 109
 (109, 1, 1, 350000),
-(109, 3, 1, 220000),
-(109, 5, 1, 999900),
+(109, 18, 1, 279900),
 
--- Order 110
-(110, 2, 1, 99900),
+-- 110
 (110, 6, 1, 39900),
 
--- Order 111
-(111, 4, 1, 5000000),
+-- 111
+(111, 3, 1, 5559900),
 
--- Order 112
-(112, 7, 2, 49900),
-(112, 8, 1, 5559900),
+-- 112
+(112, 7, 2, 99900),
 
--- Order 113
-(113, 9, 1, 300000),
+-- 113
+(113, 4, 1, 300000),
 (113, 10, 1, 139900),
 
--- Order 114
-(114, 11, 1, 550000),
-(114, 12, 1, 40000),
+-- 114
+(114, 5, 1, 279900),
 
--- Order 115
-(115, 13, 1, 49900),
-(115, 14, 1, 1200000),
+-- 115
+(115, 2, 1, 1200000),
+(115, 16, 1, 49900),
 
--- Order 116
+-- 116
 (116, 15, 2, 99900),
 
--- Order 117
-(117, 16, 1, 87500),
-(117, 17, 1, 149900),
+-- 117
+(117, 11, 1, 149900),
+(117, 8, 1, 87500),
 
--- Order 118
+-- 118
 (118, 18, 1, 79900),
 (118, 19, 1, 65900);

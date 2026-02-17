@@ -15,12 +15,13 @@ import java.util.List;
  * @param pageSize   optional page size for pagination
  */
 public record ProductFilter(
-    String name,
-    ProductCategory category,
-    Integer priceMin,
-    Integer priceMax,
-    List<String> brand,
-    Integer pageNumber,
-    Integer pageSize
-) {
-}
+        String name,
+        ProductCategory category,
+        Integer priceMin,
+        Integer priceMax,
+        List<String> brand,
+        Integer stars,
+        Integer pageNumber,
+        Integer pageSize
+) {}
+

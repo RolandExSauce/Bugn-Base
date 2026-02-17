@@ -88,10 +88,6 @@ public class UserService {
         User authUser = getAuthenticatedUser();
         boolean isAdmin = authUser.getRole() == UserRole.ROLE_ADMIN;
 
-/*        if (!isAdmin && !authUser.getId().toString().equals(dto.id())) {
-            throw new SecurityException("User not authorized to update this profile.");
-        }*/
-
         User userToUpdate = userRepository.findById(UUID.fromString(dto.id()))
                 .orElseThrow(() ->
                         new UserNotFoundException("User not found with id: " + dto.id()));
@@ -106,7 +102,6 @@ public class UserService {
 
         User updated = userRepository.save(userToUpdate);
 
-        // Map to UserDto before returning
         return toUserDto(updated);
     }
 

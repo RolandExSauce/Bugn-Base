@@ -5,9 +5,9 @@ import com.bugnbass.backend.model.Product;
 import com.bugnbass.backend.model.enums.ProductCategory;
 import com.bugnbass.backend.model.enums.StockStatus;
 import com.bugnbass.backend.security.AuthTokenFilter;
+import com.bugnbass.backend.service.AdminOrderService;
 import com.bugnbass.backend.service.AdminProductService;
 import com.bugnbass.backend.service.MediaService;
-import com.bugnbass.backend.service.OrderService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
 import org.junit.jupiter.api.Test;
@@ -37,7 +37,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -61,7 +60,8 @@ class AdminProductControllerTest {
 
     @MockBean AdminProductService adminProductService;
     @MockBean MediaService mediaService;
-    @MockBean OrderService orderService;
+    @MockBean
+    AdminOrderService adminOrderService;
 
     // ---------- GET SINGLE PRODUCT ----------
 
