@@ -139,7 +139,7 @@ export default function Listing() {
           <ProductFilter
             applyFilter={handleApplyFilter}
             currentFilter={currentFilter}
-            availableBrands={availableBrands} // ✅ FIX: Prop übergeben
+            availableBrands={availableBrands}
           />
         </div>
 

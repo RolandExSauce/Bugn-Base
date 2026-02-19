@@ -16,6 +16,8 @@ const Register = () => {
   });
 
   const [retypePassword, setRetypePassword] = useState<string>("");
+  const [registrationError, setRegistrationError] = useState<string | null>(null);
+  
   const [invalidInput, setInvalidInput] = useState({
     firstname: false,
     lastname: false,
@@ -29,10 +31,13 @@ const Register = () => {
       ...registerForm,
       [e.target.name]: e.target.value,
     });
+    // Clear error when user types
+    setRegistrationError(null);
   };
 
   const handleRegister = async (event: React.FormEvent) => {
     event.preventDefault();
+    setRegistrationError(null);
 
     const newInvalidInput = {
       firstname: false,
@@ -42,43 +47,44 @@ const Register = () => {
       retypePassword: false,
     };
 
-    // let hasError = false;
+    let hasError = false;
 
-    // if (!NAME_REGEX.test(registerForm.firstname)) {
-    //   newInvalidInput.firstname = true;
-    //   hasError = true;
-    // }
+    // Validate with regex
+    if (!NAME_REGEX.test(registerForm.firstname)) {
+      newInvalidInput.firstname = true;
+      hasError = true;
+    }
 
-    // if (!NAME_REGEX.test(registerForm.lastname)) {
-    //   newInvalidInput.lastname = true;
-    //   hasError = true;
-    // }
+    if (!NAME_REGEX.test(registerForm.lastname)) {
+      newInvalidInput.lastname = true;
+      hasError = true;
+    }
 
-    // if (!EMAIL_REGEX.test(registerForm.email)) {
-    //   newInvalidInput.email = true;
-    //   hasError = true;
-    // }
+    if (!EMAIL_REGEX.test(registerForm.email)) {
+      newInvalidInput.email = true;
+      hasError = true;
+    }
 
-    // if (!PASSWORD_REGEX.test(registerForm.password)) {
-    //   newInvalidInput.password = true;
-    //   hasError = true;
-    // }
+    if (!PASSWORD_REGEX.test(registerForm.password)) {
+      newInvalidInput.password = true;
+      hasError = true;
+    }
 
-    // if (registerForm.password !== retypePassword) {
-    //   newInvalidInput.retypePassword = true;
-    //   hasError = true;
-    // }
+    if (registerForm.password !== retypePassword) {
+      newInvalidInput.retypePassword = true;
+      hasError = true;
+    }
 
     setInvalidInput(newInvalidInput);
 
-    // if (hasError) return;
+    if (hasError) return;
 
     try {
       await signup(registerForm);
       navigate("/");
-    } catch (error) {
-      console.error(error);
-      // todo: handle signup failure in the UI
+    } catch (error: any) {
+      console.error("Registration error:", error);
+      setRegistrationError(error.message || "Registrierung fehlgeschlagen");
     }
   };
 
@@ -90,7 +96,14 @@ const Register = () => {
       >
         <h1>Registrierung</h1>
 
-        <label htmlFor="firstName">Vorname</label>
+        {/* Display registration error */}
+        {registrationError && (
+          <div className="alert alert-danger w-100 text-center" role="alert">
+            {registrationError}
+          </div>
+        )}
+
+        <label htmlFor="firstname">Vorname</label>
         <input
           type="text"
           id="firstname"
@@ -102,10 +115,10 @@ const Register = () => {
         />
 
         {invalidInput.firstname && (
-          <p className="text-danger">Vorname ist ungültig</p>
+          <p className="text-danger">Vorname ist ungültig (nur Buchstaben, 1-50 Zeichen)</p>
         )}
 
-        <label htmlFor="lastName">Nachname</label>
+        <label htmlFor="lastname">Nachname</label>
         <input
           type="text"
           id="lastname"
@@ -117,7 +130,7 @@ const Register = () => {
         />
 
         {invalidInput.lastname && (
-          <p className="text-danger">Nachname ist ungültig</p>
+          <p className="text-danger">Nachname ist ungültig (nur Buchstaben, 1-50 Zeichen)</p>
         )}
 
         <label htmlFor="email">E-Mail</label>
@@ -177,4 +190,5 @@ const Register = () => {
     </main>
   );
 };
+
 export default Register;

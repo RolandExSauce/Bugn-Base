@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import type { LoginDto } from "../../types/models";
-import { EMAIL_REGEX, PASSWORD_REGEX } from "../../utils/regex";
+import { EMAIL_REGEX } from "../../utils/regex";
 import { useAuthContext } from "../../context/AuthContext";
 
 const Login = () => {
@@ -20,15 +20,21 @@ const Login = () => {
     password: false,
   });
 
+  // Add state for login error
+  const [loginError, setLoginError] = useState<string | null>(null);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setLoginForm({
       ...loginForm,
       [e.target.name]: e.target.value,
     });
+    // Clear error when user starts typing
+    setLoginError(null);
   };
 
   const handleLogin = async (event: React.FormEvent) => {
     event.preventDefault();
+    setLoginError(null); // Clear any previous errors
 
     let hasError = false;
 
@@ -38,11 +44,6 @@ const Login = () => {
       newInvalidInput.email = true;
       hasError = true;
     }
-
-    // if (!PASSWORD_REGEX.test(loginForm.password)) {
-    //   newInvalidInput.password = true;
-    //   hasError = true;
-    // }
 
     setInvalidInput(newInvalidInput);
 
@@ -59,9 +60,10 @@ const Login = () => {
       setTimeout(() => {
         navigate("/");
       }, 800);
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
-      // TODO: handle login error in the UI
+      // Set the error message to display in UI
+      setLoginError("Invalid Credentials");
     }
   };
 
@@ -100,12 +102,12 @@ const Login = () => {
           required
         />
 
-        {/* {invalidInput.password && (
-          <p className="text-danger">
-            Passwort muss mindestens 8 Zeichen haben, eine Groß- und eine
-            Kleinbuchstabe und eine Zahl enthalten
-          </p>
-        )} */}
+        {/* Display login error message */}
+        {loginError && (
+          <div className="alert alert-danger w-100 text-center" role="alert">
+            {loginError}
+          </div>
+        )}
 
         <button type="submit">Einloggen</button>
 

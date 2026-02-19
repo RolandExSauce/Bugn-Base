@@ -117,5 +117,4 @@ public class MessageController {
     ) {
         messageService.markAsRead(id, auth);
     }
-
 }

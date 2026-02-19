@@ -33,7 +33,23 @@ class AuthService {
       localStorage.setItem("auth", JSON.stringify(newAuthState));
       return data;
     } catch (err: any) {
-      throw new Error(err.response?.data?.message || "Login failed");
+      console.log("Auth error: ", err);
+
+      // Extract the error message properly
+      let errorMessage = "Login failed";
+
+      if (err.response?.data) {
+        // If the backend sends a string message
+        if (typeof err.response.data === 'string') {
+          errorMessage = err.response.data;
+        }
+        // If the backend sends an object with message property
+        else if (err.response.data.message) {
+          errorMessage = err.response.data.message;
+        }
+      }
+
+      throw new Error(errorMessage);
     }
   };
 
@@ -66,7 +82,8 @@ class AuthService {
       localStorage.setItem("auth", JSON.stringify(newAuthState));
       return data;
     } catch (err: any) {
-      throw new Error(err.response?.data?.message || "Registration failed");
+        console.log("Registration error: ", err?.response);
+      throw new Error(err.response?.data || "Registration failed");
     }
   };
 }

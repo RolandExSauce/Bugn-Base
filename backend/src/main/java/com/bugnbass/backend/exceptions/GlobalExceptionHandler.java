@@ -1,5 +1,5 @@
 package com.bugnbass.backend.exceptions;
-
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -154,6 +154,26 @@ public class GlobalExceptionHandler {
   public ResponseEntity<String> handleValidation(MethodArgumentNotValidException e) {
     return ResponseEntity.status(HttpStatus.BAD_REQUEST)
             .body("Validation failed");
+  }
+
+  /**
+   * Handles data integrity violations (like duplicate email constraints).
+   *
+   * @param e the thrown {@link DataIntegrityViolationException}
+   * @return a {@link ResponseEntity} with HTTP 409 (CONFLICT)
+   *         and a user-friendly error message
+   */
+  @ExceptionHandler(DataIntegrityViolationException.class)
+  public ResponseEntity<String> handleDataIntegrityViolation(DataIntegrityViolationException e) {
+    // Check if it's a duplicate email violation
+    if (e.getMessage() != null && e.getMessage().contains("users_email_key")) {
+      return ResponseEntity.status(HttpStatus.CONFLICT)
+              .body("Diese E-Mail-Adresse wird bereits verwendet");
+    }
+
+    // Generic database error for other constraints
+    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+            .body("Ein Datenbankfehler ist aufgetreten");
   }
 
   /**

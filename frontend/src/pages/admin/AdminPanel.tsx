@@ -4,6 +4,13 @@ import ProductsList from "../../components/admin/ProductsList";
 import UsersList from "../../components/admin/UsersList";
 import MessagesList from "../../components/admin/MessagesList";
 
+const tabs = [
+  { key: "bestellungen", label: "Bestellungen", icon: "/orders.svg" },
+  { key: "produkte", label: "Produkte", icon: "/products.svg" },
+  { key: "benutzer", label: "Benutzer", icon: "/users.svg" },
+  { key: "nachrichten", label: "Nachrichten", icon: "/chat.svg" },
+];
+
 export default function AdminPage() {
   const [selected, setSelected] = useState("bestellungen");
 
@@ -11,54 +18,19 @@ export default function AdminPage() {
     <div className="d-flex flex-column container py-4">
       <h1 className="mb-4">Admin-Übersicht</h1>
 
-      <div className="d-flex gap-2 mb-4 pb-3 border-bottom">
-        <button
-          className={
-            selected === "bestellungen"
-              ? "admin-nav-button--selected d-flex align-items-center gap-2"
-              : "admin-nav-button d-flex align-items-center gap-2"
-          }
-          onClick={() => setSelected("bestellungen")}
-        >
-          <img src="/orders.svg" alt="Bestellungen" />
-          Bestellungen
-        </button>
-
-        <button
-          className={
-            selected === "produkte"
-              ? "admin-nav-button--selected d-flex align-items-center gap-2"
-              : "admin-nav-button d-flex align-items-center gap-2"
-          }
-          onClick={() => setSelected("produkte")}
-        >
-          <img src="/products.svg" alt="Produkte" />
-          Produkte
-        </button>
-
-        <button
-          className={
-            selected === "benutzer"
-              ? "admin-nav-button--selected d-flex align-items-center gap-2"
-              : "admin-nav-button d-flex align-items-center gap-2"
-          }
-          onClick={() => setSelected("benutzer")}
-        >
-          <img src="/users.svg" alt="Benutzer" />
-          Benutzer
-        </button>
-
-        <button
-          className={
-            selected === "nachrichten"
-              ? "admin-nav-button--selected d-flex align-items-center gap-2"
-              : "admin-nav-button d-flex align-items-center gap-2"
-          }
-          onClick={() => setSelected("nachrichten")}
-        >
-          <img src="/chat.svg" alt="Nachrichten" />
-          Nachrichten
-        </button>
+      <div className="d-flex flex-wrap gap-2 mb-4 pb-3 border-bottom">
+        {tabs.map(({ key, label, icon }) => (
+          <button
+            key={key}
+            className={`d-flex align-items-center gap-2 ${
+              selected === key ? "admin-nav-button--selected" : "admin-nav-button"
+            }`}
+            onClick={() => setSelected(key)}
+          >
+            <img src={icon} alt={label} />
+            <span className="d-none d-sm-inline">{label}</span>
+          </button>
+        ))}
       </div>
 
       <div>

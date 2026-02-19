@@ -1,5 +1,4 @@
 package com.bugnbass.backend.config;
-
 import com.bugnbass.backend.model.Admin;
 import com.bugnbass.backend.model.enums.UserRole;
 import com.bugnbass.backend.repository.AdminRepository;

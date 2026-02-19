@@ -4,6 +4,7 @@ import static com.bugnbass.backend.mappers.UserMapper.toUserDto;
 
 import com.bugnbass.backend.dto.auth.RegisterDto;
 import com.bugnbass.backend.dto.auth.UserDto;
+import com.bugnbass.backend.exceptions.EmailAlreadyExistsException;
 import com.bugnbass.backend.exceptions.UserNotFoundException;
 import com.bugnbass.backend.model.User;
 import com.bugnbass.backend.model.enums.UserRole;
@@ -65,7 +66,13 @@ public class UserService {
      * @return the saved User entity
      */
     public User registerUser(RegisterDto dto, PasswordEncoder encoder) {
-        User user = User.builder()
+
+        // Check if email already exists
+        if (userRepository.findByEmail(dto.email()).isPresent()) {
+            throw new EmailAlreadyExistsException("Diese E-Mail-Adresse wird bereits verwendet");
+        }
+
+            User user = User.builder()
                 .email(dto.email())
                 .firstname(dto.firstname())
                 .lastname(dto.lastname())
