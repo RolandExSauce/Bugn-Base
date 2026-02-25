@@ -130,6 +130,8 @@ class UserServiceTest {
 
         RegisterDto dto = new RegisterDto("Max", "Mustermann", "max@test.com", "pw");
 
+        when(userRepository.findByEmail("max@test.com")).thenReturn(Optional.empty());
+
         User saved = mock(User.class);
         when(userRepository.save(any(User.class))).thenReturn(saved);
 
@@ -140,6 +142,7 @@ class UserServiceTest {
         assertThat(result).isSameAs(saved);
 
         verify(encoder).encode("pw");
+        verify(userRepository).findByEmail("max@test.com");
         verify(userRepository).save(captor.capture());
 
         User toSave = captor.getValue();
@@ -150,8 +153,10 @@ class UserServiceTest {
         assertThat(toSave.getRole()).isEqualTo(UserRole.ROLE_USER);
 
         verifyNoInteractions(adminRepository);
-        verifyNoMoreInteractions(userRepository, encoder);
+        verifyNoMoreInteractions(userRepository);
+        verifyNoMoreInteractions(encoder);
     }
+
 
     @Test
     void registerUser_propagatesException_whenEncoderFails_andDoesNotSave() {
@@ -160,13 +165,22 @@ class UserServiceTest {
 
         RegisterDto dto = new RegisterDto("Max", "Mustermann", "max@test.com", "pw");
 
+        when(userRepository.findByEmail("max@test.com")).thenReturn(Optional.empty());
+
         assertThatThrownBy(() -> userService.registerUser(dto, encoder))
                 .isInstanceOf(RuntimeException.class)
                 .hasMessageContaining("encoder boom");
 
+        verify(userRepository).findByEmail("max@test.com");
         verify(encoder).encode("pw");
-        verifyNoInteractions(userRepository, adminRepository);
+
+        verify(userRepository, never()).save(any(User.class));
+
+        verifyNoInteractions(adminRepository);
+        verifyNoMoreInteractions(userRepository);
+        verifyNoMoreInteractions(encoder);
     }
+
 
     // -------------------- updateUser --------------------
 
