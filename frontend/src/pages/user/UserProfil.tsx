@@ -130,6 +130,8 @@ const UserProfil = () => {
     if (hasError) return;
 
     try {
+      const previousEmail = auth!.user.email;
+
       const updatedUser: User = await UserProfileService.updateUserProfile({
         id: auth!.user.id,
         ...userProfileForm,
@@ -141,6 +143,11 @@ const UserProfil = () => {
 
       setIsEdited(false);
       auth!.user = updatedUser;
+
+      if (previousEmail !== updatedUser.email) {
+        logout();
+        navigate("/");
+      }
     } catch (error) {
       console.log(error);
       // TODO: handle error in the ui
@@ -172,7 +179,9 @@ const UserProfil = () => {
           </div>
 
           <div className="flex-fill">
-            <label className="form-label">Nachname</label>
+            <label style={{ fontWeight: 800 }} className="form-label">
+              Nachname
+            </label>
             <input
               type="text"
               className="form-control"

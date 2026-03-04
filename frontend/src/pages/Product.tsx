@@ -131,7 +131,7 @@ export default function Product() {
               onClick={handleAddToCart}
               className="add-cart-button text-white px-4 py-2 d-flex flex-row column-gap-3"
             >
-              <img width="25px" src="/cart-wh.svg" alt="" />
+              <img width="25px" src="/cart-wh.svg" alt="cart icon" />
               In den Warenkorb
             </button>
           </div>

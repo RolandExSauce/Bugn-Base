@@ -94,7 +94,7 @@ export default function ProductFilterComponent({
       )}
       <aside className="filter-sidebar" aria-label="Produktfilter">
         <span className="filter-title">
-          <img src="/filter.svg" alt="" /> Filter
+          <img src="/filter.svg" alt="filter icon" /> Filter
         </span>
 
         <form

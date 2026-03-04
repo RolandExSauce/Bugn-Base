@@ -623,6 +623,10 @@ th {
   filter: brightness(1.07);
 }
 
+.form-label {
+  font-weight: 700;
+}
+
 :root {
   --bs-primary: #4caf50;
   --bs-primary-text: rgb(220, 127, 27);

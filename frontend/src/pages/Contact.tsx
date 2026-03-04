@@ -90,9 +90,7 @@ const Contact = () => {
               onChange={(e) => handleChange("name", e.target.value)}
             />
             {formInvalid.name && (
-              <div className="text-danger small mt-1">
-                Name darf nicht leer sein
-              </div>
+              <div className="text-danger small mt-1">Name is ungültig</div>
             )}
           </div>
 
