@@ -14,6 +14,10 @@ const NavBar = () => {
     navbarButtonsRef.current?.classList.toggle("navbar-buttons--active");
   };
 
+  const handleLinkClick = () => {
+    navbarButtonsRef.current?.classList.remove("navbar-buttons--active");
+  };
+
   return (
     <nav className="navbar">
       <Link to="/" className="navbar-logo">
@@ -22,15 +26,15 @@ const NavBar = () => {
       </Link>
       {/* <Searchbar /> */}
       <div ref={navbarButtonsRef} className="navbar-buttons">
-        <Link className="navbar-button" to="/listing">
+        <Link className="navbar-button" to="/listing" onClick={handleLinkClick}>
           <img src="/guitar.svg" alt="Products icon" />
           <span>Produkte</span>
         </Link>
-        <Link className="navbar-button" to="/contact">
+        <Link className="navbar-button" to="/contact" onClick={handleLinkClick}>
           <img src="/contact.svg" alt=" Contact icon" />
           <span>Kontakt</span>
         </Link>
-        <Link className="navbar-button" to="/cart">
+        <Link className="navbar-button" to="/cart" onClick={handleLinkClick}>
           <img src="/cart.svg" alt=" Cart icon" />
           {cart && cart.length > 0 && (
             <span className="cart-amount-circle">
@@ -40,12 +44,20 @@ const NavBar = () => {
           <span>Warenkorb</span>
         </Link>
         {auth ? (
-          <Link className="navbar-button" to="/profile">
+          <Link
+            className="navbar-button"
+            to="/profile"
+            onClick={handleLinkClick}
+          >
             <img src="/profile.svg" alt=" Profile icon" />
             <span>Profil</span>
           </Link>
         ) : (
-          <Link className="navbar-button navbar-login-button" to="/auth/login">
+          <Link
+            className="navbar-button navbar-login-button"
+            to="/auth/login"
+            onClick={handleLinkClick}
+          >
             <span>Login</span>
           </Link>
         )}

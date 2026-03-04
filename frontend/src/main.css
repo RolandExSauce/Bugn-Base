@@ -46,6 +46,7 @@
 .navbar-buttons {
   display: flex;
   column-gap: 10px;
+  z-index: 9999;
 }
 @media (max-width: 950px) {
   .navbar-buttons {
@@ -274,6 +275,7 @@ th {
 .product-filter fieldset select {
   background: none;
   border: none;
+  width: 100%;
 }
 .product-filter fieldset select:hover {
   cursor: pointer;
