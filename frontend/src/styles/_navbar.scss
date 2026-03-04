@@ -19,6 +19,7 @@
 .navbar-buttons {
   display: flex;
   column-gap: 10px;
+  z-index: 9999;
   @include SM {
     position: absolute;
     top: 70px;
