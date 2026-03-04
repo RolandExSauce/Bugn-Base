@@ -25,7 +25,7 @@ export default function FullOrder({
   // Lokaler State (wie beim Product)
   const [order, setOrder] = useState<Order>(initialOrder);
   const [updateOrderStatus, setUpdateOrderStatus] = useState<OrderStatus>(
-    initialOrder.orderStatus
+    initialOrder.orderStatus,
   );
 
   const [isEdited, setIsEdited] = useState(false);
@@ -37,7 +37,9 @@ export default function FullOrder({
     setIsEdited(false);
   }, [initialOrder]);
 
-  const handleStatusChange = (e: React.ChangeEvent<HTMLSelectElement>): void => {
+  const handleStatusChange = (
+    e: React.ChangeEvent<HTMLSelectElement>,
+  ): void => {
     const status = e.target.value as OrderStatus;
     setUpdateOrderStatus(status);
     setIsEdited(status !== order.orderStatus);
@@ -78,7 +80,7 @@ export default function FullOrder({
   const handleDelete = async () => {
     if (
       !window.confirm(
-        `Möchten Sie Bestellung #${order.orderNumber || order.id} wirklich löschen?`
+        `Möchten Sie Bestellung #${order.orderNumber || order.id} wirklich löschen?`,
       )
     ) {
       return;
@@ -140,7 +142,9 @@ export default function FullOrder({
         <td>{order.shippingAddress}</td>
         <td>
           {/* nur Anzeige */}
-          <span className="badge bg-secondary">{statusLabel(order.orderStatus)}</span>
+          <span className="badge bg-secondary">
+            {statusLabel(order.orderStatus)}
+          </span>
         </td>
         <td>{order.paymentMethod}</td>
         <td>
@@ -160,16 +164,26 @@ export default function FullOrder({
               title="Bestellung bearbeiten"
               className="btn btn-sm btn-outline-primary d-flex align-items-center gap-1"
               onClick={onSelect}
+              aria-label="Bestellung bearbeiten"
             >
-              <img src="/update.svg" alt="Bearbeiten" style={{ width: 14, height: 14 }} />
+              <img
+                src="/update.svg"
+                alt="Bearbeiten"
+                style={{ width: 14, height: 14 }}
+              />
             </button>
 
             <button
               title="Bestellung löschen"
               className="btn btn-sm btn-outline-danger d-flex align-items-center gap-1"
               onClick={handleDelete}
+              aria-label="Bestellung löschen"
             >
-              <img src="/delete.svg" alt="Löschen" style={{ width: 14, height: 14 }} />
+              <img
+                src="/delete.svg"
+                alt="Löschen"
+                style={{ width: 14, height: 14 }}
+              />
             </button>
           </div>
         </td>
@@ -222,8 +236,13 @@ export default function FullOrder({
             className="btn btn-sm btn-success d-flex align-items-center gap-1"
             onClick={handleSave}
             disabled={!isEdited || isSaving}
+            aria-label="Speichern"
           >
-            <img src="/save.svg" alt="Speichern" style={{ width: 16, height: 16 }} />
+            <img
+              src="/save.svg"
+              alt="Speichern"
+              style={{ width: 16, height: 16 }}
+            />
           </button>
 
           <button
@@ -231,8 +250,13 @@ export default function FullOrder({
             className="btn btn-sm btn-secondary d-flex align-items-center gap-1"
             onClick={handleCancel}
             disabled={isSaving}
+            aria-label="Abbrechen"
           >
-            <img src="/undo.svg" alt="Abbrechen" style={{ width: 16, height: 16 }} />
+            <img
+              src="/undo.svg"
+              alt="Abbrechen"
+              style={{ width: 16, height: 16 }}
+            />
           </button>
         </div>
       </td>

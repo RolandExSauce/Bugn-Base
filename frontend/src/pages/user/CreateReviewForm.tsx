@@ -83,8 +83,12 @@ export default function CreateReviewForm({
                   transition: "color 0.15s ease, transform 0.1s ease",
                   lineHeight: 1,
                 }}
-                onMouseDown={(e) => (e.currentTarget.style.transform = "scale(0.9)")}
-                onMouseUp={(e) => (e.currentTarget.style.transform = "scale(1)")}
+                onMouseDown={(e) =>
+                  (e.currentTarget.style.transform = "scale(0.9)")
+                }
+                onMouseUp={(e) =>
+                  (e.currentTarget.style.transform = "scale(1)")
+                }
               >
                 {filled ? "★" : "☆"}
               </button>
@@ -118,12 +122,18 @@ export default function CreateReviewForm({
             className="btn btn-outline-secondary"
             onClick={onCancel}
             disabled={saving}
+            aria-label="Cancel"
           >
             Abbrechen
           </button>
         )}
 
-        <button type="submit" className="btn btn-primary" disabled={saving}>
+        <button
+          aria-label="Speichern"
+          type="submit"
+          className="btn btn-primary"
+          disabled={saving}
+        >
           Speichern
         </button>
       </div>

@@ -62,11 +62,10 @@ const UserProfil = () => {
 
     // Inbox counter (nur beantwortete Nachrichten)
     if (auth.role === "ROLE_USER") {
-  MessageService.getInboxUnreadCount()
-    .then(setInboxCount)
-    .catch((err) => console.error("Error fetching unread count:", err));
-}
-
+      MessageService.getInboxUnreadCount()
+        .then(setInboxCount)
+        .catch((err) => console.error("Error fetching unread count:", err));
+    }
   }, [auth]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -131,6 +130,8 @@ const UserProfil = () => {
     if (hasError) return;
 
     try {
+      const previousEmail = auth!.user.email;
+
       const updatedUser: User = await UserProfileService.updateUserProfile({
         id: auth!.user.id,
         ...userProfileForm,
@@ -142,6 +143,11 @@ const UserProfil = () => {
 
       setIsEdited(false);
       auth!.user = updatedUser;
+
+      if (previousEmail !== updatedUser.email) {
+        logout();
+        navigate("/");
+      }
     } catch (error) {
       console.log(error);
       // TODO: handle error in the ui
@@ -160,69 +166,85 @@ const UserProfil = () => {
         <div className="fw-bold">Persönliche Daten:</div>
 
         <div className="d-flex flex-row gap-3">
-          <input
-            type="text"
-            className="form-control"
-            placeholder="Vorname"
-            name="firstname"
-            value={userProfileForm.firstname ?? ""}
-            onChange={handleChange}
-            required
-          />
+          <div className="flex-fill">
+            <label className="form-label">Vorname</label>
+            <input
+              type="text"
+              className="form-control"
+              name="firstname"
+              value={userProfileForm.firstname ?? ""}
+              onChange={handleChange}
+              required
+            />
+          </div>
 
-          <input
-            type="text"
-            className="form-control"
-            placeholder="Nachname"
-            name="lastname"
-            value={userProfileForm.lastname ?? ""}
-            onChange={handleChange}
-            required
-          />
+          <div className="flex-fill">
+            <label style={{ fontWeight: 800 }} className="form-label">
+              Nachname
+            </label>
+            <input
+              type="text"
+              className="form-control"
+              name="lastname"
+              value={userProfileForm.lastname ?? ""}
+              onChange={handleChange}
+              required
+            />
+          </div>
         </div>
 
         <div className="d-flex gap-3 flex-row">
-          <input
-            type="text"
-            className="form-control"
-            placeholder="Email"
-            name="email"
-            value={userProfileForm.email ?? ""}
-            onChange={handleChange}
-            required
-          />
+          <div className="flex-fill">
+            <label className="form-label">E-Mail</label>
+            <input
+              type="text"
+              className="form-control"
+              name="email"
+              value={userProfileForm.email ?? ""}
+              onChange={handleChange}
+              required
+            />
+          </div>
 
-          <input
-            type="tel"
-            className="form-control"
-            placeholder="Tel"
-            name="phone"
-            value={userProfileForm.phone ?? ""}
-            onChange={handleChange}
-          />
+          <div className="flex-fill">
+            <label className="form-label">Telefon</label>
+            <input
+              type="tel"
+              className="form-control"
+              name="phone"
+              value={userProfileForm.phone ?? ""}
+              onChange={handleChange}
+            />
+          </div>
         </div>
 
         <div className="d-flex gap-3 flex-row">
-          <input
-            type="text"
-            className="form-control"
-            placeholder="Adresse"
-            name="address"
-            value={userProfileForm.address ?? ""}
-            onChange={handleChange}
-          />
-          <input
-            type="number"
-            className="form-control"
-            placeholder="PLZ"
-            name="postcode"
-            value={userProfileForm.postcode ?? ""}
-            onChange={handleChange}
-          />
+          <div className="flex-fill">
+            <label className="form-label">Adresse</label>
+            <input
+              type="text"
+              className="form-control"
+              name="address"
+              value={userProfileForm.address ?? ""}
+              onChange={handleChange}
+            />
+          </div>
+
+          <div className="flex-fill">
+            <label className="form-label">PLZ</label>
+            <input
+              type="number"
+              className="form-control"
+              name="postcode"
+              value={userProfileForm.postcode ?? ""}
+              onChange={handleChange}
+            />
+          </div>
         </div>
 
         <div className="d-flex flex-column align-items-end">
           <button
+            aria-label="Save"
             type="submit"
             className={`profile-save-button text-white px-4 py-2 fw-bold h4 ${
               isEdited ? "" : "button-disabled"
@@ -265,6 +287,7 @@ const UserProfil = () => {
 
           {auth?.role === "ROLE_USER" && (
             <button
+              aria-label="My messages"
               type="button"
               onClick={() => navigate("/my-messages")}
               className="profile-save-button bg-primary rounded text-white px-4 py-2 fw-bold h4 d-flex align-items-center gap-2"
@@ -277,6 +300,7 @@ const UserProfil = () => {
           )}
 
           <button
+            aria-label="Logout"
             onClick={logout}
             type="button"
             className="profile-save-button bg-danger rounded text-white px-4 py-2 fw-bold h4"

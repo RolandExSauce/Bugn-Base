@@ -90,9 +90,7 @@ const Contact = () => {
               onChange={(e) => handleChange("name", e.target.value)}
             />
             {formInvalid.name && (
-              <div className="text-danger small mt-1">
-                Name darf nicht leer sein
-              </div>
+              <div className="text-danger small mt-1">Name is ungültig</div>
             )}
           </div>
 
@@ -172,6 +170,7 @@ const Contact = () => {
           <button
             className="btn btn-success align-self-start mt-2"
             onClick={handleSubmit}
+            aria-label="Absenden"
           >
             Absenden
           </button>

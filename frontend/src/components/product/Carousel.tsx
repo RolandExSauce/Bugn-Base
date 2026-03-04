@@ -76,15 +76,17 @@ export default function Carousel({ imgUrls }: CarouselPropTypes) {
         disabled={activeIndex === 0}
         onClick={prevSlide}
         className="carousel_prev_btn position-absolute bottom-0 border-0 z-2"
+        aria-label="Back"
       >
-        <img src="/arrow-bck.svg" alt="" />
+        <img src="/arrow-bck.svg" alt=" arrow back icon" />
       </button>
       <button
         disabled={activeIndex === imgUrls.length - 1}
         onClick={nextSlide}
         className="carousel_next_btn position-absolute bottom-0 border-0 z-2"
+        aria-label="Next"
       >
-        <img src="/arrow-frw.svg" alt="" />
+        <img src="/arrow-frw.svg" alt="arrow forward icon" />
       </button>
     </div>
   );

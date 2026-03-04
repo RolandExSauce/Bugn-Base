@@ -101,7 +101,7 @@ export default function FullProduct({
 
       await AdminProductService.updateProduct(
         product.id.toString(),
-        productDTO
+        productDTO,
       );
 
       // BROKEN. but also not so necessary
@@ -155,8 +155,8 @@ export default function FullProduct({
               product.stockStatus === "IN_STOCK"
                 ? "bg-success"
                 : product.stockStatus === "LOW_STOCK"
-                ? "bg-warning"
-                : "bg-danger"
+                  ? "bg-warning"
+                  : "bg-danger"
             }`}
           >
             {product.stockStatus === "IN_STOCK"
@@ -179,6 +179,7 @@ export default function FullProduct({
               title="Produkt bearbeiten"
               className="btn btn-sm btn-outline-primary d-flex align-items-center gap-1"
               onClick={onSelect}
+              aria-label="Produkt bearbeiten"
             >
               <img
                 src="/update.svg"
@@ -190,6 +191,7 @@ export default function FullProduct({
               title="Produkt löschen"
               className="btn btn-sm btn-outline-danger d-flex align-items-center gap-1"
               onClick={handleDelete}
+              aria-label="Produkt löschen"
             >
               <img
                 src="/delete.svg"
@@ -324,6 +326,7 @@ export default function FullProduct({
             onClick={handleProductSave}
             disabled={!isEdited || isSaving}
             title="Speichern"
+            aria-label="Speichern"
           >
             <img
               src="/save.svg"
@@ -335,6 +338,7 @@ export default function FullProduct({
             className="btn btn-sm btn-secondary d-flex align-items-center gap-1"
             onClick={handleCancel}
             title="Abbrechen"
+            aria-label="Abbrechen"
           >
             <img
               src="/undo.svg"

@@ -81,7 +81,9 @@ export default function Message({ message, onReplied }: Props) {
             </span>
           </div>
 
-          <small className="text-muted">{formatDateTime(message.createdAt)}</small>
+          <small className="text-muted">
+            {formatDateTime(message.createdAt)}
+          </small>
         </div>
         <div className="small text-muted mt-1">
           {message.name} · {message.email}
@@ -125,13 +127,18 @@ export default function Message({ message, onReplied }: Props) {
             />
 
             <div className="d-flex justify-content-between align-items-center mt-2">
-              {error ? <small className="text-danger">{error}</small> : <span />}
+              {error ? (
+                <small className="text-danger">{error}</small>
+              ) : (
+                <span />
+              )}
 
               <button
                 type="button"
                 className="btn btn-sm btn-primary"
                 onClick={handleSendReply}
                 disabled={sending || !reply.trim()}
+                aria-label="Send reply"
               >
                 {sending ? "Sende…" : "Antworten"}
               </button>

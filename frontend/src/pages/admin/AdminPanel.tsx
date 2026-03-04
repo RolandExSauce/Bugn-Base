@@ -21,9 +21,12 @@ export default function AdminPage() {
       <div className="d-flex flex-wrap gap-2 mb-4 pb-3 border-bottom">
         {tabs.map(({ key, label, icon }) => (
           <button
+            aria-label="Select"
             key={key}
             className={`d-flex align-items-center gap-2 ${
-              selected === key ? "admin-nav-button--selected" : "admin-nav-button"
+              selected === key
+                ? "admin-nav-button--selected"
+                : "admin-nav-button"
             }`}
             onClick={() => setSelected(key)}
           >

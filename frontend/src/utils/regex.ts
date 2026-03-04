@@ -3,7 +3,7 @@ export const PASSWORD_REGEX = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d).{8,64}$/;
 export const NAME_REGEX = /^[A-Za-z\s]{1,50}$/;
 export const ADDRESS_REGEX = /^[a-zA-Z0-9\s,'-]{1,200}$/;
 export const POSTCODE_REGEX = /^[0-9]{3,6}$/;
-export const PHONE_REGEX = /^[0-9]{8,15}$/;
+export const PHONE_REGEX = /^[0-9]{8,11}$/;
 export const PRICE_REGEX = /^\d+$/;
 export const TEXT_REGEX = /^[a-zA-Z0-9\s,'-]+$/;
 export const BRAND_REGEX = /^[a-zA-Z0-9\s,'-]{1,50}$/;

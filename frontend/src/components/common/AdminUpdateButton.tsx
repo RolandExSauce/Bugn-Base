@@ -14,6 +14,7 @@ export default function AdminUpdateButton({
         disabled && "admin-user-action-button--disabled"
       }`}
       onClick={action}
+      aria-label="Update Button"
     >
       <img
         width="25px"

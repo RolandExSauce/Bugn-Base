@@ -4,7 +4,11 @@ type AdminDeleteButtonProps = {
 
 export default function AdminDeleteButton({ action }: AdminDeleteButtonProps) {
   return (
-    <button className="admin-user-action-button" onClick={action}>
+    <button
+      className="admin-user-action-button"
+      onClick={action}
+      aria-label="Delete user"
+    >
       <img
         width="25px"
         height="25px"

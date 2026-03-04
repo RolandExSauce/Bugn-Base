@@ -16,8 +16,10 @@ const Register = () => {
   });
 
   const [retypePassword, setRetypePassword] = useState<string>("");
-  const [registrationError, setRegistrationError] = useState<string | null>(null);
-  
+  const [registrationError, setRegistrationError] = useState<string | null>(
+    null,
+  );
+
   const [invalidInput, setInvalidInput] = useState({
     firstname: false,
     lastname: false,
@@ -115,7 +117,9 @@ const Register = () => {
         />
 
         {invalidInput.firstname && (
-          <p className="text-danger">Vorname ist ungültig (nur Buchstaben, 1-50 Zeichen)</p>
+          <p className="text-danger">
+            Vorname ist ungültig (nur Buchstaben, 1-50 Zeichen)
+          </p>
         )}
 
         <label htmlFor="lastname">Nachname</label>
@@ -130,7 +134,9 @@ const Register = () => {
         />
 
         {invalidInput.lastname && (
-          <p className="text-danger">Nachname ist ungültig (nur Buchstaben, 1-50 Zeichen)</p>
+          <p className="text-danger">
+            Nachname ist ungültig (nur Buchstaben, 1-50 Zeichen)
+          </p>
         )}
 
         <label htmlFor="email">E-Mail</label>
@@ -181,7 +187,9 @@ const Register = () => {
           <p className="text-danger">Passwörter stimmen nicht überein</p>
         )}
 
-        <button type="submit">Registrieren</button>
+        <button aria-label="Registrieren" type="submit">
+          Registrieren
+        </button>
 
         <p className="register-hint">
           Bereits ein Konto? <Link to="/auth/login">Hier einloggen</Link>

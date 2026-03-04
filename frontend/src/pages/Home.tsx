@@ -49,6 +49,7 @@ export default function HomePage() {
           <button
             onClick={fetchProducts}
             className="btn btn-sm btn-outline-danger ms-3"
+            aria-label="Erneut versuchen"
           >
             Erneut versuchen
           </button>

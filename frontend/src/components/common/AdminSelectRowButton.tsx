@@ -12,6 +12,7 @@ export default function AdminSelectRowButton({
         height="25px"
         src="/update.svg"
         alt="Update user button icon"
+        aria-label="Select row"
       />
     </button>
   );

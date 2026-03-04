@@ -57,7 +57,7 @@ const UserRow = ({
   });
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
     const { name, value } = e.target;
     setIsEdited(true);
@@ -92,7 +92,11 @@ const UserRow = ({
     }
 
     // phone kann optional sein → nur validieren wenn vorhanden
-    if (form.phone !== undefined && form.phone !== null && String(form.phone).trim() !== "") {
+    if (
+      form.phone !== undefined &&
+      form.phone !== null &&
+      String(form.phone).trim() !== ""
+    ) {
       if (!PHONE_REGEX.test(String(form.phone))) {
         newInvalidInput.phone = true;
         invalidInputs = true;
@@ -287,32 +291,34 @@ const UserRow = ({
         </td>
 
         <td>
-        <div className="d-flex gap-2">
-          <button
-            className="btn btn-sm btn-success d-flex align-items-center gap-1"
-            onClick={handleSave}
-            disabled={!isEdited || isSaving}
-            title="Speichern"
-          >
-            <img
-              src="/save.svg"
-              alt="Speichern"
-              style={{ width: 16, height: 16 }}
-            />
-          </button>
-          <button
-            className="btn btn-sm btn-secondary d-flex align-items-center gap-1"
-            onClick={handleUndoEdit}
-            title="Abbrechen"
-          >
-            <img
-              src="/undo.svg"
-              alt="Abbrechen"
-              style={{ width: 16, height: 16 }}
-            />
-          </button>
-        </div>
-      </td>
+          <div className="d-flex gap-2">
+            <button
+              className="btn btn-sm btn-success d-flex align-items-center gap-1"
+              onClick={handleSave}
+              disabled={!isEdited || isSaving}
+              title="Speichern"
+              aria-label="Save"
+            >
+              <img
+                src="/save.svg"
+                alt="Speichern"
+                style={{ width: 16, height: 16 }}
+              />
+            </button>
+            <button
+              className="btn btn-sm btn-secondary d-flex align-items-center gap-1"
+              onClick={handleUndoEdit}
+              title="Abbrechen"
+              aria-label="Abbrechen"
+            >
+              <img
+                src="/undo.svg"
+                alt="Abbrechen"
+                style={{ width: 16, height: 16 }}
+              />
+            </button>
+          </div>
+        </td>
       </tr>
     );
   }
@@ -342,6 +348,7 @@ const UserRow = ({
             title="User bearbeiten"
             className="btn btn-sm btn-outline-primary d-flex align-items-center gap-1"
             onClick={() => handleSelect(form.id)}
+            aria-label="User bearbeiten"
           >
             <img
               src="/update.svg"
@@ -355,6 +362,7 @@ const UserRow = ({
             className="btn btn-sm btn-outline-danger d-flex align-items-center gap-1"
             onClick={handleDelete}
             disabled={isDeleting}
+            aria-label="Deaktivieren"
           >
             <img
               src="/delete.svg"
@@ -364,7 +372,6 @@ const UserRow = ({
           </button>
         </div>
       </td>
-
     </tr>
   );
 };

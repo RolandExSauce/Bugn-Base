@@ -23,15 +23,15 @@ const NavBar = () => {
       {/* <Searchbar /> */}
       <div ref={navbarButtonsRef} className="navbar-buttons">
         <Link className="navbar-button" to="/listing">
-          <img src="/guitar.svg" alt="" />
+          <img src="/guitar.svg" alt="Products icon" />
           <span>Produkte</span>
         </Link>
         <Link className="navbar-button" to="/contact">
-          <img src="/contact.svg" alt="" />
+          <img src="/contact.svg" alt=" Contact icon" />
           <span>Kontakt</span>
         </Link>
         <Link className="navbar-button" to="/cart">
-          <img src="/cart.svg" alt="" />
+          <img src="/cart.svg" alt=" Cart icon" />
           {cart && cart.length > 0 && (
             <span className="cart-amount-circle">
               {cart.reduce((a, b) => a + b.quantity, 0)}
@@ -41,7 +41,7 @@ const NavBar = () => {
         </Link>
         {auth ? (
           <Link className="navbar-button" to="/profile">
-            <img src="/profile.svg" alt="" />
+            <img src="/profile.svg" alt=" Profile icon" />
             <span>Profil</span>
           </Link>
         ) : (
@@ -50,8 +50,12 @@ const NavBar = () => {
           </Link>
         )}
       </div>
-      <button onClick={toggleSidemenu} className="navbar-burger">
-        <img src="/burger.svg" alt="" />
+      <button
+        onClick={toggleSidemenu}
+        className="navbar-burger"
+        aria-label="Open burger menu"
+      >
+        <img src="/burger.svg" alt=" Burger icon" />
       </button>
     </nav>
   );

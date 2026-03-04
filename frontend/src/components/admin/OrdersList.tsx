@@ -31,7 +31,9 @@ export default function OrdersList() {
 
   const handleOrderUpdated = (updatedOrder: Order) => {
     setOrders((prev) =>
-      prev.map((order) => (order.id === updatedOrder.id ? updatedOrder : order))
+      prev.map((order) =>
+        order.id === updatedOrder.id ? updatedOrder : order,
+      ),
     );
 
     // ✅ optional: nach Speichern wieder schließen
@@ -63,6 +65,7 @@ export default function OrdersList() {
         <button
           onClick={fetchOrders}
           className="btn btn-sm btn-outline-danger ms-3"
+          aria-label="Erneut versuchen"
         >
           Erneut versuchen
         </button>
@@ -71,7 +74,9 @@ export default function OrdersList() {
   }
 
   if (orders.length === 0) {
-    return <div className="alert alert-info">Keine Bestellungen vorhanden.</div>;
+    return (
+      <div className="alert alert-info">Keine Bestellungen vorhanden.</div>
+    );
   }
 
   return (
@@ -98,7 +103,9 @@ export default function OrdersList() {
               order={order}
               isSelected={selectedOrderId === order.id}
               onSelect={() =>
-                setSelectedOrderId((prev) => (prev === order.id ? null : order.id))
+                setSelectedOrderId((prev) =>
+                  prev === order.id ? null : order.id,
+                )
               }
               onUpdate={handleOrderUpdated}
               onDelete={handleOrderDeleted}
