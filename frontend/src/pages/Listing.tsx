@@ -13,10 +13,12 @@ export default function Listing() {
   const [currentFilter, setCurrentFilter] = useState<FilterType | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
 
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+
   // ✅ Brands aus echten Produkten berechnen
   const availableBrands = useMemo(() => {
     const brands = Array.from(
-      new Set(products.map((p) => p.brand).filter(Boolean))
+      new Set(products.map((p) => p.brand).filter(Boolean)),
     ) as string[];
     brands.sort((a, b) => a.localeCompare(b));
     return brands;
@@ -28,27 +30,26 @@ export default function Listing() {
   }, []);
 
   const toApiFilter = (filter: FilterType | null) => {
-  const brands =
-    filter?.brand == null
-      ? undefined
-      : Array.isArray(filter.brand)
-        ? filter.brand.filter(Boolean)
-        : [filter.brand].filter(Boolean);
+    const brands =
+      filter?.brand == null
+        ? undefined
+        : Array.isArray(filter.brand)
+          ? filter.brand.filter(Boolean)
+          : [filter.brand].filter(Boolean);
 
-  return {
-    name: filter?.name?.trim() || undefined,
-    category: filter?.category || undefined,
-    priceMin: filter?.priceMin ?? undefined,
-    priceMax: filter?.priceMax ?? undefined,
-    brand: brands && brands.length ? brands : undefined,
+    return {
+      name: filter?.name?.trim() || undefined,
+      category: filter?.category || undefined,
+      priceMin: filter?.priceMin ?? undefined,
+      priceMax: filter?.priceMax ?? undefined,
+      brand: brands && brands.length ? brands : undefined,
 
-    stars: filter?.stars, // ✅ null weg
+      stars: filter?.stars, // ✅ null weg
 
-    pageNumber: filter?.pageNumber ?? 0,
-    pageSize: filter?.pageSize ?? 50,
+      pageNumber: filter?.pageNumber ?? 0,
+      pageSize: filter?.pageSize ?? 50,
+    };
   };
-};
-
 
   const fetchProductsWithFilter = async (filter: FilterType | null) => {
     try {
@@ -98,7 +99,7 @@ export default function Listing() {
 
       void fetchProductsWithFilter(combined);
     },
-    [currentFilter]
+    [currentFilter],
   );
 
   if (loading) {
@@ -120,6 +121,7 @@ export default function Listing() {
           <button
             onClick={handleResetFilters}
             className="btn btn-sm btn-outline-danger ms-3"
+            aria-label="Erneut versuchen"
           >
             Erneut versuchen
           </button>
@@ -132,6 +134,13 @@ export default function Listing() {
     <div>
       <div className="mt-4 d-flex w-100 justify-content-center">
         <Searchbar searchTerm={searchTerm} onSearch={handleSearch} />
+        <button
+          aria-label="Filter"
+          className="mobile-filter-toggle ms-3"
+          onClick={() => setIsFilterOpen(true)}
+        >
+          ☰ Filter
+        </button>
       </div>
 
       <div className="pt-4 pb-5 listing-main d-flex w-100 column-gap-5">
@@ -140,6 +149,8 @@ export default function Listing() {
             applyFilter={handleApplyFilter}
             currentFilter={currentFilter}
             availableBrands={availableBrands}
+            isFilterOpen={isFilterOpen}
+            closeFilter={() => setIsFilterOpen(false)}
           />
         </div>
 

@@ -46,11 +46,12 @@ export default function Checkout() {
       productId: item.product.id,
       quantity: item.quantity,
       price: item.product.price,
+      productName: item.product.name,
     }));
 
     const newOrder: Partial<Order> = {
       shippingAddress: formData.deliveryAddress,
-      deliveryFullname: formData.deliveryFullname,
+      userLastName: formData.deliveryFullname,
       deliveryPostcode: formData.deliveryPostcode,
       paymentMethod,
       orderItems,
@@ -89,10 +90,16 @@ export default function Checkout() {
     return (
       <div
         ref={divRef}
-        className="d-flex h1 text-success justify-content-center align-items-center"
+        className="d-flex flex-column justify-content-center align-items-center text-success"
         style={{ height: "80vh" }}
       >
-        Bestellung erfolgreich aufgegeben
+        <img
+          src="/loadingGif.gif"
+          alt="Loading"
+          style={{ width: "200px", marginBottom: "20px" }}
+        />
+
+        <div className="h1">Bestellung erfolgreich aufgegeben</div>
       </div>
     );
   }
@@ -213,12 +220,13 @@ export default function Checkout() {
               Gesamtbetrag: $
               {cart.reduce(
                 (total, item) => total + item.quantity * item.product.price,
-                0
+                0,
               )}
             </div>
             <button
               className="btn btn-success w-100 mt-3"
               onClick={handleSubmit}
+              aria-label="Jetzt kaufen"
             >
               Jetzt kaufen
             </button>

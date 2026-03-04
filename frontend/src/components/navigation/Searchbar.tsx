@@ -45,7 +45,11 @@ export default function Searchbar({ searchTerm, onSearch }: SearchbarProps) {
         placeholder="Search..."
         ref={inputRef}
       />
-      {inputValue && <button onClick={() => setInputValue("")}>Clear</button>}
+      {inputValue && (
+        <button aria-label="Clear" onClick={() => setInputValue("")}>
+          Clear
+        </button>
+      )}
     </div>
   );
 }

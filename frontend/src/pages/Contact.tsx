@@ -172,6 +172,7 @@ const Contact = () => {
           <button
             className="btn btn-success align-self-start mt-2"
             onClick={handleSubmit}
+            aria-label="Absenden"
           >
             Absenden
           </button>

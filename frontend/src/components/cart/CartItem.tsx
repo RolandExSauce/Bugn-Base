@@ -45,6 +45,7 @@ const CartItem = ({
         <button
           onClick={() => removeItem(item.product.id)}
           className="cart-remove-item-button bg-danger text-white px-4 py-2"
+          aria-label="Entfernen"
         >
           Entfernen
         </button>

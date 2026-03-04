@@ -50,7 +50,11 @@ const NavBar = () => {
           </Link>
         )}
       </div>
-      <button onClick={toggleSidemenu} className="navbar-burger">
+      <button
+        onClick={toggleSidemenu}
+        className="navbar-burger"
+        aria-label="Open burger menu"
+      >
         <img src="/burger.svg" alt="" />
       </button>
     </nav>

@@ -33,7 +33,7 @@ export default function UsersList() {
 
   const handleUserUpdated = (updatedUser: User) => {
     setUsers((prev) =>
-      prev.map((u) => (u.id === updatedUser.id ? updatedUser : u))
+      prev.map((u) => (u.id === updatedUser.id ? updatedUser : u)),
     );
     setSelectedUserId(null);
   };
@@ -59,6 +59,7 @@ export default function UsersList() {
         <button
           onClick={fetchUsers}
           className="btn btn-sm btn-outline-danger ms-3"
+          aria-label="Erneut versuchen"
         >
           Erneut versuchen
         </button>

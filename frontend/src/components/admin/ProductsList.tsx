@@ -143,7 +143,7 @@ export default function ProductsList() {
     try {
       await AdminProductService.deleteImage(image.url);
       product.images = product.images.filter(
-        (i) => i.imageId !== image.imageId
+        (i) => i.imageId !== image.imageId,
       );
       setProducts([...products]);
     } catch (err) {
@@ -161,7 +161,7 @@ export default function ProductsList() {
 
   const handleProductUpdated = (updatedProduct: Product) => {
     setProducts((prev) =>
-      prev.map((p) => (p.id === updatedProduct.id ? updatedProduct : p))
+      prev.map((p) => (p.id === updatedProduct.id ? updatedProduct : p)),
     );
   };
 
@@ -184,6 +184,7 @@ export default function ProductsList() {
         className="btn bg-success mb-3 text-white fw-bold fs-3"
         style={{ height: "60px" }}
         onClick={() => setShowNewForm((prev) => !prev)}
+        aria-label="Produkt hinzufügen"
       >
         Produkt hinzufügen
       </button>
@@ -316,6 +317,7 @@ export default function ProductsList() {
             onClick={() =>
               document.getElementById("product-images-input")?.click()
             }
+            aria-label="Bilder auswählen"
           >
             Bilder auswählen
           </button>
@@ -338,13 +340,18 @@ export default function ProductsList() {
                     padding: "0 4px",
                   }}
                   className="btn btn-sm btn-danger"
+                  aria-label="Schließen"
                 >
                   ×
                 </button>
               </div>
             ))}
           </div>
-          <button className="btn btn-success" onClick={saveNewProduct}>
+          <button
+            className="btn btn-success"
+            onClick={saveNewProduct}
+            aria-label="Speichern"
+          >
             Speichern
           </button>
         </div>
@@ -407,6 +414,7 @@ export default function ProductsList() {
                               className="btn btn-sm btn-danger position-absolute top-0 end-0"
                               onClick={() => handleDeleteImage(product, img)}
                               style={{ padding: "0 4px" }}
+                              aria-label="Schließen"
                             >
                               ×
                             </button>

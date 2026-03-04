@@ -24,20 +24,22 @@ export default function MyMessagesPage() {
 
       const sorted = [...data];
 
-        if (activeTab === "inbox") {
-          sorted.sort(
-              (a, b) => new Date(b.repliedAt ?? 0).getTime() - new Date(a.repliedAt ?? 0).getTime()
-          );
+      if (activeTab === "inbox") {
+        sorted.sort(
+          (a, b) =>
+            new Date(b.repliedAt ?? 0).getTime() -
+            new Date(a.repliedAt ?? 0).getTime(),
+        );
 
-          sorted.sort((a, b) => Number(!!a.readAt) - Number(!!b.readAt));
-        } else {
-          sorted.sort(
-              (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-          );
-        }
+        sorted.sort((a, b) => Number(!!a.readAt) - Number(!!b.readAt));
+      } else {
+        sorted.sort(
+          (a, b) =>
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+        );
+      }
 
-        setMessages(sorted);
-
+      setMessages(sorted);
     } catch (e) {
       console.error("Error fetching messages:", e);
       setError("Nachrichten konnten nicht geladen werden.");
@@ -79,9 +81,11 @@ export default function MyMessagesPage() {
 
         const nowIso = new Date().toISOString();
         setMessages((prev) =>
-          prev.map((x) => (x.id === m.id ? { ...x, readAt: nowIso } : x))
+          prev.map((x) => (x.id === m.id ? { ...x, readAt: nowIso } : x)),
         );
-        setSelected((prev) => (prev?.id === m.id ? { ...prev, readAt: nowIso } : prev));
+        setSelected((prev) =>
+          prev?.id === m.id ? { ...prev, readAt: nowIso } : prev,
+        );
       } catch (e) {
         console.error("Error marking message as read:", e);
       }
@@ -97,6 +101,7 @@ export default function MyMessagesPage() {
 
         <div className="btn-group">
           <button
+            aria-label="Inbox tab"
             type="button"
             className={`btn btn-sm ${
               tab === "inbox" ? "btn-primary" : "btn-outline-primary"
@@ -115,6 +120,7 @@ export default function MyMessagesPage() {
               tab === "sent" ? "btn-primary" : "btn-outline-primary"
             }`}
             onClick={() => setTab("sent")}
+            aria-label="Sent tab"
           >
             Gesendet
           </button>
@@ -134,6 +140,7 @@ export default function MyMessagesPage() {
         <div className="alert alert-danger">
           {error}
           <button
+            aria-label="Try again"
             onClick={() => fetchMessages(tab)}
             className="btn btn-sm btn-outline-danger ms-3"
           >
@@ -171,7 +178,9 @@ export default function MyMessagesPage() {
                       <span className="badge text-bg-primary ms-2">Neu</span>
                     )}
                   </div>
-                  <small className="text-muted">{formatDateTime(m.createdAt)}</small>
+                  <small className="text-muted">
+                    {formatDateTime(m.createdAt)}
+                  </small>
                 </div>
 
                 <p className="mt-2 mb-0 text-truncate">{m.message}</p>
@@ -189,10 +198,7 @@ export default function MyMessagesPage() {
 
       {selected && (
         <>
-          <div
-            className="modal-backdrop fade show"
-            onClick={closeModal}
-          />
+          <div className="modal-backdrop fade show" onClick={closeModal} />
 
           <div
             className="modal fade show d-block"
@@ -251,7 +257,11 @@ export default function MyMessagesPage() {
                 </div>
 
                 <div className="modal-footer">
-                  <button className="btn btn-outline-secondary" onClick={closeModal}>
+                  <button
+                    className="btn btn-outline-secondary"
+                    onClick={closeModal}
+                    aria-label="Schließen"
+                  >
                     Schließen
                   </button>
                 </div>

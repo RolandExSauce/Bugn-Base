@@ -100,6 +100,7 @@ export function Order({ order }: { order: Order }) {
         <button
           className="admin-details-button"
           type="button"
+          aria-label="Details"
           onClick={() => {
             setShowDetails((v) => !v);
             if (showDetails) setReviewProductId(null);
@@ -114,6 +115,7 @@ export function Order({ order }: { order: Order }) {
           <div className="d-flex gap-2 flex-wrap align-items-center">
             {isReceived && (
               <button
+                aria-label="Remove item"
                 onClick={handleCancelOrder}
                 className="cart-remove-item-button bg-danger text-white px-4 py-2"
                 type="button"
@@ -125,6 +127,7 @@ export function Order({ order }: { order: Order }) {
 
             {isDelivered && (
               <button
+                aria-label="Update"
                 onClick={handleReturnOrder}
                 className="cart-remove-item-button bg-danger text-white px-4 py-2"
                 type="button"
@@ -161,6 +164,7 @@ export function Order({ order }: { order: Order }) {
 
                       {isDelivered && (
                         <button
+                          aria-label="Update"
                           className="btn btn-sm btn-outline-primary"
                           type="button"
                           disabled={updating}

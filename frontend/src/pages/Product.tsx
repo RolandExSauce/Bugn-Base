@@ -126,6 +126,7 @@ export default function Product() {
             </label>
 
             <button
+              aria-label="In den Warenkorb"
               ref={buttonRef}
               onClick={handleAddToCart}
               className="add-cart-button text-white px-4 py-2 d-flex flex-row column-gap-3"

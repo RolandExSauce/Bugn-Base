@@ -63,6 +63,7 @@ export default function MessagesList() {
         <button
           onClick={fetchMessages}
           className="btn btn-sm btn-outline-danger ms-3"
+          aria-label="Erneut versuchen"
         >
           Erneut versuchen
         </button>
@@ -81,11 +82,10 @@ export default function MessagesList() {
               filter === "OPEN" ? "btn-primary" : "btn-outline-primary"
             }`}
             onClick={() => setFilter("OPEN")}
+            aria-label="Oefnen"
           >
             Offen
-            <span className="badge text-bg-light ms-1">
-              {counts.open}
-            </span>
+            <span className="badge text-bg-light ms-1">{counts.open}</span>
           </button>
 
           <button
@@ -94,15 +94,13 @@ export default function MessagesList() {
               filter === "REPLIED" ? "btn-primary" : "btn-outline-primary"
             }`}
             onClick={() => setFilter("REPLIED")}
+            aria-label="Replied"
           >
             Beantwortet
-            <span className="badge text-bg-light ms-1">
-              {counts.replied}
-            </span>
+            <span className="badge text-bg-light ms-1">{counts.replied}</span>
           </button>
         </div>
       </div>
-
 
       {/* Liste */}
       {filteredMessages.length === 0 ? (
@@ -116,9 +114,7 @@ export default function MessagesList() {
             message={m}
             onReplied={(updated: any) =>
               setMessages((prev) =>
-                prev.map((msg: any) =>
-                  msg.id === updated.id ? updated : msg
-                )
+                prev.map((msg: any) => (msg.id === updated.id ? updated : msg)),
               )
             }
           />

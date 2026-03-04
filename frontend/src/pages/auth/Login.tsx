@@ -109,7 +109,9 @@ const Login = () => {
           </div>
         )}
 
-        <button type="submit">Einloggen</button>
+        <button type="submit" aria-label="Einloggen">
+          Einloggen
+        </button>
 
         <p className="register-hint">
           Noch kein Konto? <Link to="/auth/signup">Jetzt registrieren</Link>
